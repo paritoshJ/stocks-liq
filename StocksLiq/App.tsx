@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Provider} from 'react-redux';
 import {store} from './src/store/configureStore';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {LogBox, SafeAreaView} from 'react-native';
+import {LogBox} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {navigationRef} from './src/routes/RefRootNavigation';
 import RootNavigator from './src/util/Root';
@@ -14,6 +14,11 @@ Icon.loadFont();
 const App = (_props: any) => {
   LogBox.ignoreLogs(['Warning: ...']);
   // console.disableYellowBox = true;
+  const [loading, setLoading] = useState(true);
+
+  const isLoading = (load: boolean) => {
+    setLoading(load);
+  };
   const [signIn, setSignIn] = useState(false);
   const getSignIn = () => {
     getSingInValue(store.getState());
@@ -26,13 +31,13 @@ const App = (_props: any) => {
   return (
     <Provider store={store}>
       <NavigationContainer ref={navigationRef}>
-        <SafeAreaView>
-          {signIn ? (
-            <Tabnavigator />
-          ) : (
-            <RootNavigator navigation={_props.navigation} />
-          )}
-        </SafeAreaView>
+        {loading ? (
+          <SplashScreen isLoading={isLoading} />
+        ) : signIn ? (
+          <Tabnavigator />
+        ) : (
+          <RootNavigator />
+        )}
       </NavigationContainer>
     </Provider>
   );

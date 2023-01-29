@@ -24,6 +24,11 @@ import ItemScreenStack from '../routes/ItemsScreenStack';
 import InventoryScreenStack from '../routes/InventoryScreenStack';
 import ExpenseScreenStack from '../routes/ExpenseScreenStack';
 import ReportScreenStack from '../routes/ReportScreenStack';
+import DashbordTabSVG from '../assets/svgs/DashbordTabSVG';
+import ItemTabSvg from '../assets/svgs/ItemTabSVG';
+import ExpenseTabSVG from '../assets/svgs/ExpenseTabSvg';
+import ReportTabSVG from '../assets/svgs/ReportTabSvg';
+import InventoryTabSVG from '../assets/svgs/InventoryTabSvg';
 
 var exit = false;
 const popText =
@@ -81,13 +86,15 @@ const TabNavigator = props => {
         showLabel: true,
         style: {
           elevation: 2,
-          backgroundColor: 'green',
+          backgroundColor: themeProvide().primary,
           alignContent: 'center',
           height: DeviceInfo.hasNotch() ? 84 : 72,
+          borderTopLeftRadius: 24,
+          borderTopEndRadius: 24,
           boxShadow: '0px -5px 30px rgba(45, 49, 66, 0.1)',
         },
-        activeTintColor: themeProvide().primary_2,
-        inactiveTintColor: themeProvide().primary,
+        activeTintColor: themeProvide().activeIconColor,
+        inactiveTintColor: themeProvide().unActiveIconColor,
         labelStyle: {
           alignSelf: 'center',
           // fontFamily: fonts.openSansRegular,
@@ -101,8 +108,15 @@ const TabNavigator = props => {
         name="DashboardScreen"
         component={HomeScreenStack}
         options={{
-          // tabBarIcon: ({focused}) =>
-          //   focused ? <HomeTabIconSelected /> : <HomeTabIcon />,
+          tabBarIcon: ({focused}) => (
+            <DashbordTabSVG
+              color={
+                focused
+                  ? themeProvide().activeIconColor
+                  : themeProvide().unActiveIconColor
+              }
+            />
+          ),
           tabBarLabel: I18n.t('dashboardTabName'),
         }}
       />
@@ -110,8 +124,15 @@ const TabNavigator = props => {
         name="ItemsScreen"
         component={ItemScreenStack}
         options={{
-          // tabBarIcon: ({focused}) =>
-          //   focused ? <HomeTabIconSelected /> : <HomeTabIcon />,
+          tabBarIcon: ({focused}) => (
+            <ItemTabSvg
+              color={
+                focused
+                  ? themeProvide().activeIconColor
+                  : themeProvide().unActiveIconColor
+              }
+            />
+          ),
           tabBarLabel: I18n.t('itemsTabName'),
         }}
       />
@@ -119,8 +140,15 @@ const TabNavigator = props => {
         name="InventoryScreen"
         component={InventoryScreenStack}
         options={{
-          // tabBarIcon: ({focused}) =>
-          //   focused ? <HomeTabIconSelected /> : <HomeTabIcon />,
+          tabBarIcon: ({focused}) => (
+            <InventoryTabSVG
+              color={
+                focused
+                  ? themeProvide().activeIconColor
+                  : themeProvide().unActiveIconColor
+              }
+            />
+          ),
           tabBarLabel: I18n.t('inventoryTabName'),
         }}
       />
@@ -128,8 +156,15 @@ const TabNavigator = props => {
         name="ExpenseScreen"
         component={ExpenseScreenStack}
         options={{
-          // tabBarIcon: ({focused}) =>
-          //   focused ? <HomeTabIconSelected /> : <HomeTabIcon />,
+          tabBarIcon: ({focused}) => (
+            <ExpenseTabSVG
+              color={
+                focused
+                  ? themeProvide().activeIconColor
+                  : themeProvide().unActiveIconColor
+              }
+            />
+          ),
           tabBarLabel: I18n.t('expenseTabName'),
         }}
       />
@@ -137,8 +172,15 @@ const TabNavigator = props => {
         name="ReportScreen"
         component={ReportScreenStack}
         options={{
-          // tabBarIcon: ({focused}) =>
-          //   focused ? <HomeTabIconSelected /> : <HomeTabIcon />,
+          tabBarIcon: ({focused}) => (
+            <ReportTabSVG
+              color={
+                focused
+                  ? themeProvide().activeIconColor
+                  : themeProvide().unActiveIconColor
+              }
+            />
+          ),
           tabBarLabel: I18n.t('reportTabName'),
         }}
       />

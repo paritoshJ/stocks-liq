@@ -1,5 +1,5 @@
 import {Platform, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import BeforeLoginWrapperView from '../../common/BeforeLoginWrapperView';
 import LogoSvg from '../../assets/svgs/logoSvg';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -9,40 +9,37 @@ import I18n from '../../localization';
 import ThemeButton from '../../common/ThemeButton';
 import ThemeInputView from '../../common/ThemeInputView';
 
-const LoginScreen = props => {
-  const [mobileNumber, setMobileNumber] = useState('');
+const OtpScreen = (props) => {
 
+  console.log(props?.route.params);
   const renderWelcomeText = () => {
-    return <Text style={styles.welcomeText}>{I18n.t('welcome')}</Text>;
+    return <Text style={styles.welcomeText}>{I18n.t('otpVerification')}</Text>;
   };
   const renderLoginORSignUpView = () => {
     return (
       <View style={styles.loginSignupView}>
-        <View style={styles.lineView} />
-        <Text style={styles.loginOrSignUpText}>{I18n.t('loginSignup')}</Text>
-        <View style={styles.lineView} />
+        <Text style={styles.loginOrSignUpText}>
+          {I18n.t('descriptionText', {
+            mobileNumber: props?.route?.params?.mobileNumber,
+          })}
+        </Text>
       </View>
     );
   };
-  const onLoginPress = () => {
-    props.navigation.navigate('OtpScreen', {mobileNumber: mobileNumber});
-  };
+  const onLoginPress = () => {};
   const renderButton = () => {
     return (
-      <ThemeButton
-        onPress={() => onLoginPress()}
-        buttonTitle={I18n.t('continue')}
-      />
+      <ThemeButton onPress={onLoginPress()} buttonTitle={I18n.t('continue')} />
     );
   };
   const renderInput = () => {
     return (
       <ThemeInputView
         placeholder={I18n.t('mobilePlaceholder')}
-        onChangeText={val => {
-          setMobileNumber(val);
-        }}
-        value={mobileNumber}
+        // onChangeText={val => {
+        //   setMobileNumber(val);
+        // }}
+        // value={mobileNumber}
         returnKeyType={'default'}
         keyboardType={'phone-pad'}
       />
@@ -70,7 +67,7 @@ const LoginScreen = props => {
   return <BeforeLoginWrapperView icon={renderIcon} layoutView={renderLogin} />;
 };
 
-export default LoginScreen;
+export default OtpScreen;
 
 const styles = StyleSheet.create({
   keyboardAwareScrollViewStyle: {
@@ -90,7 +87,8 @@ const styles = StyleSheet.create({
     fontFamily: fonts.InterRegular,
     color: themeProvide().black,
     opacity: 0.5,
-    marginVertical: 24,
+    marginTop: 12,
+    marginBottom: 24,
     marginHorizontal: 12,
     textAlign: 'center',
     fontSize: 14,
@@ -99,11 +97,6 @@ const styles = StyleSheet.create({
   loginSignupView: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  lineView: {
-    flex: 1,
-    height: 1,
-    backgroundColor: themeProvide().black,
-    opacity: 0.16,
+    justifyContent: 'center',
   },
 });

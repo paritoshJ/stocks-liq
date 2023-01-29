@@ -1,12 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import NetInfo from '@react-native-community/netinfo';
-import {ImageBackground, StatusBar, Keyboard} from 'react-native';
+import {ImageBackground, StatusBar, Keyboard, Text} from 'react-native';
 import {View, Animated, Easing, Image} from 'react-native';
-import LottieView from 'lottie-react-native';
+// import LottieView from 'lottie-react-native';
 import {themeProvide} from '../../util/globalMethods.js';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
+import SplashLogoSvg from '../../assets/svgs/splashLogoSvg.js';
 
-const SplashScreen = ({props, isSignedIn, isLoading}) => {
+const SplashScreen = props => {
   const bottomNavColorChange = async (color, isLightTheme) => {
     try {
       await changeNavigationBarColor(color, isLightTheme);
@@ -32,7 +33,7 @@ const SplashScreen = ({props, isSignedIn, isLoading}) => {
     let access_token = null; // await getStore('loginToken');
     if (access_token == null) {
       setTimeout(function () {
-        isLoading(false);
+        props.isLoading(false);
       }, 3000);
     }
   };
@@ -41,14 +42,16 @@ const SplashScreen = ({props, isSignedIn, isLoading}) => {
     <>
       <StatusBar
         barStyle="light-content"
-        backgroundColor={themeProvide().primary_1}
+        backgroundColor={themeProvide().white}
       />
-      <View style={{backgroundColor: 'red'}}>
-        {/* <LottieView
-        source={require('../../Animation/animation.json')}
-        progress={progress}
-        resizeMode="cover"
-      /> */}
+      <View
+        style={{
+          backgroundColor: themeProvide().white,
+          alignItems: 'center',
+          justifyContent: 'center',
+          flex: 1,
+        }}>
+        <SplashLogoSvg />
       </View>
     </>
   );

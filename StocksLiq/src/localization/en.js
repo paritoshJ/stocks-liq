@@ -6,4 +6,10 @@ export default {
   inventoryTabName: 'Inventory',
   expenseTabName: 'Expense',
   reportTabName: 'Reports',
+  welcome: 'Welcome!',
+  loginSignup: 'Log in or sign up',
+  continue: 'Continue',
+  mobilePlaceholder: 'Enter Mobile number',
+  otpVerification: 'OTP Verification',
+  descriptionText: 'An 4 digit code has sent to\n%{mobileNumber}',
 };
