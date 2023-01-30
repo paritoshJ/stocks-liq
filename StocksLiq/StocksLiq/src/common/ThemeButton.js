@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     color: themeProvide().white,
-    // fontFamily: fonts.InterRegular,
+    fontFamily: fonts.InterRegular,
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',

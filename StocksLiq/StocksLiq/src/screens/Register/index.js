@@ -24,7 +24,7 @@ const SignUpScreen = props => {
     );
   };
   const onLoginPress = () => {
-    // props.navigation.navigate('OtpScreen',{});
+    props.navigation.navigate('PlanScreen', {});
   };
   const renderButton = () => {
     return (
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     backgroundColor: themeProvide().white,
   },
   welcomeText: {
-    // fontFamily: fonts.InterRegular,
+    fontFamily: fonts.InterRegular,
     color: themeProvide().black,
     marginVertical: 8,
     textAlign: 'center',
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   loginOrSignUpText: {
-    // fontFamily: fonts.InterRegular,
+    fontFamily: fonts.InterRegular,
     color: themeProvide().black,
     opacity: 0.5,
     marginVertical: 24,

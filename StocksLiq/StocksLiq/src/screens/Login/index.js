@@ -3,14 +3,18 @@ import React, {useState} from 'react';
 import BeforeLoginWrapperView from '../../common/BeforeLoginWrapperView';
 import LogoSvg from '../../assets/svgs/logoSvg';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {themeProvide} from '../../util/globalMethods';
+import {isStringNotNull, themeProvide} from '../../util/globalMethods';
 import {fonts} from '../../../assets/fonts/fonts';
 import I18n from '../../localization';
 import ThemeButton from '../../common/ThemeButton';
 import ThemeInputView from '../../common/ThemeInputView';
+import {doSendOtp} from './Action';
+import {connect} from 'react-redux';
+import Loader from '../../common/loader/Loader';
 
 const LoginScreen = props => {
   const [mobileNumber, setMobileNumber] = useState('');
+  const [isLoading, setLoading] = useState(false);
 
   const renderWelcomeText = () => {
     return <Text style={styles.welcomeText}>{I18n.t('welcome')}</Text>;
@@ -25,7 +29,33 @@ const LoginScreen = props => {
     );
   };
   const onLoginPress = () => {
-    props.navigation.navigate('OtpScreen', {mobileNumber: mobileNumber});
+    let msg = '';
+    if (!isStringNotNull(mobileNumber)) {
+      msg = I18n.t('emptyMobile');
+    } else if (mobileNumber.length < 10) {
+      msg = I18n.t('invalidMobile');
+    } else if (mobileNumber.length > 12) {
+      msg = I18n.t('invalidMobile');
+    }
+    if (isStringNotNull(msg)) {
+      alert(msg);
+      return;
+    }
+    setLoading(true);
+    props.doSendOtp({
+      mobile_number: mobileNumber,
+      onSuccess: (isSuccess, status, response) => {
+        setLoading(false);
+        if (isSuccess) {
+          props.navigation.navigate('OtpScreen', {
+            mobileNumber: mobileNumber,
+            otp: response.otp,
+          });
+        } else {
+          alert(response);
+        }
+      },
+    });
   };
   const renderButton = () => {
     return (
@@ -40,7 +70,6 @@ const LoginScreen = props => {
       <ThemeInputView
         placeholder={I18n.t('mobilePlaceholder')}
         onChangeText={val => {
-          // console
           setMobileNumber(val);
         }}
         value={mobileNumber}
@@ -72,12 +101,27 @@ const LoginScreen = props => {
     <View style={styles.mainView}>
       <View style={styles.firstView}>{renderIcon()}</View>
       <View style={styles.secondView}>{renderLogin()}</View>
+      <Loader
+        loading={isLoading}
+        isTransparent={true}
+        color={themeProvide().primary}
+        size={32}
+      />
     </View>
   );
-  //  return <BeforeLoginWrapperView icon={renderIcon} layoutView={renderLogin} />;
 };
 
-export default LoginScreen;
+const mapStateToProps = state => {
+  return {
+    LoginReducer: state.LoginReducer,
+  };
+};
+
+const mapDispatchToProps = {
+  doSendOtp: doSendOtp,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
 
 const styles = StyleSheet.create({
   keyboardAwareScrollViewStyle: {
@@ -100,7 +144,7 @@ const styles = StyleSheet.create({
     backgroundColor: themeProvide().white,
   },
   welcomeText: {
-    // fontFamily: fonts.InterRegular,
+    fontFamily: fonts.InterRegular,
     color: themeProvide().black,
     marginVertical: 8,
     textAlign: 'center',
@@ -108,7 +152,7 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   loginOrSignUpText: {
-    // fontFamily: fonts.InterRegular,
+    fontFamily: fonts.InterRegular,
     color: themeProvide().black,
     opacity: 0.5,
     marginVertical: 24,

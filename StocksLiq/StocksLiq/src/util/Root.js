@@ -3,6 +3,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import LoginScreen from '../screens/Login/index';
 import OtpScreen from '../screens/Otp/index';
 import SignUpScreen from '../screens/Register/index';
+import PlanScreen from '../screens/Plan/index';
 // import Registration from '../screens/Registration/Registration';
 // import ForGotUserName from '../screens/forgotUser';
 // import OTPValidation from '../screens/otpValidate';
@@ -26,6 +27,11 @@ const RootNavigator = () => {
       <OnBoarding.Screen
         name="SignUpScreen"
         component={SignUpScreen}
+        options={{headerShown: false}}
+      />
+      <OnBoarding.Screen
+        name="PlanScreen"
+        component={PlanScreen}
         options={{headerShown: false}}
       />
       {/* <OnBoarding.Screen name="Registration" component={Registration} /> */}

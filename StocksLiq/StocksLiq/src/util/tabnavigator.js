@@ -97,7 +97,7 @@ const TabNavigator = props => {
         inactiveTintColor: themeProvide().unActiveIconColor,
         labelStyle: {
           alignSelf: 'center',
-          // fontFamily: fonts.openSansRegular,
+          fontFamily: fonts.openSansRegular,
           textAlign: 'center',
           fontSize: 11,
         },

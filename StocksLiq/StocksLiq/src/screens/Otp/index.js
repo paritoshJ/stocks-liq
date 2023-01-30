@@ -1,18 +1,36 @@
-import {Platform, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useState,useRef, useCallback} from 'react';
 import LogoSvg from '../../assets/svgs/logoSvg';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {themeProvide} from '../../util/globalMethods';
+import {isStringNotNull, themeProvide} from '../../util/globalMethods';
 import {fonts} from '../../../assets/fonts/fonts';
 import I18n from '../../localization';
 import ThemeButton from '../../common/ThemeButton';
-import OtpInputs from 'react-native-otp-inputs';
+import OtpInputs, {OtpInputsRef} from 'react-native-otp-inputs';
+import {doVerifyUser} from './Action';
+import {connect} from 'react-redux';
+import Loader from '../../common/loader/Loader';
+import {doSendOtp} from '../Login/Action';
 
 const OtpScreen = props => {
+  const otpRef = useRef(null);
   const [otp, setOtp] = useState('');
-
+  const [isLoading, setLoading] = useState(false);
+  const resetOTP = useCallback(() => {
+    otpRef.current.reset();
+  }, [])
   const renderWelcomeText = () => {
     return <Text style={styles.welcomeText}>{I18n.t('otpVerification')}</Text>;
+  };
+  const renderResedText = () => {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          onResendPress();
+        }}>
+        <Text style={styles.resendText}>{I18n.t('resend')}</Text>
+      </TouchableOpacity>
+    );
   };
   const renderLoginORSignUpView = () => {
     return (
@@ -26,7 +44,43 @@ const OtpScreen = props => {
     );
   };
   const onLoginPress = () => {
-    props.navigation.navigate('SignUpScreen', {});
+    let msg = '';
+    if (!isStringNotNull(otp) || otp.length != 4) {
+      msg = I18n.t('emptyOtp');
+    }
+    if (isStringNotNull(msg)) {
+      alert(msg);
+      return;
+    }
+    setLoading(true);
+    props.doVerifyUser({
+      mobile_number: props?.route?.params?.mobileNumber,
+      otp: otp,
+      onSuccess: (isSuccess, status, response) => {
+        setLoading(false);
+        if (isSuccess) {
+          if (response?.data?.is_number_registered === 0) {
+            props.navigation.navigate('SignUpScreen', {});
+          }
+        } else {
+          alert(response);
+          resetOTP();
+        }
+      },
+    });
+  };
+  const onResendPress = () => {
+    setLoading(true);
+    props.doReSendOtp({
+      mobile_number: props?.route?.params?.mobileNumber,
+      onSuccess: (isSuccess, status, response) => {
+        setLoading(false);
+        if (isSuccess) {
+          resetOTP();
+        }
+        alert(response);
+      },
+    });
   };
   const renderButton = () => {
     return (
@@ -37,6 +91,7 @@ const OtpScreen = props => {
     return (
       <View style={{flexDirection: 'row'}}>
         <OtpInputs
+          ref={otpRef}
           inputStyles={styles.inputStyle}
           handleChange={code => setOtp(code)}
           numberOfInputs={4}
@@ -51,6 +106,7 @@ const OtpScreen = props => {
         {renderLoginORSignUpView()}
         {renderOtp()}
         {renderButton()}
+        {renderResedText()}
       </View>
     );
   };
@@ -67,11 +123,27 @@ const OtpScreen = props => {
         <View style={styles.firstView}>{renderIcon()}</View>
         <View style={styles.secondView}>{renderOtpView()}</View>
       </View>
+      <Loader
+        loading={isLoading}
+        isTransparent={true}
+        color={themeProvide().primary}
+        size={32}
+      />
     </KeyboardAwareScrollView>
   );
 };
+const mapStateToProps = state => {
+  return {
+    LoginReducer: state.LoginReducer,
+  };
+};
 
-export default OtpScreen;
+const mapDispatchToProps = {
+  doVerifyUser: doVerifyUser,
+  doReSendOtp: doSendOtp,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(OtpScreen);
 
 const styles = StyleSheet.create({
   keyboardAwareScrollViewStyle: {
@@ -108,15 +180,23 @@ const styles = StyleSheet.create({
     backgroundColor: themeProvide().white,
   },
   welcomeText: {
-    // fontFamily: fonts.InterRegular,
+    fontFamily: fonts.InterRegular,
     color: themeProvide().black,
     marginVertical: 8,
     textAlign: 'center',
     fontSize: 24,
     fontWeight: '900',
   },
+  resendText: {
+    fontFamily: fonts.InterRegular,
+    color: themeProvide().primary,
+    marginVertical: 24,
+    textAlign: 'center',
+    fontSize: 14,
+    fontWeight: '600',
+  },
   loginOrSignUpText: {
-    // fontFamily: fonts.InterRegular,
+    fontFamily: fonts.InterRegular,
     color: themeProvide().black,
     opacity: 0.5,
     marginTop: 12,
