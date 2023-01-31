@@ -11,10 +11,12 @@ const LoginReducer = (state = initialState, action) => {
     case LoginActionTypes.CLEAR_SESSION:
       return initialState;
 
-    case LoginActionTypes.SAVE_BEARERTOKEN:
+    case LoginActionTypes.SAVE_USER:
       return {
         ...state,
-        bearerToken: action.payload,
+        isLoggedIn: true,
+        bearerToken: action?.payload?.token,
+        userDetails: action.payload,
       };
     default: {
       return state;

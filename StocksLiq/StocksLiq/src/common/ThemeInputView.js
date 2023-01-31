@@ -6,7 +6,7 @@ import {fonts} from '../../assets/fonts/fonts';
 const ThemeInputView = props => {
   return (
     <TextInput
-      ref={props.ref}
+      ref={props.innerRef}
       style={[styles.inputStyle, props.inputStyle]}
       placeholder={props.placeholder}
       value={props.value}

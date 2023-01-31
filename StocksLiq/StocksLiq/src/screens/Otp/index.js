@@ -1,5 +1,5 @@
 import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useState,useRef, useCallback} from 'react';
+import React, {useState, useRef, useCallback} from 'react';
 import LogoSvg from '../../assets/svgs/logoSvg';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {isStringNotNull, themeProvide} from '../../util/globalMethods';
@@ -7,10 +7,10 @@ import {fonts} from '../../../assets/fonts/fonts';
 import I18n from '../../localization';
 import ThemeButton from '../../common/ThemeButton';
 import OtpInputs, {OtpInputsRef} from 'react-native-otp-inputs';
-import {doVerifyUser} from './Action';
+import {doVerifyUser, doLoginUser} from './Action';
 import {connect} from 'react-redux';
 import Loader from '../../common/loader/Loader';
-import {doSendOtp} from '../Login/Action';
+import {doSendOtp, doSaveUser} from '../Login/Action';
 
 const OtpScreen = props => {
   const otpRef = useRef(null);
@@ -18,7 +18,7 @@ const OtpScreen = props => {
   const [isLoading, setLoading] = useState(false);
   const resetOTP = useCallback(() => {
     otpRef.current.reset();
-  }, [])
+  }, []);
   const renderWelcomeText = () => {
     return <Text style={styles.welcomeText}>{I18n.t('otpVerification')}</Text>;
   };
@@ -43,7 +43,7 @@ const OtpScreen = props => {
       </View>
     );
   };
-  const onLoginPress = () => {
+  const onVerifyPress = () => {
     let msg = '';
     if (!isStringNotNull(otp) || otp.length != 4) {
       msg = I18n.t('emptyOtp');
@@ -56,15 +56,42 @@ const OtpScreen = props => {
     props.doVerifyUser({
       mobile_number: props?.route?.params?.mobileNumber,
       otp: otp,
+      onSuccess: (isSuccess, status, data) => {
+        if (isSuccess) {
+          console.log('doVerifyUser', data);
+          if (data?.data?.is_number_registered === 0) {
+            setLoading(false);
+            props.navigation.navigate('SignUpScreen', {
+              mobileNumber: props?.route?.params?.mobileNumber,
+            });
+          } else {
+            onLogin();
+          }
+        } else {
+          setLoading(false);
+          resetOTP();
+          alert(data);
+        }
+      },
+    });
+  };
+  const onLogin = () => {
+    props.doLoginUser({
+      paramData: {
+        mobile_number: props?.route?.params?.mobileNumber,
+        device_type: Platform.OS,
+        device_token: '',
+        device_uniqueid: '111',
+      },
       onSuccess: (isSuccess, status, response) => {
         setLoading(false);
         if (isSuccess) {
-          if (response?.data?.is_number_registered === 0) {
-            props.navigation.navigate('SignUpScreen', {});
+          if (response?.data) {
+            props.doSaveUser(response?.data);
+            // console.log('login response', response?.data);
           }
         } else {
           alert(response);
-          resetOTP();
         }
       },
     });
@@ -84,7 +111,7 @@ const OtpScreen = props => {
   };
   const renderButton = () => {
     return (
-      <ThemeButton onPress={onLoginPress} buttonTitle={I18n.t('verify')} />
+      <ThemeButton onPress={onVerifyPress} buttonTitle={I18n.t('verify')} />
     );
   };
   const renderOtp = () => {
@@ -141,6 +168,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   doVerifyUser: doVerifyUser,
   doReSendOtp: doSendOtp,
+  doLoginUser: doLoginUser,
+  doSaveUser: doSaveUser,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OtpScreen);

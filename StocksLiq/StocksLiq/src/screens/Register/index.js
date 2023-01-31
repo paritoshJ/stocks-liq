@@ -2,11 +2,15 @@ import {Platform, StyleSheet, Text, View} from 'react-native';
 import React, {useState, useRef} from 'react';
 import LogoSvg from '../../assets/svgs/logoSvg';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {themeProvide} from '../../util/globalMethods';
+import {isStringNotNull, themeProvide} from '../../util/globalMethods';
 import {fonts} from '../../../assets/fonts/fonts';
 import I18n from '../../localization';
 import ThemeButton from '../../common/ThemeButton';
 import ThemeInputView from '../../common/ThemeInputView';
+import {doSignUpUser} from './Action';
+import {connect} from 'react-redux';
+import Loader from '../../common/loader/Loader';
+import {doSaveUser} from '../Login/Action';
 
 const SignUpScreen = props => {
   const [storeName, setStoreName] = useState('');
@@ -14,17 +18,60 @@ const SignUpScreen = props => {
   const [lastName, setLastName] = useState('');
   const [referralCode, setReferralCode] = useState('');
 
-  const storeRef = React.useRef(null);
-  const firstNameRef = React.useRef(null);
-  const lastNameRef = React.useRef(null);
-  const reffralRef = React.useRef(null);
+  const storeRef = useRef(null);
+  const firstNameRef = useRef(null);
+  const lastNameRef = useRef(null);
+  const reffralRef = useRef(null);
+  const [isLoading, setLoading] = useState(false);
   const renderWelcomeText = () => {
     return (
       <Text style={styles.welcomeText}>{I18n.t('signUpDescription')}</Text>
     );
   };
   const onLoginPress = () => {
-    props.navigation.navigate('PlanScreen', {});
+    let msg = '';
+    if (!isStringNotNull(storeName)) {
+      msg = I18n.t('emptyStoreName');
+    } else if (!isStringNotNull(firstName)) {
+      msg = I18n.t('emptyFirstName');
+    } else if (!isStringNotNull(lastName)) {
+      msg = I18n.t('emptyLastName');
+    }
+    if (isStringNotNull(msg)) {
+      alert(msg);
+      return;
+    }
+
+    let params = {
+      mobile_number: props?.route?.params?.mobileNumber,
+      device_type: Platform.OS,
+      device_token: 'abc',
+      device_uniqueid: 'acb',
+      first_name: firstName,
+      last_name: lastName,
+      store_name: storeName,
+      referral_code: referralCode,
+    };
+
+    setLoading(true);
+    props.doSignUpUser({
+      paramData: params,
+      onSuccess: (isSuccess, status, response) => {
+        setLoading(false);
+        if (isSuccess) {
+          if (response?.data) {
+            // props.navigation.navigate('SignUpScreen', {});
+            if (response?.data.is_primium == 1) {
+              props.navigation.navigate('PlanScreen', {});
+            } else {
+              props.doSaveUser(response?.data);
+            }
+          }
+        } else {
+          alert(response);
+        }
+      },
+    });
   };
   const renderButton = () => {
     return (
@@ -38,7 +85,7 @@ const SignUpScreen = props => {
     return (
       <>
         <ThemeInputView
-          ref={storeRef}
+          innerRef={storeRef}
           placeholder={I18n.t('storeName')}
           onChangeText={val => {
             setStoreName(val);
@@ -51,7 +98,7 @@ const SignUpScreen = props => {
           }}
         />
         <ThemeInputView
-          ref={firstNameRef}
+          innerRef={firstNameRef}
           placeholder={I18n.t('firstName')}
           onChangeText={val => {
             setFirstName(val);
@@ -64,7 +111,7 @@ const SignUpScreen = props => {
           }}
         />
         <ThemeInputView
-          ref={lastNameRef}
+          innerRef={lastNameRef}
           placeholder={I18n.t('lastName')}
           onChangeText={val => {
             setLastName(val);
@@ -77,7 +124,7 @@ const SignUpScreen = props => {
           }}
         />
         <ThemeInputView
-          ref={reffralRef}
+          innerRef={reffralRef}
           placeholder={I18n.t('referralCode')}
           onChangeText={val => {
             setReferralCode(val);
@@ -111,12 +158,28 @@ const SignUpScreen = props => {
         <View style={styles.firstView}>{renderIcon()}</View>
         <View style={styles.secondView}>{renderLogin()}</View>
       </View>
+      <Loader
+        loading={isLoading}
+        isTransparent={true}
+        color={themeProvide().primary}
+        size={32}
+      />
     </KeyboardAwareScrollView>
   );
   //  return <BeforeLoginWrapperView icon={renderIcon} layoutView={renderLogin} />;
 };
+const mapStateToProps = state => {
+  return {
+    LoginReducer: state.LoginReducer,
+  };
+};
 
-export default SignUpScreen;
+const mapDispatchToProps = {
+  doSignUpUser: doSignUpUser,
+  doSaveUser: doSaveUser,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUpScreen);
 
 const styles = StyleSheet.create({
   keyboardAwareScrollViewStyle: {

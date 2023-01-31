@@ -6,3 +6,10 @@ export const doVerifyUser = ({mobile_number, otp, onSuccess}) => ({
     onSuccess: onSuccess,
   },
 });
+export const doLoginUser = ({paramData, onSuccess}) => ({
+  type: OtpActionTypes.DO_LOGIN_USER,
+  payload: {
+    paramData: paramData,
+    onSuccess: onSuccess,
+  },
+});

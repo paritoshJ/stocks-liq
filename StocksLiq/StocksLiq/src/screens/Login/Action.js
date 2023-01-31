@@ -6,3 +6,8 @@ export const doSendOtp = ({mobile_number, onSuccess}) => ({
     onSuccess: onSuccess,
   },
 });
+
+export const doSaveUser = userDetail => ({
+  type: LoginActionTypes.SAVE_USER,
+  payload: userDetail,
+});

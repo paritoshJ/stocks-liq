@@ -8,6 +8,7 @@ const API_DOMAIN_QA = getBaseURL();
 export const DO_SEND_OTP = `${API_DOMAIN_QA}/send-otp`;
 export const DO_VERIFY_USER = `${API_DOMAIN_QA}/verify-user`;
 export const DO_LOGIN = `${API_DOMAIN_QA}/login`;
+export const DO_SIGNUP = `${API_DOMAIN_QA}/sign-up`;
 export const DO_LOGOUT = `${API_DOMAIN_QA}/logout`;
 
 // export const GET_CLAIM_STATUS_SUMMERY = (
