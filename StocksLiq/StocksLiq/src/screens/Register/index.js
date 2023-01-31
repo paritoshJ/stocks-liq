@@ -64,7 +64,9 @@ const SignUpScreen = props => {
             if (response?.data.is_primium == 1) {
               props.navigation.navigate('PlanScreen', {});
             } else {
-              props.doSaveUser(response?.data);
+              props.navigation.navigate('RegisterSuccessScreen', {
+                userData: response?.data,
+              });
             }
           }
         } else {

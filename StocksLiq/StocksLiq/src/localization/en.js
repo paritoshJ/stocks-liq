@@ -32,4 +32,7 @@ export default {
   emptyMobile: 'Please enter mobile number.',
   invalidMobile: 'Please enter valid mobile number.',
   emptyOtp: 'Please enter otp',
+  gotoDashboard: 'Go on Dashboard',
+  helloUserText: 'Hi, %{username}\nCongratulation',
+  successText: 'You have successfully registered',
 };

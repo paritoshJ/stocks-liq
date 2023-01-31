@@ -6,6 +6,7 @@ export default {
   secondary_2: '#0A7593',
   primary_back: '#E4DCC8',
   secondry_back: '#BEBEBE',
+  page_back: '#F1EEE8',
   white: '#FFFFFF',
   black: '#000000',
   activeIconColor: '#000000',
