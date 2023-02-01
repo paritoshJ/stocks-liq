@@ -11,3 +11,17 @@ export const doSaveUser = userDetail => ({
   type: LoginActionTypes.SAVE_USER,
   payload: userDetail,
 });
+export const doLogout = ({paramData, onSuccess}) => ({
+  type: LoginActionTypes.DO_LOGOUT,
+  payload: {
+    paramData: paramData,
+    onSuccess: onSuccess,
+  },
+});
+export const doDeleteUser = ({paramData, onSuccess}) => ({
+  type: LoginActionTypes.DO_DELETE_USER,
+  payload: {
+    paramData: paramData,
+    onSuccess: onSuccess,
+  },
+});
