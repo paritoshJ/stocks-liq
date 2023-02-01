@@ -210,6 +210,26 @@ export function findPercentage(min, max) {
 
 export const convertStringToBase64 = str => {
   if (isStringNotNull(str)) {
-    return Buffer.from(str).toString('base64');
+    // return Buffer.from(str).toString('base64');
   }
+};
+
+export const twoOptionsAlertFunction = (msg, onYesPress) => {
+  //function to make two option alert
+  Alert.alert(
+    //This is title
+    I18n.t('appName'),
+    //This is body text
+    msg,
+    [
+      {text: 'OK', onPress: () => onYesPress},
+      {
+        text: 'Cancel',
+        onPress: () => console.log('No Pressed'),
+        style: 'cancel',
+      },
+    ],
+    {cancelable: false},
+    //on clicking out side, Alert will not dismiss
+  );
 };

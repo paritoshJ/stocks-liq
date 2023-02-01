@@ -35,4 +35,11 @@ export default {
   gotoDashboard: 'Go on Dashboard',
   helloUserText: 'Hi, %{username}\nCongratulation',
   successText: 'You have successfully registered',
+  myProfile_menu: 'My Profile',
+  salesman_menu: 'Salesman',
+  wallet_menu: 'Wallet',
+  refer_a_friend_menu: 'Refer a friend',
+  logout_menu: 'Logout',
+  menu_header_text: 'Menu',
+  logoutText: 'Do you want to logout?',
 };

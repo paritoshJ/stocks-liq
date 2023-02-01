@@ -24,6 +24,7 @@ const App = _props => {
     getSingInValue(store.getState());
   };
   const getSingInValue = storeData => {
+    console.log('isLoggedIn', storeData.LoginReducer.isLoggedIn);
     setSignIn(storeData.LoginReducer.isLoggedIn);
   };
   store.subscribe(getSignIn);

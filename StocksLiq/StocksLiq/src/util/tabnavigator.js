@@ -1,5 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, BackHandler, Alert} from 'react-native';
+import {
+  StyleSheet,
+  BackHandler,
+  Alert,
+  useWindowDimensions,
+  TouchableOpacity,
+} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {
   widthPercentageToDP as wp,
@@ -29,12 +35,21 @@ import ItemTabSvg from '../assets/svgs/ItemTabSVG';
 import ExpenseTabSVG from '../assets/svgs/ExpenseTabSvg';
 import ReportTabSVG from '../assets/svgs/ReportTabSvg';
 import InventoryTabSVG from '../assets/svgs/InventoryTabSvg';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import CustomDrawerContent from './CustomDrawerContent';
+import {createStackNavigator} from '@react-navigation/stack';
+import MoreMenuSvg from '../assets/svgs/MoreMenuSVG';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 var exit = false;
 const popText =
   ' You are about to be signed out. Tap “Logout” to end your session now or tap "Cancel" to stay logged in?';
 const Tab = createBottomTabNavigator();
-const TabNavigator = props => {
+const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator();
+
+function TabNavigator() {
   // const tabBarHeight = useBottomTabBarHeight();
   const [count, setCount] = useState(false);
   Tab.navigationOptions = {
@@ -107,7 +122,7 @@ const TabNavigator = props => {
       <Tab.Screen
         name="DashboardScreen"
         component={HomeScreenStack}
-        options={{
+        options={({route, navigation}) => ({
           tabBarIcon: ({focused}) => (
             <DashbordTabSVG
               color={
@@ -118,7 +133,7 @@ const TabNavigator = props => {
             />
           ),
           tabBarLabel: I18n.t('dashboardTabName'),
-        }}
+        })}
       />
       <Tab.Screen
         name="ItemsScreen"
@@ -186,8 +201,48 @@ const TabNavigator = props => {
       />
     </Tab.Navigator>
   );
-};
+}
 
+function DrawerNavigator() {
+  const dimensions = useWindowDimensions();
+  return (
+    <Drawer.Navigator
+      screenOptions={{
+        drawerType: dimensions.width >= 768 ? 'permanent' : 'front',
+      }}
+      drawerContent={props => <CustomDrawerContent {...props} />}>
+      <Drawer.Screen
+        name="Home"
+        component={TabNavigator}
+        options={{headerShown: false}}
+      />
+    </Drawer.Navigator>
+  );
+}
+
+function RootNavigation() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: themeProvide().primary,
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}>
+      <Stack.Screen
+        name={'DrawerNavigator'}
+        component={DrawerNavigator}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+}
+function AppRouter() {
+  return <RootNavigation />;
+}
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -203,4 +258,4 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(TabNavigator);
+export default connect(mapStateToProps, mapDispatchToProps)(AppRouter);
