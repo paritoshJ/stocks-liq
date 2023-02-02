@@ -40,7 +40,7 @@ const SideMenuData = [{
     title: I18n.t('logout_menu'),
     key: 'logout',
     icon: (<LogoutMenuSvg/>),
-    id: 4
+    id: 5
 }
 ]
 

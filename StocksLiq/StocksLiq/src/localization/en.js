@@ -42,4 +42,10 @@ export default {
   logout_menu: 'Logout',
   menu_header_text: 'Menu',
   logoutText: 'Do you want to logout?',
+  totalSales: 'Total Sales',
+  totalExpens: 'Total Expenses',
+  totalCollection: 'Total Collections',
+  totalCommission: 'Total Commission',
+  today: 'Today',
+  allTime: 'All Time',
 };
