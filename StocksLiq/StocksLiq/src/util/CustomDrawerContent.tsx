@@ -47,10 +47,14 @@ const SideMenuData = [{
  function CustomDrawerContent(props) {
 
     const [menuTitle, setMenuTitle] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
 
     function onMenuPressed(flag: string) {
         setMenuTitle(flag)
-        props.navigation.closeDrawer();
+        if(flag != 'logout'){
+            props.navigation.closeDrawer();
+        }
+        
         switch (flag) {
             case 'profile':
                 // navigation.navigate(flag)
@@ -67,11 +71,14 @@ const SideMenuData = [{
                 case 'logout':
                 // navigation.navigate(flag)
                 twoOptionsAlertFunction( I18n.t('logoutText'), ()=>{
+                    setIsLoading(true);
                         props.doLogout({
                             paramData:{'device_type':Platform.OS,'device_token':''},
                             onSuccess : (isSuccess,status,data) =>{
+                                console.log('data',data);
+                                setIsLoading(false);
                                     if(isSuccess){
-                                        // props.doSaveUser(null);
+                                        props.doSaveUser(null);
                                     }
                             }
                         })
@@ -125,6 +132,12 @@ return <View style={styles.lineView}/>
            
             
             </View>
+            <Loader
+        loading={isLoading}
+        isTransparent={true}
+        color={themeProvide().primary}
+        size={32}
+      />
         </SafeAreaView>
     );
 }
@@ -136,6 +149,7 @@ const mapStateToProps = state => {
   
   const mapDispatchToProps = {
     doLogout: doLogout,
+    doSaveUser: doSaveUser,
   };
   
   export default connect(mapStateToProps, mapDispatchToProps)(CustomDrawerContent);

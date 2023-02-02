@@ -10,8 +10,13 @@ import {themeProvide} from '../../util/globalMethods';
 import ToolbarHeader from '../../common/ToolbarHeader';
 import I18n from '../../localization';
 import {fonts} from '../../../assets/fonts/fonts';
+import EmptyPageView from '../../common/EmptyPageView';
+import ItemBigSVG from '../../assets/svgs/ItemBigSVG';
 
 const ReportsScreen = props => {
+  const renderSvgIcon = () => {
+    return <ItemBigSVG color={themeProvide().primary} />;
+  };
   return (
     <SafeAreaView style={styles.safeView}>
       <View style={styles.mainView}>
@@ -22,6 +27,12 @@ const ReportsScreen = props => {
             props.navigation.openDrawer();
           }}
           logoToolbarType={true}
+        />
+        <EmptyPageView
+          icon={renderSvgIcon}
+          title={I18n.t('noItemTitle', {tabName: I18n.t('reportTabName')})}
+          message={I18n.t('noItemAddText', {tabName: I18n.t('reportTabName')})}
+          buttonTitle={`+ ${I18n.t('reportTabName')}`}
         />
       </View>
     </SafeAreaView>

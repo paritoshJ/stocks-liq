@@ -222,7 +222,7 @@ export const twoOptionsAlertFunction = (msg, onYesPress) => {
     //This is body text
     msg,
     [
-      {text: 'OK', onPress: () => onYesPress},
+      {text: 'OK', onPress: onYesPress},
       {
         text: 'Cancel',
         onPress: () => console.log('No Pressed'),

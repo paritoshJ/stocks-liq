@@ -57,20 +57,24 @@ export function* postSendOTPWatcher() {
 }
 
 function* doLogout(action) {
+  console.log('store', store.getState());
   try {
     const {response} = yield request(
       DO_LOGOUT,
       HTTP_METHODS.POST,
       action.payload.paramData,
       {},
+      true,
+      store.getState().LoginReducer.bearerToken,
     );
-    console.log('POST_DO_LOGOUT', response);
+    console.log('POST_DO_LOGOUT', store.getState().LoginReducer);
     yield action.payload.onSuccess(
       response?.data?.status,
       response.status,
       response?.data?.message,
     );
   } catch (error) {
+    console.log('POST_DO_LOGOUT', error);
     if (error.response) {
       if (error.response.status === 500) {
         yield action.payload.onSuccess(

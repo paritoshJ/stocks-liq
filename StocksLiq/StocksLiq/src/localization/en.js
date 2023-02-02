@@ -48,4 +48,7 @@ export default {
   totalCommission: 'Total Commission',
   today: 'Today',
   allTime: 'All Time',
+  noItemTitle: 'No %{tabName} added',
+  noItemAddText:
+    'Hi, You have not added any %{tabName}\ntill yet, so please click on add\nbutton and add your %{tabName}.',
 };

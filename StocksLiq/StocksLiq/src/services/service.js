@@ -45,6 +45,7 @@ const getReqHeaders = async () => {
   return {
     'X-ClientID': api_environments.API_DOMAIN,
     'X-DeviceID': 'Mobile',
+    
     // isLocal: __DEV__,
   };
 };
@@ -52,13 +53,27 @@ const getReqHeaders = async () => {
  * To perform api from class where this function/method is imported,
  * and send back completion in resolve or reject based on api response.
  */
-export const request = (url, httpMethod, params, header = {}) =>
+export const request = (
+  url,
+  httpMethod,
+  params,
+  header = {},
+  isWithToken = false,
+  token = '',
+) =>
   new Promise(async (resolve, reject) => {
     //the token is a variable which holds the token
     try {
+      // {Authorization: `Bearer + ${store.LoginReducer.bearerToken}}
+      const tokenObj = isWithToken
+        ? {
+            Authorization: `Bearer ${token}}`,
+          }
+        : {};
       const configObj = {
         headers: {
           ...header,
+          ...tokenObj,
         },
       };
 

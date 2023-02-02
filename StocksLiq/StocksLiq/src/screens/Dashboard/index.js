@@ -18,16 +18,16 @@ const DashboardScreen = props => {
   const renderRecords = (label, item) => {
     return (
       <>
-        <Text>{label}</Text>
+        <Text style={styles.label}>{label}</Text>
         <View style={{flexDirection: 'row', marginTop: 12}}>
-          {renderCard(I18n.t('totalSales'), '$1200')}
+          {renderCard(I18n.t('totalSales'), '$12910')}
           {renderCardGap()}
-          {renderCard(I18n.t('totalExpens'), '$1200')}
+          {renderCard(I18n.t('totalExpens'), '$2910')}
         </View>
         <View style={{flexDirection: 'row', marginVertical: 16}}>
-          {renderCard(I18n.t('totalCommission'), '$1200')}
+          {renderCard(I18n.t('totalCommission'), '$910')}
           {renderCardGap()}
-          {renderCard(I18n.t('totalCollection'), '$1200')}
+          {renderCard(I18n.t('totalCollection'), '$12910')}
         </View>
       </>
     );
@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.InterRegular,
     color: themeProvide().black,
   },
+  label: {fontSize: 14, fontFamily: fonts.InterRegular, fontWeight: '500'},
   totalText: {
     fontSize: 14,
     fontWeight: '300',
