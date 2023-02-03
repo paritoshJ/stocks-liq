@@ -11,41 +11,56 @@ import {getFirstLetterCaps, themeProvide} from '../../util/globalMethods';
 import ToolbarHeader from '../../common/ToolbarHeader';
 import I18n from '../../localization';
 import {fonts} from '../../../assets/fonts/fonts';
-import {doGetUserProfile} from '../Profile/Action';
+import {doGetUserProfile, doEditUserProfile} from './Action';
 import {connect} from 'react-redux';
 import Loader from '../../common/loader/Loader';
 import ProfileSvg from '../../assets/svgs/ProfileSvg';
 import ReferFriendSvg from '../../assets/svgs/ReferFriendSvg';
 import ThemeButton from '../../common/ThemeButton';
+import {TextInput} from 'react-native-paper';
 import {store} from '../../store/configureStore';
 
-const ProfileScreen = props => {
-  const [isLoading, setIsLoading] = useState(false);
+const EditProfileScreen = props => {
   const userDetails = store?.getState()?.LoginReducer?.userDetails;
+
+  const [isLoading, setLoading] = useState(false);
+  const [storeName, setStoreName] = useState(userDetails?.store_name);
+  const [firstName, setFirstName] = useState(userDetails?.first_name);
+  const [lastName, setLastName] = useState(userDetails?.last_name);
+
   const renderImageBack = () => {
     return (
       <ImageBackground
         source={require('../../assets/svgs/MyProfileSideMenuSvg')}
         style={styles.imageBack}>
-        <Text style={styles.imageText}>
-          {getFirstLetterCaps(userDetails?.store_name)}
-        </Text>
+        <Text style={styles.imageText}>{getFirstLetterCaps(storeName)}</Text>
       </ImageBackground>
     );
   };
   const renderStoreName = () => {
     return (
       <>
-        <Text style={styles.storeText}>{userDetails?.store_name}</Text>
-        <Text style={styles.storeExampleText}>
-          {'EXP Date : Joined May 2022'}
-        </Text>
+        <Text style={styles.storeText}>{'Upload photo'}</Text>
       </>
     );
   };
 
   const renderDevider = () => {
     return <View style={styles.renderDevider} />;
+  };
+  const callUpdateApi = () => {
+    setLoading(true);
+    props.doEditUserProfile({
+      paramData: {
+        first_name: firstName,
+        last_name: lastName,
+        store_name: storeName,
+        // 'profile_image': '',
+      },
+      onSuccess: ({isSuccess, status, data}) => {
+        setLoading(false);
+      },
+    });
   };
   const renderButtonView = () => {
     return (
@@ -54,27 +69,51 @@ const ProfileScreen = props => {
           buttonstyle={[styles.buttonstyle, {marginRight: 8}]}
           textStyle={styles.buttonTextstyle}
           onPress={() => {
-            props.navigation.navigate('EditProfileScreen');
+            props.navigation.goBack();
           }}
-          buttonTitle={I18n.t('editProfile')}
+          buttonTitle={I18n.t('cancel')}
         />
         <ThemeButton
-          buttonstyle={[styles.buttonstyle, {marginLeft: 8}]}
-          textStyle={styles.buttonTextstyle}
-          onPress={() => {}}
-          buttonTitle={I18n.t('deleteAccount')}
+          buttonstyle={[styles.buttonstyle1, {marginLeft: 8}]}
+          onPress={() => {
+            callUpdateApi();
+          }}
+          buttonTitle={I18n.t('update')}
         />
       </View>
     );
   };
-  const renderDetailView = (iconView, label, value) => {
+  const _onChangeText = (key, value) => {
+    if (key === 'storeName') {
+      setStoreName(value);
+    } else if (key === 'firstName') {
+      setFirstName(value);
+    } else if (key === 'lastName') {
+      setLastName(value);
+    }
+  };
+  const renderInputView = (label, value, key) => {
     return (
-      <View style={styles.renderDetailView}>
-        {iconView}
-        <View style={styles.renderInputView}>
-          <Text style={styles.inputLabel}>{label}</Text>
-          <Text style={styles.inputValue}>{value}</Text>
-        </View>
+      <View style={styles.renderInputView}>
+        <TextInput
+          label={label}
+          placeholder={`Enter ${label}`}
+          value={value}
+          dense={false}
+          mode={'outlined'}
+          style={styles.inputStyle}
+          error={false}
+          theme={{
+            colors: {
+              primary: themeProvide().black,
+              error: themeProvide().primary,
+            },
+          }}
+          placeholderColor={themeProvide().borderBlack}
+          activeUnderlineColor={themeProvide().black}
+          underlineColorAndroid={renderDevider()}
+          onChangeText={value1 => _onChangeText(key, value1)}
+        />
       </View>
     );
   };
@@ -93,30 +132,18 @@ const ProfileScreen = props => {
         <View style={styles.paddingView}>
           {renderImageBack()}
           {renderStoreName()}
-          {renderDevider()}
-          {renderDetailView(
-            <ProfileSvg />,
-            I18n.t('ownerName'),
-            `${userDetails?.first_name} ${userDetails?.last_name}`,
-          )}
-          {renderDevider()}
-          {renderDetailView(
-            <ReferFriendSvg />,
-            I18n.t('referralCode'),
-            userDetails?.referral_code
-              ? `#${userDetails?.referral_code}`
-              : 'N/A',
-          )}
-          {renderDevider()}
+          {renderInputView(I18n.t('yourStoreName'), storeName, 'storeName')}
+          {renderInputView(I18n.t('yourFirstName'), firstName, 'firstName')}
+          {renderInputView(I18n.t('yourLastName'), lastName, 'lastName')}
           {renderButtonView()}
-          <Loader
-            loading={isLoading}
-            isTransparent={true}
-            color={themeProvide().primary}
-            size={32}
-          />
         </View>
       </View>
+      <Loader
+        loading={isLoading}
+        isTransparent={true}
+        color={themeProvide().primary}
+        size={32}
+      />
     </SafeAreaView>
   );
 };
@@ -128,9 +155,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   doGetUserProfile: doGetUserProfile,
+  doEditUserProfile: doEditUserProfile,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(EditProfileScreen);
 
 const styles = StyleSheet.create({
   mainView: {flex: 1, backgroundColor: themeProvide().page_back},
@@ -156,11 +184,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   storeText: {
-    color: themeProvide().black,
+    color: themeProvide().primary,
     alignSelf: 'center',
     marginHorizontal: 10,
     fontSize: 16,
     fontWeight: '700',
+    textDecorationLine: 'underline',
     justifyContent: 'center',
   },
   storeExampleText: {
@@ -184,7 +213,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   renderDetailView: {flexDirection: 'row', alignItems: 'center'},
-  renderInputView: {marginHorizontal: 12},
+  renderInputView: {marginTop: 24},
   inputLabel: {fontSize: 12},
   inputValue: {
     fontSize: 16,
@@ -198,14 +227,24 @@ const styles = StyleSheet.create({
   buttonstyle: {
     backgroundColor: 'transparent',
     flex: 1,
-    borderRadius: 8,
+    borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 16,
     marginTop: 24,
     borderColor: themeProvide().primary,
     borderWidth: 1,
   },
+  buttonstyle1: {
+    borderRadius: 12,
+    flex: 1,
+  },
   buttonTextstyle: {
     color: themeProvide().primary,
+  },
+  inputStyle: {
+    fontSize: 14,
+    fontWeight: '400',
+    fontFamily: fonts.InterRegular,
+    paddingHorizontal: 0,
   },
 });

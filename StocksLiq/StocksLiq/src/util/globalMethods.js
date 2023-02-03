@@ -233,3 +233,15 @@ export const twoOptionsAlertFunction = (msg, onYesPress) => {
     //on clicking out side, Alert will not dismiss
   );
 };
+
+export const getFirstLetterCaps = str => {
+  if (str && str.length > 0) {
+    const matches = str.match(/\b(\w)/g); // ['J','S','O','N']
+    let acronym = matches.join(''); // JSON
+    acronym = acronym.length > 4 ? acronym.substring(0, 4) : acronym;
+    console.log(acronym);
+    return acronym.toUpperCase();
+  } else {
+    return 'N/A';
+  }
+};

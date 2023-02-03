@@ -67,7 +67,7 @@ export const request = (
       // {Authorization: `Bearer + ${store.LoginReducer.bearerToken}}
       const tokenObj = isWithToken
         ? {
-            Authorization: `Bearer ${token}}`,
+            Authorization: `Bearer ${token}`,
           }
         : {};
       const configObj = {

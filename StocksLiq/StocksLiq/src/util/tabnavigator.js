@@ -25,6 +25,9 @@ import I18n from '../localization/index';
 import {connect} from 'react-redux';
 import {navigationRef} from './RefRootNavigation';
 import {fonts} from '../../assets/fonts/fonts';
+
+import ProfileScreen from '../screens/Profile/index';
+import EditProfileScreen from '../screens/Profile/EditProfileScreen';
 import HomeScreenStack from '../routes/HomeScreenStack';
 import ItemScreenStack from '../routes/ItemsScreenStack';
 import InventoryScreenStack from '../routes/InventoryScreenStack';
@@ -235,6 +238,16 @@ function RootNavigation() {
       <Stack.Screen
         name={'DrawerNavigator'}
         component={DrawerNavigator}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={'ProfileScreen'}
+        component={ProfileScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={'EditProfileScreen'}
+        component={EditProfileScreen}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

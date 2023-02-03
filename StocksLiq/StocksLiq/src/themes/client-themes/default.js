@@ -11,4 +11,5 @@ export default {
   black: '#000000',
   activeIconColor: '#000000',
   unActiveIconColor: '#FFFFFF',
+  borderBlack: '#00000030',
 };

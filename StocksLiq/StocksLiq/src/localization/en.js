@@ -15,6 +15,7 @@ export default {
   verify: 'Verify',
   signUpDescription: 'Tell us few more details about you',
   storeName: 'Store name',
+  ownerName: 'Owner name',
   firstName: 'Your first name',
   lastName: 'Your last name',
   referralCode: 'Referral code',
@@ -48,7 +49,14 @@ export default {
   totalCommission: 'Total Commission',
   today: 'Today',
   allTime: 'All Time',
+  deleteAccount: 'Delete Account',
+  editProfile: 'Edit Profile',
   noItemTitle: 'No %{tabName} added',
   noItemAddText:
     'Hi, You have not added any %{tabName}\ntill yet, so please click on add\nbutton and add your %{tabName}.',
+  cancel: 'Cancel',
+  update: 'Update',
+  yourStoreName: 'Store Name',
+  yourFirstName: 'Your First Name',
+  yourLastName: 'Your Last Name',
 };

@@ -27,7 +27,7 @@ const ToolbarHeader = props => {
           {props.isLogo ? (
             <LogoTabIconSVG />
           ) : (
-            <Text style={[styles.textStyle, props.textStyle]}>
+            <Text style={[styles.logoTextStyle, props.textStyle]}>
               {props.title}
             </Text>
           )}
@@ -38,15 +38,21 @@ const ToolbarHeader = props => {
 
   const BackToolbar = () => {
     return (
-      <View>
+      <View
+        style={[
+          styles.back,
+          {
+            backgroundColor:
+              props.backgroundColor ?? themeProvide().primary_back,
+          },
+        ]}>
         <TouchableOpacity
           style={[styles.opacityStyle, props.buttonstyle]}
           onPress={props.onPress}
           {...props}>
           <BackSVG />
         </TouchableOpacity>
-        <View
-          style={{paddingHorizontal: 18, flex: 1, justifyContent: 'center'}}>
+        <View style={{paddingHorizontal: 18, flex: 1}}>
           <Text style={[styles.textStyle, props.textStyle]}>{props.title}</Text>
         </View>
       </View>
@@ -74,5 +80,13 @@ const styles = StyleSheet.create({
     fontFamily: fonts.InterRegular,
     fontSize: 24,
     fontWeight: '900',
+    textAlign: 'center',
+  },
+  logoTextStyle: {
+    color: themeProvide().black,
+    fontFamily: fonts.InterRegular,
+    fontSize: 24,
+    fontWeight: '900',
   },
 });
+

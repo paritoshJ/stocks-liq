@@ -57,7 +57,7 @@ const SideMenuData = [{
         
         switch (flag) {
             case 'profile':
-                // navigation.navigate(flag)
+                props.navigation.navigate('ProfileScreen')
                 break;
             case 'salesman':
                 // navigation.navigate(flag)
