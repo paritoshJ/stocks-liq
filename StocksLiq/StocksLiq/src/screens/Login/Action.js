@@ -11,6 +11,10 @@ export const doSaveUser = userDetail => ({
   type: LoginActionTypes.SAVE_USER,
   payload: userDetail,
 });
+export const setLoggedIn = isLogin => ({
+  type: LoginActionTypes.IS_LOGGED_IN,
+  payload: isLogin,
+});
 export const doLogout = ({paramData, onSuccess}) => ({
   type: LoginActionTypes.DO_LOGOUT,
   payload: {

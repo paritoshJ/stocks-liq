@@ -239,9 +239,21 @@ export const getFirstLetterCaps = str => {
     const matches = str.match(/\b(\w)/g); // ['J','S','O','N']
     let acronym = matches.join(''); // JSON
     acronym = acronym.length > 4 ? acronym.substring(0, 4) : acronym;
-    console.log(acronym);
     return acronym.toUpperCase();
   } else {
     return 'N/A';
   }
+};
+
+export const showMessageAlert = (msg, onYesPress = () => {}) => {
+  //function to make two option alert
+  Alert.alert(
+    //This is title
+    I18n.t('appName'),
+    //This is body text
+    msg,
+    [{text: 'OK', onPress: onYesPress, style: 'cancel'}],
+    {cancelable: false},
+    //on clicking out side, Alert will not dismiss
+  );
 };

@@ -69,11 +69,11 @@ function* doEditProfile(action) {
       true,
       store.getState().LoginReducer.bearerToken,
     );
-    console.log('doGetProfile', store.getState().LoginReducer);
+    console.log('doGetProfile', response?.data);
     yield action.payload.onSuccess(
       response?.data?.status,
       response.status,
-      response?.data?.message,
+      response?.data,
     );
   } catch (error) {
     console.log('doGetProfile', error);

@@ -11,7 +11,12 @@ const LoginReducer = (state = initialState, action) => {
     case LoginActionTypes.CLEAR_SESSION:
       return initialState;
 
-    case LoginActionTypes.SAVE_USER:
+    case LoginActionTypes.IS_LOGGED_IN:
+      return {
+        ...state,
+        isLoggedIn: action.payload,
+      };
+      case LoginActionTypes.SAVE_USER:
       return {
         ...state,
         isLoggedIn: action.payload ? true : false,

@@ -5,13 +5,20 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ImageBackground,
+  Platform,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {getFirstLetterCaps, themeProvide} from '../../util/globalMethods';
+import {
+  getFirstLetterCaps,
+  showMessageAlert,
+  themeProvide,
+  twoOptionsAlertFunction,
+} from '../../util/globalMethods';
 import ToolbarHeader from '../../common/ToolbarHeader';
 import I18n from '../../localization';
 import {fonts} from '../../../assets/fonts/fonts';
 import {doGetUserProfile} from '../Profile/Action';
+import {doDeleteUser, setLoggedIn, doSaveUser} from '../Login/Action';
 import {connect} from 'react-redux';
 import Loader from '../../common/loader/Loader';
 import ProfileSvg from '../../assets/svgs/ProfileSvg';
@@ -21,7 +28,10 @@ import {store} from '../../store/configureStore';
 
 const ProfileScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
-  const userDetails = store?.getState()?.LoginReducer?.userDetails;
+  let userDetails = store?.getState()?.LoginReducer?.userDetails;
+  // useEffect(() => {
+  //   userDetails = store?.getState()?.LoginReducer?.userDetails;
+  // }, [store?.getState()?.LoginReducer?.userDetails]);
   const renderImageBack = () => {
     return (
       <ImageBackground
@@ -61,11 +71,32 @@ const ProfileScreen = props => {
         <ThemeButton
           buttonstyle={[styles.buttonstyle, {marginLeft: 8}]}
           textStyle={styles.buttonTextstyle}
-          onPress={() => {}}
+          onPress={() => {
+            onDeleteClick();
+          }}
           buttonTitle={I18n.t('deleteAccount')}
         />
       </View>
     );
+  };
+  const onDeleteClick = () => {
+    twoOptionsAlertFunction(I18n.t('deleteText'), () => {
+      setIsLoading(true);
+      props.doDeleteUser({
+        paramData: {device_type: Platform.OS, device_token: ''},
+        onSuccess: (isSuccess, status, data) => {
+          console.log('data', data);
+          setIsLoading(false);
+
+          if (isSuccess) {
+            props.doSaveUser(null);
+            props.setLoggedIn(false);
+          }
+
+          showMessageAlert(data);
+        },
+      });
+    });
   };
   const renderDetailView = (iconView, label, value) => {
     return (
@@ -109,14 +140,14 @@ const ProfileScreen = props => {
           )}
           {renderDevider()}
           {renderButtonView()}
-          <Loader
-            loading={isLoading}
-            isTransparent={true}
-            color={themeProvide().primary}
-            size={32}
-          />
         </View>
       </View>
+      <Loader
+        loading={isLoading}
+        isTransparent={true}
+        color={themeProvide().primary}
+        size={32}
+      />
     </SafeAreaView>
   );
 };
@@ -128,6 +159,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   doGetUserProfile: doGetUserProfile,
+  doDeleteUser: doDeleteUser,
+  setLoggedIn: setLoggedIn,
+  doSaveUser: doSaveUser,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileScreen);

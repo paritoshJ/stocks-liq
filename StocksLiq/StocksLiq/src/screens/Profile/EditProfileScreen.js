@@ -7,15 +7,20 @@ import {
   ImageBackground,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {getFirstLetterCaps, themeProvide} from '../../util/globalMethods';
+import {
+  getFirstLetterCaps,
+  isObjectNullOrUndefined,
+  isStringNotNull,
+  showMessageAlert,
+  themeProvide,
+} from '../../util/globalMethods';
 import ToolbarHeader from '../../common/ToolbarHeader';
 import I18n from '../../localization';
 import {fonts} from '../../../assets/fonts/fonts';
 import {doGetUserProfile, doEditUserProfile} from './Action';
+import {doSaveUser} from '../Login/Action';
 import {connect} from 'react-redux';
 import Loader from '../../common/loader/Loader';
-import ProfileSvg from '../../assets/svgs/ProfileSvg';
-import ReferFriendSvg from '../../assets/svgs/ReferFriendSvg';
 import ThemeButton from '../../common/ThemeButton';
 import {TextInput} from 'react-native-paper';
 import {store} from '../../store/configureStore';
@@ -30,9 +35,7 @@ const EditProfileScreen = props => {
 
   const renderImageBack = () => {
     return (
-      <ImageBackground
-        source={require('../../assets/svgs/MyProfileSideMenuSvg')}
-        style={styles.imageBack}>
+      <ImageBackground style={styles.imageBack}>
         <Text style={styles.imageText}>{getFirstLetterCaps(storeName)}</Text>
       </ImageBackground>
     );
@@ -49,6 +52,18 @@ const EditProfileScreen = props => {
     return <View style={styles.renderDevider} />;
   };
   const callUpdateApi = () => {
+    let msg = '';
+    if (!isStringNotNull(storeName)) {
+      msg = I18n.t('storeNameError');
+    } else if (!isStringNotNull(firstName)) {
+      msg = I18n.t('firstNameError');
+    } else if (!isStringNotNull(lastName)) {
+      msg = I18n.t('lastNameError');
+    }
+
+    if (isStringNotNull(msg)) {
+      showMessageAlert();
+    }
     setLoading(true);
     props.doEditUserProfile({
       paramData: {
@@ -57,8 +72,13 @@ const EditProfileScreen = props => {
         store_name: storeName,
         // 'profile_image': '',
       },
-      onSuccess: ({isSuccess, status, data}) => {
+      onSuccess: (isSuccess, status, response) => {
         setLoading(false);
+        if (isSuccess && !isObjectNullOrUndefined(response.data)) {
+          console.log('data', response.data);
+          props.doSaveUser(response.data);
+        }
+        showMessageAlert(response?.message);
       },
     });
   };
@@ -156,6 +176,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   doGetUserProfile: doGetUserProfile,
   doEditUserProfile: doEditUserProfile,
+  doSaveUser: doSaveUser,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProfileScreen);

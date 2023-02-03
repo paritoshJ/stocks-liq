@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textStyle: {
-    color: themeProvide().black,
+    color: themeProvide().headerBlack,
     fontFamily: fonts.InterRegular,
     fontSize: 24,
     fontWeight: '900',

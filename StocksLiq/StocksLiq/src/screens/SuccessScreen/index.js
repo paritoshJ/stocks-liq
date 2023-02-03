@@ -7,7 +7,7 @@ import {fonts} from '../../../assets/fonts/fonts';
 import I18n from '../../localization';
 import ThemeButton from '../../common/ThemeButton';
 import {connect} from 'react-redux';
-import {doSaveUser} from '../Login/Action';
+import {doSaveUser, setLoggedIn} from '../Login/Action';
 
 const RegisterSuccessScreen = props => {
   const renderWelcomeText = () => {
@@ -28,6 +28,7 @@ const RegisterSuccessScreen = props => {
   };
   const onGoToDashboard = () => {
     props.doSaveUser(props?.route?.params?.userData);
+    props.setLoggedIn(true);
   };
   const renderButton = () => {
     return (
@@ -71,6 +72,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   doSaveUser: doSaveUser,
+  setLoggedIn: setLoggedIn,
 };
 
 export default connect(

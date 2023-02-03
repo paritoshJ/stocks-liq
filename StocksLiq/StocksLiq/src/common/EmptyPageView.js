@@ -21,7 +21,7 @@ const EmptyPageView = props => {
         <Text style={[styles.msgStyle, props.msgStyle]}>{props.message}</Text>
         <TouchableOpacity
           style={[styles.opacityStyle, props.buttonstyle]}
-          onPress={props.onPress}
+          onPress={props.onAddClick}
           {...props}>
           <Text style={[styles.textStyle, props.textStyle]}>
             {props.buttonTitle}

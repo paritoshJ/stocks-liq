@@ -10,7 +10,11 @@ import {
 import {LoginActionTypes} from './Action_type';
 import {request} from '../../services/service';
 import {HTTP_METHODS} from '../../services/api_constants';
-import {DO_LOGOUT, DO_SEND_OTP} from '../../services/api_end_points';
+import {
+  DO_LOGOUT,
+  DO_SEND_OTP,
+  DO_DELETE_USER,
+} from '../../services/api_end_points';
 import {store} from '../../store/configureStore';
 
 function* sendOtp(action) {
@@ -105,12 +109,14 @@ export function* doLogoutWatcher() {
 function* doDeleteUser(action) {
   try {
     const {response} = yield request(
-      DO_LOGOUT,
-      HTTP_METHODS.POST,
+      DO_DELETE_USER,
+      HTTP_METHODS.GET,
       action.payload.paramData,
       {},
+      true,
+      store.getState().LoginReducer.bearerToken,
     );
-    console.log('POST_DO_LOGOUT', response);
+    console.log('doDeleteUser', response);
     yield action.payload.onSuccess(
       response?.data?.status,
       response.status,

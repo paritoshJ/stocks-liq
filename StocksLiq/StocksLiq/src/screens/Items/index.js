@@ -33,6 +33,9 @@ const ItemsScreen = props => {
           title={I18n.t('noItemTitle', {tabName: I18n.t('itemsTabName')})}
           message={I18n.t('noItemAddText', {tabName: I18n.t('itemsTabName')})}
           buttonTitle={`+ ${I18n.t('itemsTabName')}`}
+          onAddClick={() => {
+            props.navigation.navigate('AddItemScreen');
+          }}
         />
       </View>
     </SafeAreaView>
