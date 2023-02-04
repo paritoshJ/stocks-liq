@@ -5,6 +5,11 @@ export const HTTP_METHODS = {
   PUT: 'PUT',
   DELETE: 'DELETE',
 };
+/* API language */
+export const API_LANG = {
+  ENGLISH: 'en',
+  HINDI: 'hi',
+};
 /**
  * Other Constants
  */

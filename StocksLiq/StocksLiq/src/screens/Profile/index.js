@@ -29,9 +29,7 @@ import {store} from '../../store/configureStore';
 const ProfileScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   let userDetails = store?.getState()?.LoginReducer?.userDetails;
-  // useEffect(() => {
-  //   userDetails = store?.getState()?.LoginReducer?.userDetails;
-  // }, [store?.getState()?.LoginReducer?.userDetails]);
+
   const renderImageBack = () => {
     return (
       <ImageBackground

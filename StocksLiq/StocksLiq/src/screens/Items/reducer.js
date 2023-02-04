@@ -1,12 +1,14 @@
 import {ItemActionTypes} from './Action_type';
 import I18n from '../../localization/index';
 const initialState = {
-  userDetails: {},
+  categoryData: [],
 };
 const ItemReducer = (state = initialState, action) => {
   switch (action.type) {
     case ItemActionTypes.ADD_ITEM:
-      return initialState;
+      return {
+        ...state,
+      };
 
     case ItemActionTypes.EDIT_ITEM:
       return {
@@ -15,6 +17,11 @@ const ItemReducer = (state = initialState, action) => {
     case ItemActionTypes.DELETE_ITEM:
       return {
         ...state,
+      };
+    case ItemActionTypes.DO_SAVE_CATEGORY:
+      return {
+        ...state,
+        categoryData: action?.payload?.categoryData,
       };
     case ItemActionTypes.GET_ITEMS:
       return {

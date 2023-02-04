@@ -13,6 +13,10 @@ export const DO_LOGOUT = `${API_DOMAIN_QA}/logout`;
 export const DO_DELETE_USER = `${API_DOMAIN_QA}/delete-account`;
 export const DO_GET_PROFILE = `${API_DOMAIN_QA}/get-profile`;
 export const DO_EDIT_PROFILE = `${API_DOMAIN_QA}/edit-profile`;
+export const DO_GET_CATEGORY = `${API_DOMAIN_QA}/getcategories`;
+export const DO_GET_CATEGORY_TYPE = `${API_DOMAIN_QA}/gettype`;
+export const DO_GET_SUB_CATEGORY = `${API_DOMAIN_QA}/getsubcategories`;
+export const DO_ADD_ITEM = `${API_DOMAIN_QA}/additem`;
 
 // export const GET_CLAIM_STATUS_SUMMERY = (
 //   memberType,

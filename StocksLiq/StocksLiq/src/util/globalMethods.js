@@ -3,6 +3,7 @@ import lightTheme from '../themes/client-themes/default';
 import I18n from '../localization/index';
 import moment from 'moment';
 import {PermissionsAndroid, Alert} from 'react-native';
+import {API_LANG} from '../services/api_constants';
 export const isDarkMode = () => {
   return Appearance.getColorScheme() === 'dark' ? false : false;
 };
@@ -256,4 +257,10 @@ export const showMessageAlert = (msg, onYesPress = () => {}) => {
     {cancelable: false},
     //on clicking out side, Alert will not dismiss
   );
+};
+
+export const getLanguage = () => {
+  // return langType === API_LANG.ENGLISH ?  "en" :''
+  return API_LANG.ENGLISH;
+  // return API_LANG.HINDI;
 };

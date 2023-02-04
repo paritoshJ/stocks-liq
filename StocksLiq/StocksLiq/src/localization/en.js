@@ -1,6 +1,6 @@
 export default {
   appName: 'Liq Stocks',
-  currencySymbol: '$',
+  currencySymbol: '₹',
   dashboardTabName: 'Dashboard',
   itemsTabName: 'Items',
   inventoryTabName: 'Inventory',
@@ -65,8 +65,8 @@ export default {
   fullPrice: 'Full price',
   halfPrice: 'Half price',
   quaterPrice: 'Quater price',
-  category: 'Category',
-  subCategory: 'Sub category',
+  category: 'Select category',
+  subCategory: 'Select sub category',
   addItems: 'Add Item',
   itemType: 'Item Type',
   fullType: 'Full',
@@ -78,4 +78,9 @@ export default {
   fullPriceError: 'Please enter full price.',
   halfPriceError: 'Please enter half price.',
   quaterPriceError: 'Please enter quater price.',
+  itemTypeError: 'Please select item type.',
+  enterPriceError: 'Please enter %{type} price.',
+  enterPrice: '₹ %{type} price',
+  enterType: 'Enter %{type}',
+  typePrice: '%{type} price',
 };

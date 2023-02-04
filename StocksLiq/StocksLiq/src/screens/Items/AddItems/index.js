@@ -4,11 +4,11 @@ import {
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
-  ImageBackground,
   Platform,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {
+  getLanguage,
   isStringNotNull,
   showMessageAlert,
   themeProvide,
@@ -16,11 +16,7 @@ import {
 import ToolbarHeader from '../../../common/ToolbarHeader';
 import I18n from '../../../localization';
 import {fonts} from '../../../../assets/fonts/fonts';
-import {doGetUserProfile} from '../../Profile/Action';
 import {connect} from 'react-redux';
-import Loader from '../../../common/loader/Loader';
-import ProfileSvg from '../../../assets/svgs/ProfileSvg';
-import ReferFriendSvg from '../../../assets/svgs/ReferFriendSvg';
 import ThemeButton from '../../../common/ThemeButton';
 import {store} from '../../../store/configureStore';
 import {Dropdown} from 'react-native-element-dropdown';
@@ -28,68 +24,129 @@ import {TextInput, Checkbox} from 'react-native-paper';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import CheckBoxPlain from '../../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../../assets/svgs/CheckBoxWithTick';
+import {doAddItem, doGetSubCategory, doGetSubCategoryType} from '../Action';
 
 const AddItemScreen = props => {
-  const CategoryArr = [
-    {label: 'English', value: '1'},
-    {label: 'Desi', value: '2'},
-  ];
-  const SubCategoryArr = [
-    {label: 'Item 1', value: '1'},
-    {label: 'Item 2', value: '2'},
-    {label: 'Item 3', value: '3'},
-  ];
+  const CategoryArr = store?.getState()?.ItemReducer?.categoryData;
   const [productName, setProductName] = useState('');
-  const [fullPrice, setFullPrice] = useState('');
-  const [halfPrice, setHalfPrice] = useState('');
-  const [quaterPrice, setQuaterPrice] = useState('');
-
+  const [SubCategoryArr, setSubCategoryArr] = useState([]);
+  const [itemTypeArr, setItemTypeArr] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  const [isFullPrice, setIsFullPrice] = useState(true);
-  const [isHalfPrice, setIsHalfPrice] = useState(false);
-  const [isQuaterPrice, setIsQuaterPrice] = useState(false);
-
   const [category, setCategory] = useState(null);
   const [subCategory, setSubCategory] = useState(null);
+
   const renderItemType = () => {
     return (
       <>
         <Text style={styles.storeText}>{I18n.t('itemType')}</Text>
         <View style={{flexDirection: 'row', marginTop: 16}}>
-          {renderCheckBoxItem(isFullPrice, 'fullPrice', I18n.t('fullType'))}
-          {renderCheckBoxItem(isHalfPrice, 'halfPrice', I18n.t('halfType'))}
-          {renderCheckBoxItem(
-            isQuaterPrice,
-            'quaterPrice',
-            I18n.t('quaterType'),
-          )}
+          {itemTypeArr.map((el, index) => {
+            return renderCheckBoxItem(el, index);
+          })}
         </View>
       </>
     );
   };
-  const renderCheckBoxItem = (check, priceType, name) => {
+  const renderItemTypeInput = () => {
+    let checkedItem = itemTypeArr.filter(item => {
+      return item.check;
+    });
+    return (
+      <>
+        {checkedItem.map((el, index) => {
+          return renderInputView(
+            el.lang_name,
+            isStringNotNull(el.price) ? el.price : '',
+            el.type_id,
+          );
+        })}
+      </>
+    );
+  };
+  const renderCheckBoxItem = (el, index) => {
     return (
       <TouchableOpacity
         onPress={() => {
-          priceType === 'fullPrice'
-            ? setIsFullPrice(check)
-            : priceType === 'halfPrice'
-            ? setIsHalfPrice(!check)
-            : setIsQuaterPrice(!check);
+          console.log(index);
+          setItemTypeArr(current =>
+            current.map((obj, i) => {
+              if (i === index) {
+                return {...obj, check: !obj.check};
+              }
+              return obj;
+            }),
+          );
         }}
         style={styles.priceCheckStyle}>
-        {check ? <CheckBoxPlain /> : <CheckBoxWithTick />}
-        <Text style={styles.checkTextStyle}>{name}</Text>
+        {el?.check ? <CheckBoxPlain /> : <CheckBoxWithTick />}
+        <Text style={styles.checkTextStyle}>{el?.lang_name}</Text>
       </TouchableOpacity>
     );
   };
-
+  const getSubCategory = parent => {
+    props.doGetSubCategory({
+      paramData: {cat_id: parent, lang: getLanguage()},
+      onSuccess: (isSuccess, status, data) => {
+        if (isSuccess) {
+          data?.forEach(element => {
+            element['value'] = element.cat_id;
+            element['label'] = element.lang_name;
+          });
+          setTimeout(() => {
+            setSubCategoryArr(data);
+            console.log(data);
+          }, 1000);
+        }
+      },
+    });
+  };
+  const getSubCategoryType = cate_id => {
+    props.doGetSubCategoryType({
+      paramData: {cat_id: cate_id, lang: getLanguage()},
+      onSuccess: (isSuccess, status, data) => {
+        if (isSuccess) {
+          setItemTypeArr(data);
+          console.log('CategoryType', data);
+        }
+      },
+    });
+  };
+  const doAddItemApi = () => {
+    setIsLoading(true);
+    let checkedItemArr = itemTypeArr.filter(item => {
+      return item.check;
+    });
+    let getTypeData = checkedItemArr.reduce((acc, d) => {
+      let obj = {
+        Id: d.type_id,
+        Price: d.price,
+      };
+      acc.push(obj);
+      return acc;
+    }, []);
+    props.doAddItem({
+      paramData: {
+        item_name: productName,
+        cat_id: category,
+        subcat_id: subCategory,
+        types_data: getTypeData,
+      },
+      onSuccess: (isSuccess, status, data) => {
+        setIsLoading(false);
+        if (isSuccess) {
+          props.navigation.goBack();
+        }
+      },
+    });
+  };
   const renderDevider = () => {
     return <View style={styles.renderDevider} />;
   };
 
   const onSavePress = () => {
+    let checkArray = itemTypeArr.filter(item => {
+      return item.check;
+    });
     let msg = '';
     if (!isStringNotNull(category)) {
       msg = I18n.t('selectCategoryError');
@@ -97,15 +154,21 @@ const AddItemScreen = props => {
       msg = I18n.t('selectSubCategoryError');
     } else if (!isStringNotNull(productName)) {
       msg = I18n.t('productNameError');
-    } else if (isFullPrice && !isStringNotNull(fullPrice)) {
-      msg = I18n.t('fullPriceError');
-    } else if (isHalfPrice && !isStringNotNull(halfPrice)) {
-      msg = I18n.t('halfPriceError');
-    } else if (isQuaterPrice && !isStringNotNull(quaterPrice)) {
-      msg = I18n.t('quaterPriceError');
+    } else if (checkArray.length === 0) {
+      msg = I18n.t('itemTypeError');
+    } else if (checkArray.length > 0) {
+      checkArray.some(function (item) {
+        console.log(item);
+        if (!isStringNotNull(item?.price)) {
+          msg = I18n.t('enterPriceError', {type: item.lang_name});
+          return item?.price === '';
+        }
+      });
     }
     if (isStringNotNull(msg)) {
       showMessageAlert(msg);
+    } else {
+      doAddItemApi();
     }
   };
   const renderButtonView = () => {
@@ -145,20 +208,39 @@ const AddItemScreen = props => {
   const _onChangeText = (key, value) => {
     if (key === 'productName') {
       setProductName(value);
-    } else if (key === 'fullPrice') {
-      setFullPrice(value);
-    } else if (key === 'halfPrice') {
-      setHalfPrice(value);
-    } else if (key === 'quaterPrice') {
-      setQuaterPrice(value);
+    } else {
+      setItemTypeArr(current =>
+        current.map(obj => {
+          if (obj.type_id === key) {
+            return {...obj, price: value};
+          }
+          return obj;
+        }),
+      );
     }
+
+    // if (key === 'productName') {
+    //   setProductName(value);
+    // } else if (key === 'fullPrice') {
+    //   setFullPrice(value);
+    // } else if (key === 'halfPrice') {
+    //   setHalfPrice(value);
+    // } else if (key === 'quaterPrice') {
+    //   setQuaterPrice(value);
+    // }
   };
   const renderInputView = (label, value, key) => {
     return (
       <View style={styles.renderInputView}>
         <TextInput
-          label={label}
-          placeholder={`Enter ${label}`}
+          label={
+            key != 'productName' ? I18n.t('typePrice', {type: label}) : label
+          }
+          placeholder={
+            key === 'productName'
+              ? I18n.t('enterType', {type: label})
+              : I18n.t('enterPrice', {type: label})
+          }
           value={value}
           dense={false}
           mode={'outlined'}
@@ -179,11 +261,16 @@ const AddItemScreen = props => {
     );
   };
   const onItemSelect = (key, value) => {
-    if ((key = 'category')) {
+    if (key === 'category') {
       setCategory(value);
-    }
-    if ((key = 'subCategory')) {
+      getSubCategory(value);
+      setSubCategoryArr([]);
+      setItemTypeArr([]);
+      setSubCategory('');
+    } else if (key === 'subCategory') {
       setSubCategory(value);
+      getSubCategoryType(value);
+      setItemTypeArr([]);
     }
   };
   return (
@@ -216,39 +303,31 @@ const AddItemScreen = props => {
               SubCategoryArr,
             )}
             {renderInputView(I18n.t('productName'), productName, 'productName')}
-            {renderItemType()}
-            {isFullPrice &&
-              renderInputView(I18n.t('fullPrice'), fullPrice, 'fullPrice')}
-            {isHalfPrice &&
-              renderInputView(I18n.t('halfPrice'), halfPrice, 'halfPrice')}
-            {isQuaterPrice &&
-              renderInputView(
-                I18n.t('quaterPrice'),
-                quaterPrice,
-                'quaterPrice',
-              )}
-
+            {itemTypeArr.length > 0 && renderItemType()}
+            {itemTypeArr.length > 0 && renderItemTypeInput()}
             {renderButtonView()}
-            <Loader
-              loading={isLoading}
-              isTransparent={true}
-              color={themeProvide().primary}
-              size={32}
-            />
           </View>
         </KeyboardAwareScrollView>
       </View>
+      <Loader
+        loading={isLoading}
+        isTransparent={true}
+        color={themeProvide().primary}
+        size={32}
+      />
     </SafeAreaView>
   );
 };
 const mapStateToProps = state => {
   return {
-    LoginReducer: state.LoginReducer,
+    ItemReducer: state.ItemReducer,
   };
 };
 
 const mapDispatchToProps = {
-  doGetUserProfile: doGetUserProfile,
+  doGetSubCategory: doGetSubCategory,
+  doGetSubCategoryType: doGetSubCategoryType,
+  doAddItem: doAddItem,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddItemScreen);

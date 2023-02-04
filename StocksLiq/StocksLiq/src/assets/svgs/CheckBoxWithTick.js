@@ -16,7 +16,7 @@ const CheckBoxWithTick = props => (
       width={19}
       height={19}
       fill={props.isDisable ? themeProvide().primary : themeProvide().white}
-      stroke={themeProvide().primary}
+      stroke={themeProvide().borderBlack}
     />
   </Svg>
 );

@@ -10,6 +10,12 @@ import {
   doGetProfileWatcher,
   doEditProfileWatcher,
 } from '../screens/Profile/Saga';
+import {
+  doGetCategoryWatcher,
+  doGetSubCategoryWatcher,
+  doGetSubCategoryTypeWatcher,
+  doAddItemWatcher,
+} from '../screens/Items/Saga';
 // Redux saga: Root saga
 export function* rootSaga() {
   yield all([
@@ -21,5 +27,9 @@ export function* rootSaga() {
     doLogoutWatcher(),
     doGetProfileWatcher(),
     doEditProfileWatcher(),
+    doGetCategoryWatcher(),
+    doGetSubCategoryWatcher(),
+    doGetSubCategoryTypeWatcher(),
+    doAddItemWatcher(),
   ]);
 }
