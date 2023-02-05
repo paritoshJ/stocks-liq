@@ -264,3 +264,13 @@ export const getLanguage = () => {
   return API_LANG.ENGLISH;
   // return API_LANG.HINDI;
 };
+
+export const kFormatter = num => {
+  return Math.abs(num) > 999
+    ? Math.sign(num) * (Math.abs(num) / 1000).toFixed(1) + 'k'
+    : Math.sign(num) * Math.abs(num);
+};
+
+export const getCurrenyPrice = num => {
+  return `${I18n.t('priceWithCurrency', {price: num != null ? num : 0})}` ;
+};

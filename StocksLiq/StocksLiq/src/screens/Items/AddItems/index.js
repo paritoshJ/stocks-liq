@@ -25,6 +25,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import CheckBoxPlain from '../../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../../assets/svgs/CheckBoxWithTick';
 import {doAddItem, doGetSubCategory, doGetSubCategoryType} from '../Action';
+import Loader from '../../../common/loader/Loader';
 
 const AddItemScreen = props => {
   const CategoryArr = store?.getState()?.ItemReducer?.categoryData;
@@ -309,7 +310,7 @@ const AddItemScreen = props => {
           </View>
         </KeyboardAwareScrollView>
       </View>
-      <Loader
+       <Loader
         loading={isLoading}
         isTransparent={true}
         color={themeProvide().primary}

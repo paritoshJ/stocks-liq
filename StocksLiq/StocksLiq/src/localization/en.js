@@ -1,6 +1,7 @@
 export default {
   appName: 'Liq Stocks',
   currencySymbol: '₹',
+  priceWithCurrency: '₹%{price}',
   dashboardTabName: 'Dashboard',
   itemsTabName: 'Items',
   inventoryTabName: 'Inventory',
@@ -83,4 +84,6 @@ export default {
   enterPrice: '₹ %{type} price',
   enterType: 'Enter %{type}',
   typePrice: '%{type} price',
+  search: 'search here',
+  apply: 'Apply',
 };

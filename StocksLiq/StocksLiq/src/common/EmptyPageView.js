@@ -35,7 +35,11 @@ const EmptyPageView = props => {
 export default EmptyPageView;
 
 const styles = StyleSheet.create({
-  mainView: {justifyContent: 'center', flex: 1, alignItems: 'center'},
+  mainView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   circleStyle: {
     width: 180,
     height: 180,

@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   },
   countTextStyle: {
     color: themeProvide().white,
-    fontSize: 10,
+    fontSize: 8,
     fontFamily: fonts.InterRegular,
     fontWeight: '600',
   },
