@@ -27,7 +27,7 @@ import {connect} from 'react-redux';
 import {store} from '../../store/configureStore';
 import TabHeader from '../../common/TabHeader';
 import {FlatList} from 'react-native-gesture-handler';
-import ItemRow from './ItemRow';
+import SalesmanRow from './SalesmanRow';
 import FilterSvgIcon from '../../assets/svgs/FilterSvgIcon';
 import AddItemSVG from '../../assets/svgs/AddItemSVG';
 import {TextInput} from 'react-native';
@@ -38,7 +38,7 @@ import CheckBoxWithTick from '../../assets/svgs/CheckBoxWithTick';
 import ThemeButton from '../../common/ThemeButton';
 import Loader from '../../common/loader/Loader';
 
-const ItemsScreen = props => {
+const SalesmanScreen = props => {
   const [isLoading, setLoading] = useState(false);
   const [isEmptyPage, setEmptyPage] = useState(false);
   const [salectedTabId, setSelectedTabId] = useState(null);
@@ -68,11 +68,11 @@ const ItemsScreen = props => {
     return (
       <EmptyPageView
         icon={renderSvgIcon}
-        title={I18n.t('noItemTitle', {tabName: I18n.t('itemsTabName')})}
-        message={I18n.t('noItemAddText', {tabName: I18n.t('itemsTabName')})}
-        buttonTitle={`+ ${I18n.t('itemsTabName')}`}
+        title={I18n.t('noItemTitle', {tabName: I18n.t('salesman_menu')})}
+        message={I18n.t('noItemAddText', {tabName: I18n.t('salesman_menu')})}
+        buttonTitle={`+ ${I18n.t('salesman_menu')}`}
         onAddClick={() => {
-          props.navigation.navigate('AddItemScreen');
+          props.navigation.navigate('AddSalesmanScreen');
         }}
       />
     );
@@ -110,7 +110,7 @@ const ItemsScreen = props => {
       <FlatList
         contentContainerStyle={{
           marginHorizontal: 20,
-          paddingBottom: 16,
+          paddingBottom: 72,
           justifyContent: 'center',
         }}
         data={listData}
@@ -120,12 +120,12 @@ const ItemsScreen = props => {
         showsVerticalScrollIndicator={false}
         initialNumToRender={listData.length}
         ListFooterComponent={renderFlatListFooter()}
-        ListHeaderComponent={renderFlatListHeader()}
+        // ListHeaderComponent={renderFlatListHeader()}
         onEndReachedThreshold={0.8}
         onEndReached={memoizedhandleLoadMore}
         onScrollBeginDrag={Keyboard.dismiss}
         renderItem={({item, index}) => (
-          <ItemRow
+          <SalesmanRow
             item={item}
             onItemClick={() => {}}
             onMoreIconClick={() => {}}
@@ -210,68 +210,11 @@ const ItemsScreen = props => {
       </TouchableOpacity>
     );
   };
-  const renderItemTypeInput = () => {
-    let checkedItem = [1, 2, 3, 4].filter(item => {
-      return item.check;
-    });
-    return (
-      <View style={{marginTop: 16}}>
-        {[1, 2, 3, 4].map((el, index) => {
-          return renderCheckBoxItem(el, index);
-        })}
-      </View>
-    );
-  };
-  const renderFilterSheet = () => {
-    return (
-      <RenderModal
-        onDismiss={() => {
-          setFilterSheetVisile(false);
-        }}
-        visible={filterSheetVisible}>
-        <View style={styles.filterViewStyle}>
-          <Text
-            style={{
-              fontFamily: fonts.InterRegular,
-              fontWeight: '900',
-              fontSize: 44,
-              textAlign: 'center',
-              color: themeProvide().black,
-            }}>
-            {'Filter'}
-          </Text>
-          <View style={styles.filterInnerStyle} />
-          {renderItemTypeInput()}
-          {renderFilterButtonView()}
-        </View>
-      </RenderModal>
-    );
-  };
-  const renderFilterButtonView = () => {
-    return (
-      <View style={styles.buttonView}>
-        <ThemeButton
-          buttonstyle={[styles.buttonstyleCancel]}
-          onPress={() => {
-            setFilterSheetVisile(false);
-          }}
-          buttonTitle={I18n.t('cancel')}
-        />
-        <ThemeButton
-          buttonstyle={[styles.buttonstyleApply]}
-          onPress={() => {
-            setFilterSheetVisile(false);
-          }}
-          buttonTitle={I18n.t('apply')}
-        />
-      </View>
-    );
-  };
   const renderAddButtom = () => {
     return (
       <TouchableOpacity
         onPress={() => {
-          props.navigation.navigate('AddItemScreen');
+          props.navigation.navigate('AddSalesmanScreen');
         }}
         style={styles.AddView}>
         <AddItemSVG />
@@ -284,17 +227,17 @@ const ItemsScreen = props => {
       <View style={styles.mainView}>
         <ToolbarHeader
           isLogo={false}
-          title={I18n.t('itemsTabName')}
+          backgroundColor={themeProvide().page_back}
+          title={I18n.t('salesman_menu')}
           onPress={() => {
-            props.navigation.openDrawer();
+            props.navigation.goBack();
           }}
-          logoToolbarType={true}
+          logoToolbarType={false}
         />
-        {renderTopTab()}
+        {/* {renderTopTab()} */}
         {isEmptyPage ? renderEmptyPage() : renderFlatList()}
       </View>
-      {renderAddButtom()}
-      {renderFilterSheet()}
+      {!isEmptyPage && renderAddButtom()}
       <Loader
         loading={isLoading}
         isTransparent={true}
@@ -312,11 +255,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(ItemsScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(SalesmanScreen);
 
 const styles = StyleSheet.create({
   mainView: {flex: 1, backgroundColor: themeProvide().page_back},
-  safeView: {flex: 1, backgroundColor: themeProvide().primary_back},
+  safeView: {flex: 1, backgroundColor: themeProvide().page_back},
   inputStyle: {
     fontSize: 16,
     fontWeight: '400',
@@ -349,8 +292,8 @@ const styles = StyleSheet.create({
     backgroundColor: themeProvide().primary,
     borderRadius: 40,
     position: 'absolute',
-    bottom: 16,
-    right: 16,
+    bottom: 72,
+    right: 32,
   },
   checkTextStyle: {
     color: themeProvide().black,

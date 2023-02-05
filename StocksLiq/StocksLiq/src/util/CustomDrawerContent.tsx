@@ -60,7 +60,7 @@ const SideMenuData = [{
                 props.navigation.navigate('ProfileScreen')
                 break;
             case 'salesman':
-                // navigation.navigate(flag)
+                props.navigation.navigate('SalesmanScreen')
                 break;
                 case 'wallet':
                 // navigation.navigate(flag)

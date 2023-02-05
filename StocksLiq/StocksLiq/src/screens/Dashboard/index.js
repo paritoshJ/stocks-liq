@@ -6,15 +6,40 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, {useEffect} from 'react';
-import {themeProvide} from '../../util/globalMethods';
+import {
+  isArrayNullOrEmpty,
+  getLanguage,
+  themeProvide,
+} from '../../util/globalMethods';
 import ToolbarHeader from '../../common/ToolbarHeader';
 import {fonts} from '../../../assets/fonts/fonts';
 import I18n from '../../localization';
+import {doGetCategory, doSaveCategory} from '../Items/Action';
+import {connect} from 'react-redux';
+import {store} from '../../store/configureStore';
 
 const DashboardScreen = props => {
   useEffect(() => {
     // props.navigation.openDrawer();
+    if (isArrayNullOrEmpty(store?.getState()?.ItemReducer?.categoryData)) {
+      getCategory();
+    }
+    getCategory();
   }, []);
+  const getCategory = () => {
+    props.doGetCategory({
+      paramsData: {lang: getLanguage()},
+      onSuccess: (isSuccess, status, data) => {
+        data?.forEach(element => {
+          element['value'] = element.cat_id;
+          element['label'] = element.lang_name;
+        });
+        setTimeout(() => {
+          props.doSaveCategory(data ? data : []);
+        }, 1000);
+      },
+    });
+  };
   const renderRecords = (label, item) => {
     return (
       <>
@@ -63,7 +88,19 @@ const DashboardScreen = props => {
   );
 };
 
-export default DashboardScreen;
+const mapStateToProps = state => {
+  return {
+    ItemReducer: state.ItemReducer,
+  };
+};
+
+const mapDispatchToProps = {
+  doGetCategory: doGetCategory,
+  doSaveCategory: doSaveCategory,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardScreen);
+
 const styles = StyleSheet.create({
   titleText: {
     fontSize: 18,

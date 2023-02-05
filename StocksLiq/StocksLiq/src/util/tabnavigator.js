@@ -28,6 +28,9 @@ import {fonts} from '../../assets/fonts/fonts';
 
 import ProfileScreen from '../screens/Profile/index';
 import EditProfileScreen from '../screens/Profile/EditProfileScreen';
+import SalesmanScreen from '../screens/Salesman/index';
+import AddSalesmanScreen from '../screens/Salesman/AddSalesman/index';
+
 import HomeScreenStack from '../routes/HomeScreenStack';
 import ItemScreenStack from '../routes/ItemsScreenStack';
 import InventoryScreenStack from '../routes/InventoryScreenStack';
@@ -248,6 +251,16 @@ function RootNavigation() {
       <Stack.Screen
         name={'EditProfileScreen'}
         component={EditProfileScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={'SalesmanScreen'}
+        component={SalesmanScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={'AddSalesmanScreen'}
+        component={AddSalesmanScreen}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

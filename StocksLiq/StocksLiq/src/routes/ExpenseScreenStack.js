@@ -2,6 +2,7 @@ import React from 'react';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import ExpenseScreen from '../screens/Expense/index';
+import AddExpenseScreen from '../screens/Expense/AddExpense/index';
 
 const ExpenseStack = createStackNavigator();
 const ExpenseScreenStack = ({navigation, route}) => {
@@ -23,6 +24,13 @@ const ExpenseScreenStack = ({navigation, route}) => {
       <ExpenseStack.Screen
         name="ExpenseScreen"
         component={ExpenseScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ExpenseStack.Screen
+        name="AddExpenseScreen"
+        component={AddExpenseScreen}
         options={{
           headerShown: false,
         }}

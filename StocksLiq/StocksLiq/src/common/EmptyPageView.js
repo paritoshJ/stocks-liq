@@ -11,6 +11,8 @@ import {fonts} from '../../assets/fonts/fonts';
 
 const EmptyPageView = props => {
   const Icon = props.icon;
+  const hideAddButton =
+    props?.hideAddButton != undefined ? props?.hideAddButton : false;
   return (
     <ScrollView contentContainerStyle={styles.mainView}>
       <View style={styles.mainView}>
@@ -19,14 +21,16 @@ const EmptyPageView = props => {
         </View>
         <Text style={[styles.titleStyle, props.titleStyle]}>{props.title}</Text>
         <Text style={[styles.msgStyle, props.msgStyle]}>{props.message}</Text>
-        <TouchableOpacity
-          style={[styles.opacityStyle, props.buttonstyle]}
-          onPress={props.onAddClick}
-          {...props}>
-          <Text style={[styles.textStyle, props.textStyle]}>
-            {props.buttonTitle}
-          </Text>
-        </TouchableOpacity>
+        {!hideAddButton && (
+          <TouchableOpacity
+            style={[styles.opacityStyle, props.buttonstyle]}
+            onPress={props.onAddClick}
+            {...props}>
+            <Text style={[styles.textStyle, props.textStyle]}>
+              {props.buttonTitle}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </ScrollView>
   );
