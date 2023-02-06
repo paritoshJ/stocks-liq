@@ -13,4 +13,6 @@ export default {
   unActiveIconColor: '#FFFFFF',
   borderBlack: '#00000030',
   headerBlack: '#1F2024',
+  errorText: '#FC1717',
+  successText: '#03C988',
 };

@@ -9,7 +9,7 @@ import WalletSideMenuSvg from "../assets/svgs/WalletSideMenuSvg";
 import ReferFriendMenuSvg from "../assets/svgs/ReferFriendMenuSvg";
 import LogoutMenuSvg from "../assets/svgs/LogoutMenuSvg";
 import I18n from '../localization';
-import {doLogout,setLoggedIn,doSaveUser} from '../screens/Login/Action';
+import {doLogout,setLoggedIn,doClearSession,doSaveUser} from '../screens/Login/Action';
 import {connect} from 'react-redux';
 import Loader from '../common/loader/Loader';
 const SideMenuData = [{
@@ -63,7 +63,7 @@ const SideMenuData = [{
                 props.navigation.navigate('SalesmanScreen')
                 break;
                 case 'wallet':
-                // navigation.navigate(flag)
+                    props.navigation.navigate('WalletScreen')
                 break;
                 case 'refer':
                 // navigation.navigate(flag)
@@ -81,8 +81,11 @@ const SideMenuData = [{
                                     //     props.setLoggedIn(false);
                                     //     props.doSaveUser(null);
                                     // }
+                                    
                                     props.setLoggedIn(false);
                                         props.doSaveUser(null);
+                                        props.doClearSession(null);
+                                       
                             }
                         })
                 });
@@ -154,6 +157,7 @@ const mapStateToProps = state => {
     doLogout: doLogout,
     doSaveUser: doSaveUser,
     setLoggedIn: setLoggedIn,
+    doClearSession: doClearSession,
   };
   
   export default connect(mapStateToProps, mapDispatchToProps)(CustomDrawerContent);

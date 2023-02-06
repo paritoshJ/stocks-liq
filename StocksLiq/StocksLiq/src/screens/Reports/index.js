@@ -53,7 +53,7 @@ const ReportsScreen = props => {
   useEffect(() => {
     if (!isArrayNullOrEmpty(store?.getState()?.ItemReducer?.categoryData)) {
       setCategoriesTabs([...store?.getState()?.ItemReducer?.categoryData]);
-      setSelectedTabId(store?.getState()?.ItemReducer?.categoryData[0].cat_id);
+      setSelectedTabId(store?.getState()?.ItemReducer?.categoryData[0].value);
     }
   }, []);
   const renderSvgIcon = () => {
@@ -73,11 +73,11 @@ const ReportsScreen = props => {
         {categoriesTabs.map((el, index) => {
           return (
             <TabHeader
-              isSelected={el.cat_id === salectedTabId}
-              title={el.lang_name}
+              isSelected={el.value === salectedTabId}
+              title={el.label}
               count={kFormatter(listData.length)}
               onPress={() => {
-                setSelectedTabId(el.cat_id);
+                setSelectedTabId(el.value);
               }}
             />
           );

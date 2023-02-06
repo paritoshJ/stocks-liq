@@ -3,32 +3,35 @@ import {
   Text,
   StyleSheet,
   SafeAreaView,
-  TouchableOpacity,
   Keyboard,
+  TouchableOpacity,
+  Alert,
+  Modal,
+  Animated,
 } from 'react-native';
-import React, {useEffect, useState, useRef} from 'react';
-import ToolbarHeader from '../../common/ToolbarHeader';
-import I18n from '../../localization';
-import {fonts} from '../../../assets/fonts/fonts';
-import EmptyPageView from '../../common/EmptyPageView';
-import ItemBigSVG from '../../assets/svgs/ItemBigSVG';
-
+import React, {useEffect, useRef, useMemo, useState} from 'react';
 import {
+  getCurrenyPrice,
   getLanguage,
   isArrayNullOrEmpty,
   kFormatter,
   themeProvide,
 } from '../../util/globalMethods';
+import ToolbarHeader from '../../common/ToolbarHeader';
+import I18n from '../../localization';
+import {fonts} from '../../../assets/fonts/fonts';
+import EmptyPageView from '../../common/EmptyPageView';
+import ItemBigSVG from '../../assets/svgs/ItemBigSVG';
 import SearchSvgIcon from '../../assets/svgs/SearchSvgIcon';
+import {connect} from 'react-redux';
 
 import {store} from '../../store/configureStore';
 import TabHeader from '../../common/TabHeader';
 import {FlatList} from 'react-native-gesture-handler';
-import InventoryRow from './InventoryRow';
+import WalletRow from './WalletRow';
 import FilterSvgIcon from '../../assets/svgs/FilterSvgIcon';
 import AddItemSVG from '../../assets/svgs/AddItemSVG';
 import {TextInput} from 'react-native';
-import {connect} from 'react-redux';
 
 import RenderModal from '../../common/RenderModal';
 import CheckBoxPlain from '../../assets/svgs/CheckBoxPlain';
@@ -36,7 +39,7 @@ import CheckBoxWithTick from '../../assets/svgs/CheckBoxWithTick';
 import ThemeButton from '../../common/ThemeButton';
 import Loader from '../../common/loader/Loader';
 
-const InventoryScreen = props => {
+const WalletScreen = props => {
   const [isLoading, setLoading] = useState(false);
   const [isEmptyPage, setEmptyPage] = useState(false);
   const [salectedTabId, setSelectedTabId] = useState(null);
@@ -51,16 +54,30 @@ const InventoryScreen = props => {
   let pageNo = useRef(1);
   let totalPage = useRef(2000);
 
-  const renderSvgIcon = () => {
-    return <ItemBigSVG color={themeProvide().primary} />;
-  };
   useEffect(() => {
     if (!isArrayNullOrEmpty(store?.getState()?.ItemReducer?.categoryData)) {
       setCategoriesTabs([...store?.getState()?.ItemReducer?.categoryData]);
-      setSelectedTabId(store?.getState()?.ItemReducer?.categoryData[0].value);
+      setSelectedTabId(store?.getState()?.ItemReducer?.categoryData[0].cat_id);
     }
   }, []);
 
+  const renderSvgIcon = () => {
+    return <ItemBigSVG color={themeProvide().primary} />;
+  };
+
+  const renderEmptyPage = () => {
+    return (
+      <EmptyPageView
+        icon={renderSvgIcon}
+        title={I18n.t('noItemTitle', {tabName: I18n.t('salesman_menu')})}
+        message={I18n.t('noItemAddText', {tabName: I18n.t('salesman_menu')})}
+        buttonTitle={`+ ${I18n.t('salesman_menu')}`}
+        onAddClick={() => {
+          props.navigation.navigate('AddSalesmanScreen');
+        }}
+      />
+    );
+  };
   const renderTopTab = () => {
     return (
       <View
@@ -74,11 +91,11 @@ const InventoryScreen = props => {
         {categoriesTabs.map((el, index) => {
           return (
             <TabHeader
-              isSelected={el.value === salectedTabId}
-              title={el.label}
+              isSelected={el.cat_id === salectedTabId}
+              title={el.lang_name}
               count={kFormatter(listData.length)}
               onPress={() => {
-                setSelectedTabId(el.value);
+                setSelectedTabId(el.cat_id);
               }}
             />
           );
@@ -94,7 +111,7 @@ const InventoryScreen = props => {
       <FlatList
         contentContainerStyle={{
           marginHorizontal: 20,
-          paddingBottom: 20,
+          paddingBottom: 72,
           justifyContent: 'center',
         }}
         data={listData}
@@ -104,12 +121,12 @@ const InventoryScreen = props => {
         showsVerticalScrollIndicator={false}
         initialNumToRender={listData.length}
         ListFooterComponent={renderFlatListFooter()}
-        ListHeaderComponent={renderFlatListHeader()}
+        // ListHeaderComponent={renderFlatListHeader()}
         onEndReachedThreshold={0.8}
         onEndReached={memoizedhandleLoadMore}
         onScrollBeginDrag={Keyboard.dismiss}
         renderItem={({item, index}) => (
-          <InventoryRow
+          <WalletRow
             item={item}
             onItemClick={() => {}}
             onMoreIconClick={() => {}}
@@ -194,41 +211,15 @@ const InventoryScreen = props => {
       </TouchableOpacity>
     );
   };
-  const renderItemTypeInput = () => {
-    let checkedItem = [1, 2, 3, 4].filter(item => {
-      return item.check;
-    });
+  const renderAddButtom = () => {
     return (
-      <View style={{marginTop: 16}}>
-        {[1, 2, 3, 4].map((el, index) => {
-          return renderCheckBoxItem(el, index);
-        })}
-      </View>
-    );
-  };
-  const renderFilterSheet = () => {
-    return (
-      <RenderModal
-        onDismiss={() => {
-          setFilterSheetVisile(false);
+      <TouchableOpacity
+        onPress={() => {
+          props.navigation.navigate('AddSalesmanScreen');
         }}
-        visible={filterSheetVisible}>
-        <View style={styles.filterViewStyle}>
-          <Text
-            style={{
-              fontFamily: fonts.InterRegular,
-              fontWeight: '900',
-              fontSize: 44,
-              textAlign: 'center',
-              color: themeProvide().black,
-            }}>
-            {'Filter'}
-          </Text>
-          <View style={styles.filterInnerStyle} />
-          {renderItemTypeInput()}
-          {renderFilterButtonView()}
-        </View>
-      </RenderModal>
+        style={styles.AddView}>
+        <AddItemSVG />
+      </TouchableOpacity>
     );
   };
   const renderFilterButtonView = () => {
@@ -237,44 +228,18 @@ const InventoryScreen = props => {
         <ThemeButton
           buttonstyle={[styles.buttonstyleCancel]}
           onPress={() => {
-            setFilterSheetVisile(false);
+            props.navigation.navigate('ReferFriendScreen')
           }}
-          buttonTitle={I18n.t('cancel')}
+          buttonTitle={I18n.t('refer_a_friend_menu')}
         />
         <ThemeButton
           buttonstyle={[styles.buttonstyleApply]}
           onPress={() => {
-            setFilterSheetVisile(false);
+            props.navigation.navigate('RedeemRequestScreen')
           }}
-          buttonTitle={I18n.t('apply')}
+          buttonTitle={I18n.t('redeem_request')}
         />
       </View>
-    );
-  };
-  const renderAddButtom = () => {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          props.navigation.navigate('AddInventoryScreen');
-        }}
-        style={styles.AddView}>
-        <AddItemSVG />
-      </TouchableOpacity>
-    );
-  };
-  const renderEmptyPage = () => {
-    return (
-      <EmptyPageView
-        icon={renderSvgIcon}
-        onAddClick={() => {
-          props.navigation.navigate('AddInventoryScreen');
-        }}
-        title={I18n.t('noItemTitle', {tabName: I18n.t('inventoryTabName')})}
-        message={I18n.t('noItemAddText', {
-          tabName: I18n.t('inventoryTabName'),
-        })}
-        buttonTitle={`+ ${I18n.t('inventoryTabName')}`}
-      />
     );
   };
   return (
@@ -282,17 +247,39 @@ const InventoryScreen = props => {
       <View style={styles.mainView}>
         <ToolbarHeader
           isLogo={false}
-          title={I18n.t('inventoryTabName')}
+          backgroundColor={themeProvide().page_back}
+          title={I18n.t('wallet_menu')}
           onPress={() => {
-            props.navigation.openDrawer();
+            props.navigation.goBack();
           }}
-          logoToolbarType={true}
+          logoToolbarType={false}
         />
-        {renderTopTab()}
+        {/* {renderTopTab()} */}
+        <View style={styles.totalExpenseView}>
+          <Text
+            style={{
+              fontFamily: fonts.InterRegular,
+              fontWeight: '900',
+              color: themeProvide().white,
+              marginTop: 4,
+              fontSize: 32,
+            }}>
+            {getCurrenyPrice(Number(9400))}
+          </Text>
+          <Text
+            style={{
+              fontFamily: fonts.InterRegular,
+              fontWeight: '300',
+              fontSize: 14,
+              marginTop: 4,
+              color: themeProvide().white,
+            }}>
+            Total earnings
+          </Text>
+        </View>
         {isEmptyPage ? renderEmptyPage() : renderFlatList()}
       </View>
-      {renderAddButtom()}
-      {renderFilterSheet()}
+      {renderFilterButtonView()}
       <Loader
         loading={isLoading}
         isTransparent={true}
@@ -302,11 +289,19 @@ const InventoryScreen = props => {
     </SafeAreaView>
   );
 };
+const mapStateToProps = state => {
+  return {
+    ItemReducer: state.ItemReducer,
+  };
+};
 
-export default InventoryScreen;
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(WalletScreen);
+
 const styles = StyleSheet.create({
   mainView: {flex: 1, backgroundColor: themeProvide().page_back},
-  safeView: {flex: 1, backgroundColor: themeProvide().primary_back},
+  safeView: {flex: 1, backgroundColor: themeProvide().page_back},
   inputStyle: {
     fontSize: 16,
     fontWeight: '400',
@@ -339,8 +334,8 @@ const styles = StyleSheet.create({
     backgroundColor: themeProvide().primary,
     borderRadius: 40,
     position: 'absolute',
-    bottom: 16,
-    right: 16,
+    bottom: 72,
+    right: 32,
   },
   checkTextStyle: {
     color: themeProvide().black,
@@ -351,6 +346,7 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     flexDirection: 'row',
+    marginHorizontal: 16,
   },
   buttonstyleCancel: {
     flex: 1,
@@ -366,6 +362,14 @@ const styles = StyleSheet.create({
     height: 1,
     marginVertical: 12,
     backgroundColor: 'rgba(0, 0, 0, 0.04)',
+  },
+  totalExpenseView: {
+    backgroundColor: themeProvide().primary,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 12,
+    marginHorizontal: 16,
+    padding: 16,
   },
   filterViewStyle: {paddingHorizontal: 24, paddingVertical: 16},
 });

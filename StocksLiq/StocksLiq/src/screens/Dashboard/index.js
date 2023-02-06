@@ -30,13 +30,15 @@ const DashboardScreen = props => {
     props.doGetCategory({
       paramsData: {lang: getLanguage()},
       onSuccess: (isSuccess, status, data) => {
-        data?.forEach(element => {
-          element['value'] = element.cat_id;
-          element['label'] = element.lang_name;
-        });
-        setTimeout(() => {
-          props.doSaveCategory(data ? data : []);
-        }, 1000);
+        if (isSuccess) {
+          data?.forEach(element => {
+            element['value'] = element?.language?.cat_id;
+            element['label'] = element?.language?.lang_name;
+          });
+          setTimeout(() => {
+            props.doSaveCategory(data ? data : []);
+          }, 1000);
+        }
       },
     });
   };

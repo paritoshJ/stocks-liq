@@ -30,6 +30,9 @@ import ProfileScreen from '../screens/Profile/index';
 import EditProfileScreen from '../screens/Profile/EditProfileScreen';
 import SalesmanScreen from '../screens/Salesman/index';
 import AddSalesmanScreen from '../screens/Salesman/AddSalesman/index';
+import WalletScreen from '../screens/Wallet/index';
+import RedeemRequestScreen from '../screens/Wallet/RedeemRequest/index';
+import ReferFriendScreen from '../screens/ReferFriend/index';
 
 import HomeScreenStack from '../routes/HomeScreenStack';
 import ItemScreenStack from '../routes/ItemsScreenStack';
@@ -261,6 +264,21 @@ function RootNavigation() {
       <Stack.Screen
         name={'AddSalesmanScreen'}
         component={AddSalesmanScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={'WalletScreen'}
+        component={WalletScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={'RedeemRequestScreen'}
+        component={RedeemRequestScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={'ReferFriendScreen'}
+        component={ReferFriendScreen}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

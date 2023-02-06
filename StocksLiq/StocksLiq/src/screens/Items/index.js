@@ -43,6 +43,7 @@ const ItemsScreen = props => {
   const [isEmptyPage, setEmptyPage] = useState(false);
   const [salectedTabId, setSelectedTabId] = useState(null);
   const [categoriesTabs, setCategoriesTabs] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
   const [listData, setListData] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9]);
   const [loadingFooter, setLoadingFooter] = useState(false);
   const [filterSheetVisible, setFilterSheetVisile] = useState(false);
@@ -56,9 +57,21 @@ const ItemsScreen = props => {
   useEffect(() => {
     if (!isArrayNullOrEmpty(store?.getState()?.ItemReducer?.categoryData)) {
       setCategoriesTabs([...store?.getState()?.ItemReducer?.categoryData]);
-      setSelectedTabId(store?.getState()?.ItemReducer?.categoryData[0].cat_id);
+      setSelectedTabId(store?.getState()?.ItemReducer?.categoryData[0]?.value);
+      setTimeout(() => {
+        getSubCategories(
+          store?.getState()?.ItemReducer?.categoryData[0]?.value,
+          store?.getState()?.ItemReducer?.categoryData,
+        );
+      }, 1000);
     }
   }, []);
+
+  const getSubCategories = (cat_id, arr) => {
+    let obj = arr.find(element => element?.language?.cat_id === cat_id);
+    console.log('subcategories', obj?.subcategories);
+    setSubCategories(obj?.subcategories);
+  };
 
   const renderSvgIcon = () => {
     return <ItemBigSVG color={themeProvide().primary} />;
@@ -90,11 +103,14 @@ const ItemsScreen = props => {
         {categoriesTabs.map((el, index) => {
           return (
             <TabHeader
-              isSelected={el.cat_id === salectedTabId}
-              title={el.lang_name}
+              isSelected={el.value === salectedTabId}
+              title={el.label}
               count={kFormatter(listData.length)}
               onPress={() => {
-                setSelectedTabId(el.cat_id);
+                setSelectedTabId(el.value);
+                setTimeout(() => {
+                  getSubCategories(el.value, categoriesTabs);
+                }, 1000);
               }}
             />
           );
@@ -194,29 +210,26 @@ const ItemsScreen = props => {
     return (
       <TouchableOpacity
         onPress={() => {
-          // console.log(index);
-          // setItemTypeArr(current =>
-          //   current.map((obj, i) => {
-          //     if (i === index) {
-          //       return {...obj, check: !obj.check};
-          //     }
-          //     return obj;
-          //   }),
-          // );
+          console.log(index);
+          setSubCategories(current =>
+            current.map((obj, i) => {
+              if (i === index) {
+                return {...obj, check: !obj.check};
+              }
+              return obj;
+            }),
+          );
         }}
         style={styles.priceCheckStyle}>
         {el?.check ? <CheckBoxPlain /> : <CheckBoxWithTick />}
-        <Text style={styles.checkTextStyle}>{el?.lang_name}</Text>
+        <Text style={styles.checkTextStyle}>{el?.language?.lang_name}</Text>
       </TouchableOpacity>
     );
   };
   const renderItemTypeInput = () => {
-    let checkedItem = [1, 2, 3, 4].filter(item => {
-      return item.check;
-    });
     return (
       <View style={{marginTop: 16}}>
-        {[1, 2, 3, 4].map((el, index) => {
+        {subCategories.map((el, index) => {
           return renderCheckBoxItem(el, index);
         })}
       </View>
@@ -377,5 +390,6 @@ const styles = StyleSheet.create({
     marginVertical: 12,
     backgroundColor: 'rgba(0, 0, 0, 0.04)',
   },
+  priceCheckStyle: {flexDirection: 'row', marginTop: 16, alignItems: 'center'},
   filterViewStyle: {paddingHorizontal: 24, paddingVertical: 16},
 });

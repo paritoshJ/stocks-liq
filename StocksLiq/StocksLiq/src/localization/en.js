@@ -41,6 +41,7 @@ export default {
   salesman_menu: 'Salesman',
   wallet_menu: 'Wallet',
   refer_a_friend_menu: 'Refer a friend',
+  redeem_request: 'Redeem request',
   logout_menu: 'Logout',
   menu_header_text: 'Menu',
   logoutText: 'Do you want to logout?',
@@ -95,6 +96,7 @@ export default {
   expenseNamePlaceholder: 'Enter Expense Name',
   expenseNameError: 'Please enter Expense Name.',
   expenseAmount: '₹ Amount',
+  redeemAmount: '₹ Amount',
   expenseAmountPlaceholder: 'Enter Expense Amount(₹)',
   expenseAmountError: 'Please enter Expense Amount.',
   expenseRemark: 'Add Remark',
@@ -110,4 +112,11 @@ export default {
   commonPlaceholder: 'Enter %{label}',
   commonEmptyError: 'Please enter %{label}.',
   addSalesman: 'Add Salesman',
+  upiId: 'UPI ID',
+  inviteFriendAmount: 'Invite friends to get %{price}',
+  referalLabel: 'Referal code',
+  referalCode: '#%{code}',
+  shareWithAFriend: 'Share with a friend',
+  inviteFriendAmountDesc:
+    'Invite friends to Liq Stocks and get %{price} in your wallet on their first purchase of service.',
 };

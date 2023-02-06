@@ -7,7 +7,7 @@ export const doGetCategory = ({paramData, onSuccess}) => ({
     onSuccess: onSuccess,
   },
 });
-export const doSaveCategory = (categoryData) => ({
+export const doSaveCategory = categoryData => ({
   type: ItemActionTypes.DO_SAVE_CATEGORY,
   payload: {
     categoryData: categoryData,

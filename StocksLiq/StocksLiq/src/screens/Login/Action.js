@@ -29,3 +29,7 @@ export const doDeleteUser = ({paramData, onSuccess}) => ({
     onSuccess: onSuccess,
   },
 });
+export const doClearSession = paramData => ({
+  type: LoginActionTypes.CLEAR_SESSION,
+  payload: paramData,
+});
