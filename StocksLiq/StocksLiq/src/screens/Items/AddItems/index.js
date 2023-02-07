@@ -119,8 +119,8 @@ const AddItemScreen = props => {
     });
     let getTypeData = checkedItemArr.reduce((acc, d) => {
       let obj = {
-        Id: d.type_id,
-        Price: d.price,
+        id: d.type_id,
+        price: d.price,
       };
       acc.push(obj);
       return acc;
@@ -137,6 +137,7 @@ const AddItemScreen = props => {
         if (isSuccess) {
           props.navigation.goBack();
         }
+        showMessageAlert(data.message);
       },
     });
   };

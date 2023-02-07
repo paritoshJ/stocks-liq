@@ -2,6 +2,7 @@
 export const HTTP_METHODS = {
   GET: 'GET',
   POST: 'POST',
+  MULTI_PART_POST: 'MULTI_PART_POST',
   PUT: 'PUT',
   DELETE: 'DELETE',
 };

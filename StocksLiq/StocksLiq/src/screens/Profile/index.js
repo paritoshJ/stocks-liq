@@ -3,6 +3,7 @@ import {
   Text,
   StyleSheet,
   SafeAreaView,
+  Image,
   TouchableOpacity,
   ImageBackground,
   Platform,
@@ -10,6 +11,7 @@ import {
 import React, {useEffect, useState} from 'react';
 import {
   getFirstLetterCaps,
+  isStringNotNull,
   showMessageAlert,
   themeProvide,
   twoOptionsAlertFunction,
@@ -29,15 +31,40 @@ import {store} from '../../store/configureStore';
 const ProfileScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   let userDetails = store?.getState()?.LoginReducer?.userDetails;
+  const [isImageLoad, setImageLoad] = useState(false);
+  const [path, setImagePath] = useState(userDetails?.profile_image ?? '');
+  const [storeName, setStoreName] = useState(userDetails?.store_name);
 
   const renderImageBack = () => {
     return (
-      <ImageBackground
-        source={require('../../assets/svgs/MyProfileSideMenuSvg')}
-        style={styles.imageBack}>
-        <Text style={styles.imageText}>
-          {getFirstLetterCaps(userDetails?.store_name)}
-        </Text>
+      <ImageBackground style={styles.imageBack}>
+        {!isStringNotNull(path) ? (
+          <Text style={styles.imageText}>{getFirstLetterCaps(storeName)}</Text>
+        ) : (
+          <Image
+            source={{uri: path}}
+            onLoadStart={e => {
+              setImageLoad(true);
+            }}
+            onLoad={e => {
+              setImageLoad(true);
+            }}
+            onLoadEnd={e => setImageLoad(false)}
+            onError={error => {
+              setImageLoad(false);
+              setImagePath('');
+            }}
+            style={{overflow: 'hidden', width: 64, height: 64}}
+          />
+        )}
+        {isStringNotNull(path) && isImageLoad && (
+          <Loader
+            loading={isImageLoad}
+            isTransparent={true}
+            color={themeProvide().primary}
+            size={24}
+          />
+        )}
       </ImageBackground>
     );
   };
@@ -174,6 +201,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
     borderRadius: 32,
     marginTop: 24,
     marginBottom: 16,

@@ -5,6 +5,9 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ImageBackground,
+  Platform,
+  Alert,
+  Image,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {
@@ -24,27 +27,106 @@ import Loader from '../../common/loader/Loader';
 import ThemeButton from '../../common/ThemeButton';
 import {TextInput} from 'react-native-paper';
 import {store} from '../../store/configureStore';
+import ImagePicker from 'react-native-image-crop-picker';
 
 const EditProfileScreen = props => {
   const userDetails = store?.getState()?.LoginReducer?.userDetails;
-
   const [isLoading, setLoading] = useState(false);
+  const [isImageLoad, setImageLoad] = useState(false);
+  const [path, setImagePath] = useState(userDetails?.profile_image ?? '');
+  const [fileName, setFileName] = useState('');
   const [storeName, setStoreName] = useState(userDetails?.store_name);
   const [firstName, setFirstName] = useState(userDetails?.first_name);
   const [lastName, setLastName] = useState(userDetails?.last_name);
 
+  const showImagePickerAlert = () => {
+    if (Platform.OS === 'ios') {
+      Alert.alert(
+        '',
+        'Select from:',
+        [
+          {text: 'Camera', onPress: cameraPic},
+          {text: 'Gallery', onPress: galleryPic},
+          {text: 'Cancel', onPress: () => {}, style: 'destructive'},
+        ],
+        {cancelable: false},
+        //on clicking out side, Alert will not dismiss
+      );
+    }
+  };
+  const cameraPic = () => {
+    ImagePicker.openCamera({
+      width: 300,
+      height: 400,
+      cropping: false,
+    }).then(image => {
+      const path = Platform.select({
+        ios: image.uri.replace('file://', ''),
+        android: image.uri,
+      });
+      console.log('image', path, image);
+      setFileName(image.filename);
+      setImagePath(path);
+    });
+  };
+
+  const galleryPic = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: false,
+    }).then(image => {
+      try {
+        const path = Platform.select({
+          ios: image.path.replace('file://', ''),
+          android: image.path,
+        });
+        console.log('image', path, image);
+        setImagePath(path);
+        setFileName(image.filename);
+      } catch (error) {
+        console.log('error', error);
+      }
+    });
+  };
   const renderImageBack = () => {
     return (
       <ImageBackground style={styles.imageBack}>
-        <Text style={styles.imageText}>{getFirstLetterCaps(storeName)}</Text>
+        {!isStringNotNull(path) ? (
+          <Text style={styles.imageText}>{getFirstLetterCaps(storeName)}</Text>
+        ) : (
+          <Image
+            source={{uri: path}}
+            onLoadStart={e => {
+              setImageLoad(true);
+            }}
+            onLoad={e => {
+              setImageLoad(true);
+            }}
+            onLoadEnd={e => setImageLoad(false)}
+            onError={error => {
+              setImageLoad(false);
+              setImagePath('');
+            }}
+            style={{overflow: 'hidden', width: 64, height: 64}}
+          />
+        )}
+        {isStringNotNull(path) && isImageLoad && (
+          <Loader
+            loading={isImageLoad}
+            isTransparent={true}
+            color={themeProvide().primary}
+            size={24}
+          />
+        )}
       </ImageBackground>
     );
   };
   const renderStoreName = () => {
     return (
-      <>
+      <TouchableOpacity onPress={() => showImagePickerAlert()}>
         <Text style={styles.storeText}>{'Upload photo'}</Text>
-      </>
+      </TouchableOpacity>
     );
   };
 
@@ -65,13 +147,21 @@ const EditProfileScreen = props => {
       showMessageAlert();
     }
     setLoading(true);
+    let data = new FormData();
+    data.append('first_name', firstName);
+    data.append('last_name', lastName);
+    data.append('store_name', storeName);
+    if (path?.startsWith('http')) {
+      data.append('profile_image', {
+        uri: path,
+        name: fileName,
+        type: '*/*',
+      });
+    }
+
+    console.log('data', data);
     props.doEditUserProfile({
-      paramData: {
-        first_name: firstName,
-        last_name: lastName,
-        store_name: storeName,
-        // 'profile_image': '',
-      },
+      paramData: data,
       onSuccess: (isSuccess, status, response) => {
         setLoading(false);
         if (isSuccess && !isObjectNullOrUndefined(response.data)) {
@@ -191,6 +281,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
     borderRadius: 32,
     marginTop: 24,
     marginBottom: 16,

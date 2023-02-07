@@ -63,7 +63,7 @@ function* doEditProfile(action) {
   try {
     const {response} = yield request(
       DO_EDIT_PROFILE,
-      HTTP_METHODS.POST,
+      HTTP_METHODS.MULTI_PART_POST,
       action.payload.paramData,
       {},
       true,

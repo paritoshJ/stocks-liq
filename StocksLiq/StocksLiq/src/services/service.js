@@ -95,6 +95,10 @@ export const request = (
         case HTTP_METHODS.POST:
           doPost(url, params, resolve, reject, configObj);
           break;
+        // POST
+        case HTTP_METHODS.MULTI_PART_POST:
+          doMultiPartPost(url, params, resolve, reject, configObj);
+          break;
 
         // PUT
         case HTTP_METHODS.PUT:
@@ -202,6 +206,39 @@ const doPost = (url, params, resolve, reject, config = {}) => {
     });
 };
 
+const doMultiPartPost = (url, params, resolve, reject, config = {}) => {
+  config = {
+    headers: config.headers,
+    'Content-Type': 'multipart/form-data',
+  };
+  console.log(config);
+  API.post(url, params, config)
+    .then(response => {
+      console.log('url:UD', url);
+      console.log('response:UD', response);
+      parseResponse(response).then(parsedResponse => {
+        if (parsedResponse.isSuccess) {
+          resolve({response: parsedResponse.response});
+        } else {
+          reject(parsedResponse.message);
+        }
+      });
+    })
+    .catch(error => {
+      console.log('<><><><><> error in POST <><><><><>', error, url);
+
+      // if (error && error.response) {
+      //   reject(error)
+      // } else {
+      //   const errorInfo = {
+      //     msg: 'connect/re-connect VPN and then open the APP ',
+      //     code: 467,
+      //   };
+      //   DeviceEventEmitter.emit(ERROR_MESG.SOMETHING_WENT_WRONG, errorInfo);
+      // }
+      reject(error);
+    });
+};
 /***
  * This function is used for service request with PUT as request type
  * and send back completion in resolve or reject based on parent Promise.
@@ -257,3 +294,46 @@ const doDelete = (url, params, resolve, reject, config = {}) => {
       reject(error.response);
     });
 };
+
+// 'Content-Type': 'multipart/form-data',
+// export const postDataWithImage = (
+//   methodName: String,
+//   postValue: any,
+//   completionHandler: any,
+// ) => {
+//   // export const postDataWithImage = (methodName: string, postValue: Object) => {
+//   console.log(`${Constants.BASE_URL}${methodName}`);
+//   console.log(getImageHeader());
+//   console.log(postValue);
+//   fetch(`${Constants.BASE_URL}${methodName}`, {
+//     method: 'POST',
+//     body: postValue,
+//     headers: getImageHeader(),
+//   })
+//     .then(response => {
+//       console.log('Response: ', response);
+
+//       response.json().then(responseJson => {
+//         console.log('responseJson: ', responseJson);
+
+//         if (responseJson != undefined) {
+//           console.log('responseJson is not undefined');
+//           if (responseJson.code == 401) {
+//             logoutDeleteCase(responseJson.message);
+//           } else if (response.status >= 200 && response.status < 300) {
+//             completionHandler(false, responseJson.message, responseJson);
+//           } else {
+//             console.log('responseJson is undefined 11');
+//             completionHandler(true, 'Something went wrong', {});
+//           }
+//         } else {
+//           console.log('responseJson is undefined 22');
+//           completionHandler(true, 'Something went wrong', {});
+//         }
+//       });
+//     })
+//     .catch(error => {
+//       console.error('error on getData Request:: ', error);
+//       completionHandler(true, error, {});
+//     });
+// };
