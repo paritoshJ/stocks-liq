@@ -1,14 +1,15 @@
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity, FlatList} from 'react-native';
 import React from 'react';
 import {themeProvide, getCurrenyPrice} from '../../util/globalMethods';
 import MoreMenuSvg from '../../assets/svgs/MoreMenuSVG';
 import MoreSvgIcon from '../../assets/svgs/MoreSvgIcon';
 import {fonts} from '../../../assets/fonts/fonts';
+import {Item} from 'react-native-paper/lib/typescript/components/List/List';
 
 const ItemRow = props => {
-  const priceView = type => {
+  const priceView = item => {
     return (
-      <View style={{flex: 1}}>
+      <View style={{width: '33%', marginTop: 10}}>
         <Text
           style={{
             fontFamily: fonts.InterRegular,
@@ -16,7 +17,7 @@ const ItemRow = props => {
             fontSize: 14,
             color: 'rgba(0, 0, 0, 0.5)',
           }}>
-          ItemRow
+          {item?.language?.lang_name}
         </Text>
         <Text
           style={{
@@ -26,7 +27,7 @@ const ItemRow = props => {
             marginTop: 4,
             fontSize: 12,
           }}>
-          {getCurrenyPrice(Number(300))}
+          {getCurrenyPrice(Number(item?.type_price))}
         </Text>
       </View>
     );
@@ -42,7 +43,7 @@ const ItemRow = props => {
               fontWeight: '700',
               fontSize: 14,
             }}>
-            Blenders Pride
+            {props?.item?.name}
           </Text>
           <Text
             numberOfLines={2}
@@ -53,25 +54,38 @@ const ItemRow = props => {
               marginTop: 4,
               color: 'rgba(0, 0, 0, 0.5)',
             }}>
-            Whisky
+            {props?.item?.category?.lang_name}
           </Text>
         </View>
         <TouchableOpacity onPress={props.onMoreIconClick}>
           <MoreSvgIcon />
         </TouchableOpacity>
       </View>
-      <View
-        style={{
-          height: 1,
-          marginVertical: 12,
-          backgroundColor: 'rgba(0, 0, 0, 0.04)',
-        }}
-      />
-      <View style={{flexDirection: 'row'}}>
-        {priceView()}
-        {priceView()}
-        {priceView()}
-      </View>
+      {props?.item?.type?.length > 0 && (
+        <FlatList
+          data={props?.item?.type}
+          // horizontal
+          numColumns={3}
+          ListHeaderComponent={() => {
+            return (
+              <View
+                style={{
+                  height: 1,
+                  marginTop: 12,
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                }}
+              />
+            );
+          }}
+          contentContainerStyle={{flexGrow: 1}}
+          // data={[1, 2, 3, 4, 5, 6, 7, 8]}
+          keyExtractor={(item, index) => index.toString()}
+          // initialNumToRender={listData.length}
+          renderItem={({item, index}) => {
+            return priceView(item);
+          }}
+        />
+      )}
     </TouchableOpacity>
   );
 };

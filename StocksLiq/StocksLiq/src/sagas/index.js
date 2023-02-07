@@ -15,6 +15,7 @@ import {
   doGetSubCategoryWatcher,
   doGetSubCategoryTypeWatcher,
   doAddItemWatcher,
+  doGetItemsWatcher,
 } from '../screens/Items/Saga';
 // Redux saga: Root saga
 export function* rootSaga() {
@@ -31,5 +32,6 @@ export function* rootSaga() {
     doGetSubCategoryWatcher(),
     doGetSubCategoryTypeWatcher(),
     doAddItemWatcher(),
+    doGetItemsWatcher(),
   ]);
 }

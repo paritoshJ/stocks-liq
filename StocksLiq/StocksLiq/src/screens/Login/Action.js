@@ -33,3 +33,9 @@ export const doClearSession = paramData => ({
   type: LoginActionTypes.CLEAR_SESSION,
   payload: paramData,
 });
+export const doSaveToken = paramData => ({
+  type: LoginActionTypes.SAVE_BEARERTOKEN,
+  payload: {
+    token: paramData
+  },
+});

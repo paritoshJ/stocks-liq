@@ -10,7 +10,8 @@ import ThemeInputView from '../../common/ThemeInputView';
 import {doSignUpUser} from './Action';
 import {connect} from 'react-redux';
 import Loader from '../../common/loader/Loader';
-import {doSaveUser} from '../Login/Action';
+import {doSaveUser, 
+  doSaveToken,} from '../Login/Action';
 
 const SignUpScreen = props => {
   const [storeName, setStoreName] = useState('');
@@ -179,6 +180,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   doSignUpUser: doSignUpUser,
   doSaveUser: doSaveUser,
+  doSaveToken: doSaveToken,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUpScreen);

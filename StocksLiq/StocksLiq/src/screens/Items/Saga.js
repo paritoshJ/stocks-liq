@@ -15,6 +15,7 @@ import {
   DO_GET_CATEGORY_TYPE,
   DO_GET_SUB_CATEGORY,
   DO_ADD_ITEM,
+  GET_ITEMS,
 } from '../../services/api_end_points';
 import {store} from '../../store/configureStore';
 function* doGetCategory(action) {
@@ -197,4 +198,50 @@ function* doAddItem(action) {
 
 export function* doAddItemWatcher() {
   yield takeLatest(ItemActionTypes.DO_ADD_ITEM, doAddItem);
+}
+
+function* doGetItems(action) {
+  try {
+    const {response} = yield request(
+      GET_ITEMS,
+      HTTP_METHODS.POST,
+      action.payload.paramData,
+      {},
+      true,
+      store.getState().LoginReducer.bearerToken,
+    );
+    console.log('doGetItems', response);
+    yield action.payload.onSuccess(
+      response?.data?.status,
+      response.status,
+      response?.data?.data,
+    );
+  } catch (error) {
+    console.log('doGetItems', error);
+    if (error.response) {
+      if (error.response.status === 500) {
+        yield action.payload.onSuccess(
+          false,
+          error.response.status,
+          'Something went wrong',
+        );
+      } else {
+        if (error.response.status !== 401) {
+          yield action.payload.onSuccess(
+            false,
+            error.response.status,
+            error.response.data.message
+              ? error.response.data.message
+              : 'Something went wrong',
+          );
+        }
+      }
+    } else {
+      yield action.payload.onSuccess(false, 500, 'Something went wrong');
+    }
+  }
+}
+
+export function* doGetItemsWatcher() {
+  yield takeLatest(ItemActionTypes.GET_ITEMS, doGetItems);
 }

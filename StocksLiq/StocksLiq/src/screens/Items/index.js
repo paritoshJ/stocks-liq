@@ -37,6 +37,7 @@ import CheckBoxPlain from '../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../assets/svgs/CheckBoxWithTick';
 import ThemeButton from '../../common/ThemeButton';
 import Loader from '../../common/loader/Loader';
+import {doGetItems} from './Action';
 
 const ItemsScreen = props => {
   const [isLoading, setLoading] = useState(false);
@@ -58,15 +59,33 @@ const ItemsScreen = props => {
     if (!isArrayNullOrEmpty(store?.getState()?.ItemReducer?.categoryData)) {
       setCategoriesTabs([...store?.getState()?.ItemReducer?.categoryData]);
       setSelectedTabId(store?.getState()?.ItemReducer?.categoryData[0]?.value);
-      setTimeout(() => {
-        getSubCategories(
-          store?.getState()?.ItemReducer?.categoryData[0]?.value,
-          store?.getState()?.ItemReducer?.categoryData,
-        );
-      }, 1000);
+      getSubCategories(
+        store?.getState()?.ItemReducer?.categoryData[0]?.value,
+        store?.getState()?.ItemReducer?.categoryData,
+      );
     }
   }, []);
+  useEffect(() => {
+    getItemsApi(salectedTabId);
+  }, [salectedTabId]);
 
+  const resetItems = () =>{
+    setListData([]);
+    // setListData([]);
+  }
+  const getItemsApi = (salectedTabId) => {
+    setLoading(true);
+    props.doGetItems({
+      paramData: {cat_id: salectedTabId, search_text: ''},
+      onSuccess: (isSuccess, status, data) => {
+        setLoading(false);
+        if (isSuccess) {
+          console.log('data', data);
+          setListData(data.data);
+        }
+      },
+    });
+  };
   const getSubCategories = (cat_id, arr) => {
     let obj = arr.find(element => element?.language?.cat_id === cat_id);
     console.log('subcategories', obj?.subcategories);
@@ -107,6 +126,7 @@ const ItemsScreen = props => {
               title={el.label}
               count={kFormatter(listData.length)}
               onPress={() => {
+                resetItems();
                 setSelectedTabId(el.value);
                 setTimeout(() => {
                   getSubCategories(el.value, categoriesTabs);
@@ -323,7 +343,9 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  doGetItems: doGetItems,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ItemsScreen);
 

@@ -36,3 +36,10 @@ export const doAddItem = ({paramData, onSuccess}) => ({
     onSuccess: onSuccess,
   },
 });
+export const doGetItems = ({paramData, onSuccess}) => ({
+  type: ItemActionTypes.GET_ITEMS,
+  payload: {
+    paramData: paramData,
+    onSuccess: onSuccess,
+  },
+});

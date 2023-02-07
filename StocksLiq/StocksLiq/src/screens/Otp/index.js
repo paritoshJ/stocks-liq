@@ -2,7 +2,11 @@ import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useState, useRef, useCallback} from 'react';
 import LogoSvg from '../../assets/svgs/logoSvg';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {isObjectNullOrUndefined, isStringNotNull, themeProvide} from '../../util/globalMethods';
+import {
+  isObjectNullOrUndefined,
+  isStringNotNull,
+  themeProvide,
+} from '../../util/globalMethods';
 import {fonts} from '../../../assets/fonts/fonts';
 import I18n from '../../localization';
 import ThemeButton from '../../common/ThemeButton';
@@ -10,7 +14,7 @@ import OtpInputs, {OtpInputsRef} from 'react-native-otp-inputs';
 import {doVerifyUser, doLoginUser} from './Action';
 import {connect} from 'react-redux';
 import Loader from '../../common/loader/Loader';
-import {doSendOtp, setLoggedIn, doSaveUser} from '../Login/Action';
+import {doSendOtp, setLoggedIn, doSaveUser, doSaveToken} from '../Login/Action';
 
 const OtpScreen = props => {
   const otpRef = useRef(null);
@@ -86,8 +90,11 @@ const OtpScreen = props => {
       onSuccess: (isSuccess, status, response) => {
         setLoading(false);
         if (isSuccess && !isObjectNullOrUndefined(response?.data)) {
-          props.setLoggedIn(true);
+          props.doSaveToken(response?.data?.token);
           props.doSaveUser(response?.data);
+          setTimeout(() => {
+            props.setLoggedIn(true);
+          }, 1000);
         } else {
           alert(response);
         }
@@ -166,6 +173,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   doVerifyUser: doVerifyUser,
   doReSendOtp: doSendOtp,
+  doSaveToken: doSaveToken,
   setLoggedIn: setLoggedIn,
   doLoginUser: doLoginUser,
   doSaveUser: doSaveUser,
