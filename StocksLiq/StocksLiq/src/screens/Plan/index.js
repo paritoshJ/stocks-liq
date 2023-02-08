@@ -6,6 +6,7 @@ import {themeProvide} from '../../util/globalMethods';
 import {fonts} from '../../../assets/fonts/fonts';
 import I18n from '../../localization';
 import ThemeButton from '../../common/ThemeButton';
+import LottieView from 'lottie-react-native';
 
 const PlanScreen = props => {
   const renderWelcomeText = () => {
@@ -92,7 +93,9 @@ const PlanScreen = props => {
     );
   };
   const renderIcon = () => {
-    return <LogoSvg />;
+    return (
+      <LottieView source={require('../../Animation/Plan.json')} autoPlay loop />
+    );
   };
   return (
     <KeyboardAwareScrollView
@@ -116,7 +119,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: themeProvide().white,
   },
-  trialButton:{
+  trialButton: {
     backgroundColor: 'rgba(250, 134, 25, 0.12)',
     paddingVertical: 10,
   },
@@ -167,6 +170,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    height: 250,
     backgroundColor: 'transparent',
   },
   secondView: {

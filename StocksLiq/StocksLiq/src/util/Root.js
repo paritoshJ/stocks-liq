@@ -1,41 +1,41 @@
 import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
 import LoginScreen from '../screens/Login/index';
 import OtpScreen from '../screens/Otp/index';
 import SignUpScreen from '../screens/Register/index';
 import PlanScreen from '../screens/Plan/index';
 import RegisterSuccessScreen from '../screens/SuccessScreen/index';
-// import Registration from '../screens/Registration/Registration';
 // import ForGotUserName from '../screens/forgotUser';
 // import OTPValidation from '../screens/otpValidate';
 // import ForGotPassword from '../screens/forgotPassword';
 // import ResetPassword from '../screens/forgotPassword/resetPassword';
+import {createStackNavigator} from '@react-navigation/stack';
 
-const OnBoarding = createStackNavigator();
-const RootNavigator = () => {
+const Stack = createStackNavigator();
+function RootNavigator() {
+  // console.log("RootNavigator",'RootNavigator');
   return (
-    <OnBoarding.Navigator initialRouteName={LoginScreen}>
-      <OnBoarding.Screen
+    <Stack.Navigator initialRouteName={LoginScreen}>
+      <Stack.Screen
         name="LoginScreen"
         component={LoginScreen}
         options={{headerShown: false}}
       />
-      <OnBoarding.Screen
+      <Stack.Screen
         name="OtpScreen"
         component={OtpScreen}
         options={{headerShown: false}}
       />
-      <OnBoarding.Screen
+      <Stack.Screen
         name="SignUpScreen"
         component={SignUpScreen}
         options={{headerShown: false}}
       />
-      <OnBoarding.Screen
+      <Stack.Screen
         name="PlanScreen"
         component={PlanScreen}
         options={{headerShown: false}}
       />
-      <OnBoarding.Screen
+      <Stack.Screen
         name="RegisterSuccessScreen"
         component={RegisterSuccessScreen}
         options={{headerShown: false}}
@@ -61,7 +61,7 @@ const RootNavigator = () => {
         component={OTPValidation}
         options={{headerShown: false, tabBarVisible: false}}
       /> */}
-    </OnBoarding.Navigator>
+    </Stack.Navigator>
   );
-};
+}
 export default RootNavigator;

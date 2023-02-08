@@ -10,8 +10,8 @@ import ThemeInputView from '../../common/ThemeInputView';
 import {doSignUpUser} from './Action';
 import {connect} from 'react-redux';
 import Loader from '../../common/loader/Loader';
-import {doSaveUser, 
-  doSaveToken,} from '../Login/Action';
+import {doSaveUser, doSaveToken} from '../Login/Action';
+import LottieView from 'lottie-react-native';
 
 const SignUpScreen = props => {
   const [storeName, setStoreName] = useState('');
@@ -149,7 +149,14 @@ const SignUpScreen = props => {
     );
   };
   const renderIcon = () => {
-    return <LogoSvg />;
+    // return <LogoSvg />;
+    return (
+      <LottieView
+        source={require('../../Animation/More Details.json')}
+        autoPlay
+        loop
+      />
+    );
   };
   return (
     <KeyboardAwareScrollView
@@ -198,6 +205,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    height: 250,
     backgroundColor: 'transparent',
   },
   secondView: {

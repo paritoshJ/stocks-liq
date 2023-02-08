@@ -28,16 +28,18 @@ const App = _props => {
     setSignIn(storeData.LoginReducer.isLoggedIn);
   };
   store.subscribe(getSignIn);
+  
+  // store.subscribe(getSignIn);
 
   return (
     <Provider store={store}>
       <NavigationContainer ref={navigationRef}>
         {loading ? (
           <SplashScreen isLoading={isLoading} />
-        ) : signIn ? (
-          <Tabnavigator />
-        ) : (
+        ) : !signIn ? (
           <RootNavigator />
+        ) : (
+          <Tabnavigator />
         )}
       </NavigationContainer>
     </Provider>

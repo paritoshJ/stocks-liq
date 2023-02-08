@@ -35,7 +35,7 @@
 			</dict>
 		</dict>
 		<key>NSAllowsArbitraryLoads</key>
-        <true/>
+		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string/>
@@ -55,7 +55,6 @@
 	<string>Allow App to access your phone gallery to pick photo.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Allow App to access your Camera to take Photo.</string>
-	
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

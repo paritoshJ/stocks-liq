@@ -8,20 +8,20 @@ import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import SplashLogoSvg from '../../assets/svgs/splashLogoSvg.js';
 
 const SplashScreen = props => {
-  const bottomNavColorChange = async (color, isLightTheme) => {
-    try {
-      await changeNavigationBarColor(color, isLightTheme);
-    } catch (e) {
-      console.log(e); // {success: false}
-    }
-  };
-  useEffect(() => {
-    bottomNavColorChange(themeProvide().primary_1, false);
+  // const bottomNavColorChange = async (color, isLightTheme) => {
+  //   try {
+  //     changeNavigationBarColor(color, isLightTheme);
+  //   } catch (e) {
+  //     console.log(e); // {success: false}
+  //   }
+  // };
+  // useEffect(() => {
+  //   bottomNavColorChange(themeProvide().primary_1, false);
 
-    return () => {
-      bottomNavColorChange(themeProvide().Background_secondary, true);
-    };
-  }, []);
+  //   return () => {
+  //     bottomNavColorChange(themeProvide().Background_secondary, true);
+  //   };
+  // }, []);
 
   useEffect(() => {
     // unsubscribe();
@@ -32,9 +32,12 @@ const SplashScreen = props => {
   const getLocalStorageData = () => {
     let access_token = null; // await getStore('loginToken');
     if (access_token == null) {
-      setTimeout(function () {
+      // setTimeout(function () {
+      //   props.isLoading(false);
+      // }, 3000);
+      setTimeout(() => {
         props.isLoading(false);
-      }, 3000);
+      }, 2000);
     }
   };
 

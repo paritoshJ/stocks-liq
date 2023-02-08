@@ -8,7 +8,6 @@ import {
   ActivityIndicator,
   SafeAreaView,
 } from 'react-native';
-import Indicator from './materialIndicator';
 import {themeProvide} from '../../util/globalMethods';
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
@@ -25,7 +24,7 @@ const Loader = (props) => {
   return (
     loading && (
       <View style={styles.viewStyle}>
-        {loading && <Indicator color={color} size={size} />}
+        {loading && <ActivityIndicator color={color} size={size} />}
       </View>
     )
   );

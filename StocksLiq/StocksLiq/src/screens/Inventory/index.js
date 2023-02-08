@@ -311,6 +311,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '400',
     paddingHorizontal: 8,
+    flex: 1,
+    color: themeProvide().black,
     fontFamily: fonts.InterRegular,
   },
   inputViewStyle: {
@@ -319,13 +321,14 @@ const styles = StyleSheet.create({
     borderColor: themeProvide().borderBlack,
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
+    paddingHorizontal: 12,
+    height: 44,
     borderWidth: 1,
     borderRadius: 8,
   },
   searchMainView: {
     marginTop: 16,
-    height: 40,
+    height: 44,
     alignItems: 'center',
     flexDirection: 'row',
   },
@@ -367,5 +370,9 @@ const styles = StyleSheet.create({
     marginVertical: 12,
     backgroundColor: 'rgba(0, 0, 0, 0.04)',
   },
-  filterViewStyle: {paddingHorizontal: 24, paddingVertical: 16},
+  filterViewStyle: {
+    paddingHorizontal: 24,
+    backgroundColor: themeProvide().white,
+    paddingVertical: 16,
+  },
 });

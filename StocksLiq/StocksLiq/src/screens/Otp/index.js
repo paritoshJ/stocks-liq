@@ -1,10 +1,19 @@
-import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useState, useRef, useCallback} from 'react';
+import {
+  Platform,
+  StyleSheet,
+  Animated,
+  Text,
+  TouchableOpacity,
+  View,
+  Alert,
+} from 'react-native';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
 import LogoSvg from '../../assets/svgs/logoSvg';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {
   isObjectNullOrUndefined,
   isStringNotNull,
+  showMessageAlert,
   themeProvide,
 } from '../../util/globalMethods';
 import {fonts} from '../../../assets/fonts/fonts';
@@ -15,14 +24,21 @@ import {doVerifyUser, doLoginUser} from './Action';
 import {connect} from 'react-redux';
 import Loader from '../../common/loader/Loader';
 import {doSendOtp, setLoggedIn, doSaveUser, doSaveToken} from '../Login/Action';
+import LottieView from 'lottie-react-native';
 
 const OtpScreen = props => {
   const otpRef = useRef(null);
   const [otp, setOtp] = useState('');
   const [isLoading, setLoading] = useState(false);
   const resetOTP = useCallback(() => {
-    otpRef.current.reset();
+    otpRef.current?.reset();
   }, []);
+  useEffect(() => {
+    console.log(props?.route?.params);
+    showMessageAlert('Your demo Otp is ' + props?.route?.params?.otp);
+    // otpRef.current.setOtp(props?.route?.params?.otp);
+  }, [])
+  
   const renderWelcomeText = () => {
     return <Text style={styles.welcomeText}>{I18n.t('otpVerification')}</Text>;
   };
@@ -143,7 +159,15 @@ const OtpScreen = props => {
     );
   };
   const renderIcon = () => {
-    return <LogoSvg />;
+    // return <LogoSvg />;
+    return (
+      <LottieView
+        resizeMode={'contain'}
+        source={require('../../Animation/Enter Password.json')}
+        autoPlay
+        loop
+      />
+    );
   };
   return (
     <KeyboardAwareScrollView
@@ -208,6 +232,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    height: 250,
     backgroundColor: 'transparent',
   },
   secondView: {

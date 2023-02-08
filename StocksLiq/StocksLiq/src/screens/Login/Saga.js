@@ -29,7 +29,7 @@ function* sendOtp(action) {
     yield action.payload.onSuccess(
       response?.data?.status,
       response.status,
-      response?.data?.message,
+      response?.data,
     );
   } catch (error) {
     if (error.response) {

@@ -5,12 +5,9 @@ import {
   Alert,
   useWindowDimensions,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
 import {themeProvide} from '../util/globalMethods';
 import DeviceInfo from 'react-native-device-info';
 import {
@@ -52,13 +49,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 var exit = false;
-const popText =
-  ' You are about to be signed out. Tap “Logout” to end your session now or tap "Cancel" to stay logged in?';
+const popText = 'Do you want to exit app ?';
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
-function TabNavigator() {
+function TabNavigator(props) {
   // const tabBarHeight = useBottomTabBarHeight();
   const [count, setCount] = useState(false);
   Tab.navigationOptions = {
@@ -66,7 +62,7 @@ function TabNavigator() {
     backgroundColor: 'white',
   };
   const handleBackPress = () => {
-    if (!navigationRef.current.canGoBack()) {
+    if (!props.navigation.canGoBack()) {
       if (!exit) {
         exit = true;
         Alert.alert(
@@ -74,13 +70,13 @@ function TabNavigator() {
           popText,
           [
             {
-              text: 'Logout',
+              text: 'YES',
               onPress: () => {
                 BackHandler.exitApp();
               },
               style: 'destructive',
             },
-            {text: 'Cancel'},
+            {text: 'NO'},
           ],
           {cancelable: false},
         );
@@ -213,10 +209,11 @@ function TabNavigator() {
 }
 
 function DrawerNavigator() {
-  const dimensions = useWindowDimensions();
+  const dimensions = Dimensions.get('screen');
   return (
     <Drawer.Navigator
       screenOptions={{
+        // drawerType: dimensions.width >= 768 ? 'permanent' : 'front',
         drawerType: dimensions.width >= 768 ? 'permanent' : 'front',
       }}
       drawerContent={props => <CustomDrawerContent {...props} />}>
@@ -288,18 +285,18 @@ function AppRouter() {
   return <RootNavigation />;
 }
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  backButton: {
-    marginTop: '3%',
-    marginStart: hp('2%'),
-  },
+  // container: {
+  //   flex: 1,
+  // },
+  // backButton: {
+  //   marginTop: '3%',
+  //   marginStart: hp('2%'),
+  // },
 });
 
 const mapStateToProps = state => {
   return {LoginReducer: state.LoginReducer};
 };
-const mapDispatchToProps = {};
+// const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppRouter);
+export default connect(mapStateToProps, {})(AppRouter);

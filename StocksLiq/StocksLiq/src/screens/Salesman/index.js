@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     backgroundColor: themeProvide().primary,
     borderRadius: 40,
     position: 'absolute',
-    bottom: 72,
+    bottom: 32,
     right: 32,
   },
   checkTextStyle: {

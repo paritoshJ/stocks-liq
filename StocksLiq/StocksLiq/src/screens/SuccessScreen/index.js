@@ -8,6 +8,7 @@ import I18n from '../../localization';
 import ThemeButton from '../../common/ThemeButton';
 import {connect} from 'react-redux';
 import {doSaveUser, doSaveToken, setLoggedIn} from '../Login/Action';
+import LottieView from 'lottie-react-native';
 
 const RegisterSuccessScreen = props => {
   const renderWelcomeText = () => {
@@ -52,7 +53,14 @@ const RegisterSuccessScreen = props => {
     );
   };
   const renderIcon = () => {
-    return <LogoSvg />;
+    // return <LogoSvg />;
+    return (
+      <LottieView
+        source={require('../../Animation/Confirmation.json')}
+        autoPlay
+        loop
+      />
+    );
   };
   return (
     <KeyboardAwareScrollView
@@ -91,12 +99,13 @@ const styles = StyleSheet.create({
   },
   mainView: {
     flex: 1,
-    backgroundColor: themeProvide().primary_back,
+    backgroundColor: themeProvide().successText,
   },
   firstView: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    height: 300,
     backgroundColor: 'transparent',
   },
   secondView: {

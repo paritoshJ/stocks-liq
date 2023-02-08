@@ -1,6 +1,5 @@
 import {Platform, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
-import BeforeLoginWrapperView from '../../common/BeforeLoginWrapperView';
 import LogoSvg from '../../assets/svgs/logoSvg';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {isStringNotNull, themeProvide} from '../../util/globalMethods';
@@ -13,6 +12,7 @@ import {connect} from 'react-redux';
 import Loader from '../../common/loader/Loader';
 
 const LoginScreen = props => {
+  console.log('LOGIN SCREEN CALLED');
   const [mobileNumber, setMobileNumber] = useState('');
   const [isLoading, setLoading] = useState(false);
 
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   loginOrSignUpText: {
     fontFamily: fonts.InterRegular,
     color: themeProvide().black,
-    opacity: 0.5,
+    // opacity: 0.5,
     marginVertical: 24,
     marginHorizontal: 12,
     textAlign: 'center',
@@ -169,6 +169,6 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 1,
     backgroundColor: themeProvide().black,
-    opacity: 0.16,
+    // opacity: 0.16,
   },
 });

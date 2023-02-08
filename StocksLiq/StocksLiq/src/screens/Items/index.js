@@ -45,7 +45,7 @@ const ItemsScreen = props => {
   const [salectedTabId, setSelectedTabId] = useState(null);
   const [categoriesTabs, setCategoriesTabs] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
-  const [listData, setListData] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  const [listData, setListData] = useState([]);
   const [loadingFooter, setLoadingFooter] = useState(false);
   const [filterSheetVisible, setFilterSheetVisile] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -69,11 +69,11 @@ const ItemsScreen = props => {
     getItemsApi(salectedTabId);
   }, [salectedTabId]);
 
-  const resetItems = () =>{
+  const resetItems = () => {
     setListData([]);
     // setListData([]);
-  }
-  const getItemsApi = (salectedTabId) => {
+  };
+  const getItemsApi = salectedTabId => {
     setLoading(true);
     props.doGetItems({
       paramData: {cat_id: salectedTabId, search_text: ''},
@@ -189,7 +189,7 @@ const ItemsScreen = props => {
         <View style={styles.inputViewStyle}>
           <SearchSvgIcon />
           <TextInput
-            placeholder={I18n.t('search')}
+            placeholderText={I18n.t('search')}
             value={searchText}
             style={styles.inputStyle}
             placeholderColor={themeProvide().borderBlack}
@@ -324,9 +324,9 @@ const ItemsScreen = props => {
           logoToolbarType={true}
         />
         {renderTopTab()}
-        {isEmptyPage ? renderEmptyPage() : renderFlatList()}
+        {listData.length > 0 ? renderEmptyPage() : renderFlatList()}
       </View>
-      {renderAddButtom()}
+      {listData.length > 0 && renderAddButtom()}
       {renderFilterSheet()}
       <Loader
         loading={isLoading}
@@ -356,6 +356,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '400',
     paddingHorizontal: 8,
+    flex: 1,
+    color: themeProvide().black,
     fontFamily: fonts.InterRegular,
   },
   inputViewStyle: {
@@ -364,13 +366,14 @@ const styles = StyleSheet.create({
     borderColor: themeProvide().borderBlack,
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
+    paddingHorizontal: 12,
+    height: 44,
     borderWidth: 1,
     borderRadius: 8,
   },
   searchMainView: {
     marginTop: 16,
-    height: 40,
+    height: 44,
     alignItems: 'center',
     flexDirection: 'row',
   },
@@ -413,5 +416,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.04)',
   },
   priceCheckStyle: {flexDirection: 'row', marginTop: 16, alignItems: 'center'},
-  filterViewStyle: {paddingHorizontal: 24, paddingVertical: 16},
+  filterViewStyle: {
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    backgroundColor: themeProvide().white,
+  },
 });
