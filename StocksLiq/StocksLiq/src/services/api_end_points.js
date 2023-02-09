@@ -20,6 +20,11 @@ export const DO_ADD_ITEM = `${API_DOMAIN_QA}/additem`;
 export const GET_ITEMS = `${API_DOMAIN_QA}/item-list`;
 export const DO_ADD_INVENTORY = `${API_DOMAIN_QA}/add-inventory`;
 export const GET_INVENTORY_PRODUCTS = `${API_DOMAIN_QA}/inventory-item-list`;
+export const DO_ADD_EXPENSE = `${API_DOMAIN_QA}/add-expenses`;
+export const DO_GET_EXPENSES = `${API_DOMAIN_QA}/get-expenses`;
+export const DO_ADD_SALESMAN = `${API_DOMAIN_QA}/add-salesman`;
+export const DO_GET_SALESMAN = `${API_DOMAIN_QA}/get-salesman`;
+
 // export const GET_CLAIM_STATUS_SUMMERY = (
 //   memberType,
 //   memberOid,
