@@ -18,7 +18,7 @@ const SalesmanRow = props => {
               fontWeight: '700',
               fontSize: 14,
             }}>
-            John Doe
+            {`${props.item.first_name} ${props.item.last_name}`}
           </Text>
           <Text
             numberOfLines={2}
@@ -29,7 +29,7 @@ const SalesmanRow = props => {
               marginTop: 4,
               color: themeProvide().black,
             }}>
-            +91 8988734230
+             {`+91 ${props.item.mobile_number}`}
           </Text>
         </View>
         <TouchableOpacity onPress={props.onMoreIconClick}>

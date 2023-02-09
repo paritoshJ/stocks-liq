@@ -36,15 +36,22 @@ import CheckBoxPlain from '../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../assets/svgs/CheckBoxWithTick';
 import ThemeButton from '../../common/ThemeButton';
 import Loader from '../../common/loader/Loader';
+import {doGetExpenses} from './Action';
 const ExpenseScreen = props => {
   const [isLoading, setLoading] = useState(false);
   const [isEmptyPage, setEmptyPage] = useState(false);
-  const [salectedTabId, setSelectedTabId] = useState(null);
-  const [categoriesTabs, setCategoriesTabs] = useState([]);
-  const [listData, setListData] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  const [salectedTabId, setSelectedTabId] = useState(
+    store.getState()?.ExpenseReducer?.expenseTypeArray[0]?.value,
+  );
+  const [categoriesTabs, setCategoriesTabs] = useState(
+    store.getState()?.ExpenseReducer?.expenseTypeArray,
+  );
+
+  const [listData, setListData] = useState([]);
   const [loadingFooter, setLoadingFooter] = useState(false);
   const [filterSheetVisible, setFilterSheetVisile] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [totalExpense, setTotalExpense] = useState('');
   // const refRBSheet = useRef();
   let pageSize = 10;
   let searchString = useRef('');
@@ -55,12 +62,30 @@ const ExpenseScreen = props => {
     return <ItemBigSVG color={themeProvide().primary} />;
   };
   useEffect(() => {
-    if (!isArrayNullOrEmpty(store?.getState()?.ItemReducer?.categoryData)) {
-      setCategoriesTabs([...store?.getState()?.ItemReducer?.categoryData]);
-      setSelectedTabId(store?.getState()?.ItemReducer?.categoryData[0].value);
-    }
-  }, []);
+    getExpenseApi(salectedTabId);
+  }, [salectedTabId]);
 
+  const getExpenseApi = () => {
+    setLoading(true);
+    props.doGetExpenses({
+      paramData: {expense_type: salectedTabId.toLowerCase(), search_text: ''},
+      onSuccess: (isSuccess, status, data) => {
+        setLoading(false);
+        if (isSuccess) {
+          console.log('data', data);
+          try {
+            if (data != null) {
+              setTotalExpense(data?.total_expenses);
+              setListData(data?.expenses_list?.data);
+            }
+          } catch (error) {
+            console.log('error', error);
+            setListData([]);
+          }
+        }
+      },
+    });
+  };
   const renderTopTab = () => {
     return (
       <View
@@ -166,7 +191,7 @@ const ExpenseScreen = props => {
               marginTop: 4,
               fontSize: 32,
             }}>
-            {getCurrenyPrice(Number(300))}
+            {getCurrenyPrice(Number(totalExpense))}
           </Text>
           <Text
             style={{
@@ -198,38 +223,6 @@ const ExpenseScreen = props => {
     }
   };
 
-  const renderCheckBoxItem = (el, index) => {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          // console.log(index);
-          // setItemTypeArr(current =>
-          //   current.map((obj, i) => {
-          //     if (i === index) {
-          //       return {...obj, check: !obj.check};
-          //     }
-          //     return obj;
-          //   }),
-          // );
-        }}
-        style={styles.priceCheckStyle}>
-        {el?.check ? <CheckBoxPlain /> : <CheckBoxWithTick />}
-        <Text style={styles.checkTextStyle}>{el?.lang_name}</Text>
-      </TouchableOpacity>
-    );
-  };
-  const renderItemTypeInput = () => {
-    let checkedItem = [1, 2, 3, 4].filter(item => {
-      return item.check;
-    });
-    return (
-      <View style={{marginTop: 16}}>
-        {[1, 2, 3, 4].map((el, index) => {
-          return renderCheckBoxItem(el, index);
-        })}
-      </View>
-    );
-  };
   const renderFilterSheet = () => {
     return (
       <RenderModal
@@ -249,7 +242,7 @@ const ExpenseScreen = props => {
             {'Filter'}
           </Text>
           <View style={styles.filterInnerStyle} />
-          {renderItemTypeInput()}
+          {/* {renderItemTypeInput()} */}
           {renderFilterButtonView()}
         </View>
       </RenderModal>
@@ -279,7 +272,9 @@ const ExpenseScreen = props => {
     return (
       <TouchableOpacity
         onPress={() => {
-          props.navigation.navigate('AddExpenseScreen');
+          props.navigation.navigate('AddExpenseScreen', {
+            getOnAddExpense: getOnAddExpense,
+          });
         }}
         style={styles.AddView}>
         <AddItemSVG />
@@ -291,7 +286,9 @@ const ExpenseScreen = props => {
       <EmptyPageView
         icon={renderSvgIcon}
         onAddClick={() => {
-          props.navigation.navigate('AddExpenseScreen');
+          props.navigation.navigate('AddExpenseScreen', {
+            getOnAddExpense: getOnAddExpense,
+          });
         }}
         title={I18n.t('noItemTitle', {tabName: I18n.t('inventoryTabName')})}
         message={I18n.t('noItemAddText', {
@@ -300,6 +297,15 @@ const ExpenseScreen = props => {
         buttonTitle={`+ ${I18n.t('inventoryTabName')}`}
       />
     );
+  };
+  const resetItems = () => {
+    setListData([]);
+    // setListData([]);
+  };
+
+  const getOnAddExpense = () => {
+    resetItems();
+    getExpenseApi(salectedTabId);
   };
   return (
     <SafeAreaView style={styles.safeView}>
@@ -313,9 +319,9 @@ const ExpenseScreen = props => {
           logoToolbarType={true}
         />
         {renderTopTab()}
-        {isEmptyPage ? renderEmptyPage() : renderFlatList()}
+        {listData.length === 0 ? renderEmptyPage() : renderFlatList()}
       </View>
-      {renderAddButtom()}
+      {listData.length > 0 && renderAddButtom()}
       {renderFilterSheet()}
       <Loader
         loading={isLoading}
@@ -329,11 +335,13 @@ const ExpenseScreen = props => {
 
 const mapStateToProps = state => {
   return {
-    ItemReducer: state.ItemReducer,
+    ExpenseReducer: state.ExpenseReducer,
   };
 };
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  doGetExpenses: doGetExpenses,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExpenseScreen);
 
@@ -410,5 +418,9 @@ const styles = StyleSheet.create({
     marginVertical: 12,
     backgroundColor: 'rgba(0, 0, 0, 0.04)',
   },
-  filterViewStyle: {paddingHorizontal: 24, paddingVertical: 16},
+  filterViewStyle: {
+    paddingHorizontal: 24,
+    backgroundColor: themeProvide().white,
+    paddingVertical: 16,
+  },
 });

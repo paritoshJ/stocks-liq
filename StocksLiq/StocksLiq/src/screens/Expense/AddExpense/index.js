@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  TouchableOpacity,
-  Platform,
-} from 'react-native';
+import {View, StyleSheet, SafeAreaView, Platform} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {
   getLanguage,
@@ -22,115 +15,31 @@ import {store} from '../../../store/configureStore';
 import {Dropdown} from 'react-native-element-dropdown';
 import {TextInput, Checkbox} from 'react-native-paper';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import CheckBoxPlain from '../../../assets/svgs/CheckBoxPlain';
-import CheckBoxWithTick from '../../../assets/svgs/CheckBoxWithTick';
-import {
-  doAddItem,
-  doGetSubCategory,
-  doGetSubCategoryType,
-} from '../../Items/Action';
+import {doAddExpense} from '../Action';
 import Loader from '../../../common/loader/Loader';
 
 const AddExpenseScreen = props => {
-  const CategoryArr = store?.getState()?.ItemReducer?.categoryData;
+  const CategoryArr = store?.getState()?.ExpenseReducer?.expenseTypeArray;
   const [expenseName, setExpenseName] = useState('');
   const [expenseAmount, setExpenseAmount] = useState('');
   const [expenseRemark, setExpenseRemark] = useState('');
-  const [SubCategoryArr, setSubCategoryArr] = useState([]);
-  const [itemTypeArr, setItemTypeArr] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [category, setCategory] = useState(null);
-  const [subCategory, setSubCategory] = useState(null);
 
-  const renderItemType = () => {
-    return (
-      <>
-        <Text style={styles.storeText}>{I18n.t('itemType')}</Text>
-        <View style={{flexDirection: 'row', marginTop: 16}}>
-          {itemTypeArr.map((el, index) => {
-            return renderCheckBoxItem(el, index);
-          })}
-        </View>
-      </>
-    );
-  };
-  const renderItemTypeInput = () => {
-    let checkedItem = itemTypeArr.filter(item => {
-      return item.check;
-    });
-    return (
-      <>
-        {checkedItem.map((el, index) => {
-          return renderInputView(
-            el.lang_name,
-            isStringNotNull(el.price) ? el.price : '',
-            el.type_id,
-          );
-        })}
-      </>
-    );
-  };
-  const renderCheckBoxItem = (el, index) => {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          console.log(index);
-          setItemTypeArr(current =>
-            current.map((obj, i) => {
-              if (i === index) {
-                return {...obj, check: !obj.check};
-              }
-              return obj;
-            }),
-          );
-        }}
-        style={styles.priceCheckStyle}>
-        {el?.check ? <CheckBoxPlain /> : <CheckBoxWithTick />}
-        <Text style={styles.checkTextStyle}>{el?.lang_name}</Text>
-      </TouchableOpacity>
-    );
-  };
-  const getSubCategory = parent => {
-    props.doGetSubCategory({
-      paramData: {cat_id: parent, lang: getLanguage()},
-      onSuccess: (isSuccess, status, data) => {
-        if (isSuccess) {
-          data?.forEach(element => {
-            element['value'] = element.cat_id;
-            element['label'] = element.lang_name;
-          });
-          setTimeout(() => {
-            setSubCategoryArr(data);
-            console.log(data);
-          }, 1000);
-        }
-      },
-    });
-  };
-  const getSubCategoryType = cate_id => {
-    props.doGetSubCategoryType({
-      paramData: {cat_id: cate_id, lang: getLanguage()},
-      onSuccess: (isSuccess, status, data) => {
-        if (isSuccess) {
-          setItemTypeArr(data);
-          console.log('CategoryType', data);
-        }
-      },
-    });
-  };
-  const doAddItemApi = () => {
+  const doAddExpenseApi = () => {
     setIsLoading(true);
-    props.doAddItem({
+    props.doAddExpense({
       paramData: {
-        expense_name: expenseName,
-        expense_amount: expenseAmount,
-        expense_remark: expenseRemark,
-        exp_id: category,
+        exp_name: expenseName,
+        amount: expenseAmount,
+        remark: expenseRemark,
+        exp_type: category,
       },
       onSuccess: (isSuccess, status, data) => {
         setIsLoading(false);
         if (isSuccess) {
           props.navigation.goBack();
+          props?.route?.params?.getOnAddExpense();
         }
       },
     });
@@ -153,7 +62,7 @@ const AddExpenseScreen = props => {
     if (isStringNotNull(msg)) {
       showMessageAlert(msg);
     } else {
-      // doAddItemApi();
+      doAddExpenseApi();
     }
   };
   const renderButtonView = () => {
@@ -226,16 +135,8 @@ const AddExpenseScreen = props => {
     );
   };
   const onItemSelect = (key, value) => {
-    if (key === 'category') {
-      setCategory(value);
-      getSubCategory(value);
-      setSubCategoryArr([]);
-      setItemTypeArr([]);
-      setSubCategory('');
-    } else if (key === 'subCategory') {
-      setSubCategory(value);
-      getSubCategoryType(value);
-      setItemTypeArr([]);
+    if (key === 'selectExpense') {
+      setCategory(value.toLowerCase());
     }
   };
   return (
@@ -256,8 +157,8 @@ const AddExpenseScreen = props => {
           enableAutomaticScroll={true}>
           <View style={styles.paddingView}>
             {renderDropDownView(
-              I18n.t('category'),
-              'category',
+              I18n.t('selectExpense'),
+              'selectExpense',
               category,
               CategoryArr,
             )}
@@ -298,14 +199,12 @@ const AddExpenseScreen = props => {
 };
 const mapStateToProps = state => {
   return {
-    ItemReducer: state.ItemReducer,
+    ExpenseReducer: state.ExpenseReducer,
   };
 };
 
 const mapDispatchToProps = {
-  doGetSubCategory: doGetSubCategory,
-  doGetSubCategoryType: doGetSubCategoryType,
-  doAddItem: doAddItem,
+  doAddExpense: doAddExpense,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddExpenseScreen);

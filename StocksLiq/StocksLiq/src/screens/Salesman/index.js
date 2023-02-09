@@ -37,6 +37,7 @@ import CheckBoxPlain from '../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../assets/svgs/CheckBoxWithTick';
 import ThemeButton from '../../common/ThemeButton';
 import Loader from '../../common/loader/Loader';
+import {doGetSalesMan} from './Action';
 
 const SalesmanScreen = props => {
   const [isLoading, setLoading] = useState(false);
@@ -54,10 +55,7 @@ const SalesmanScreen = props => {
   let totalPage = useRef(2000);
 
   useEffect(() => {
-    if (!isArrayNullOrEmpty(store?.getState()?.ItemReducer?.categoryData)) {
-      setCategoriesTabs([...store?.getState()?.ItemReducer?.categoryData]);
-      setSelectedTabId(store?.getState()?.ItemReducer?.categoryData[0].cat_id);
-    }
+    getSalesmanApi();
   }, []);
 
   const renderSvgIcon = () => {
@@ -72,34 +70,11 @@ const SalesmanScreen = props => {
         message={I18n.t('noItemAddText', {tabName: I18n.t('salesman_menu')})}
         buttonTitle={`+ ${I18n.t('salesman_menu')}`}
         onAddClick={() => {
-          props.navigation.navigate('AddSalesmanScreen');
+          props.navigation.navigate('AddSalesmanScreen', {
+            onAddSalesmanPress: onAddSalesmanPress,
+          });
         }}
       />
-    );
-  };
-  const renderTopTab = () => {
-    return (
-      <View
-        style={{
-          flexDirection: 'row',
-          backgroundColor: themeProvide().primary,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-        horizontal>
-        {categoriesTabs.map((el, index) => {
-          return (
-            <TabHeader
-              isSelected={el.cat_id === salectedTabId}
-              title={el.lang_name}
-              count={kFormatter(listData.length)}
-              onPress={() => {
-                setSelectedTabId(el.cat_id);
-              }}
-            />
-          );
-        })}
-      </View>
     );
   };
   const flatListItemSeparator = () => {
@@ -210,11 +185,35 @@ const SalesmanScreen = props => {
       </TouchableOpacity>
     );
   };
+  const onAddSalesmanPress = () => {
+    getSalesmanApi();
+  };
+  const getSalesmanApi = () => {
+    setLoading(true);
+    props.doGetSalesMan({
+      onSuccess: (isSuccess, status, data) => {
+        setLoading(false);
+        if (isSuccess) {
+          console.log('data', data);
+          try {
+            if (data != null) {
+              setListData(data?.data);
+            }
+          } catch (error) {
+            console.log('error', error);
+            setListData([]);
+          }
+        }
+      },
+    });
+  };
   const renderAddButtom = () => {
     return (
       <TouchableOpacity
         onPress={() => {
-          props.navigation.navigate('AddSalesmanScreen');
+          props.navigation.navigate('AddSalesmanScreen', {
+            onAddSalesmanPress: onAddSalesmanPress,
+          });
         }}
         style={styles.AddView}>
         <AddItemSVG />
@@ -235,9 +234,9 @@ const SalesmanScreen = props => {
           logoToolbarType={false}
         />
         {/* {renderTopTab()} */}
-        {isEmptyPage ? renderEmptyPage() : renderFlatList()}
+        {listData.length === 0 ? renderEmptyPage() : renderFlatList()}
       </View>
-      {!isEmptyPage && renderAddButtom()}
+      {listData.length > 0 && renderAddButtom()}
       <Loader
         loading={isLoading}
         isTransparent={true}
@@ -253,7 +252,9 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  doGetSalesMan: doGetSalesMan,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(SalesmanScreen);
 

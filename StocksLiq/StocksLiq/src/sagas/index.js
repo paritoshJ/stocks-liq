@@ -11,6 +11,14 @@ import {
   doEditProfileWatcher,
 } from '../screens/Profile/Saga';
 import {
+  doGetExpenseWatcher,
+  doAddExpenseWatcher,
+} from '../screens/Expense/Saga';
+import {
+  doAddsalesmanWatcher,
+  doGetSalesmanWatcher,
+} from '../screens/Salesman/Saga';
+import {
   doGetCategoryWatcher,
   doGetSubCategoryWatcher,
   doGetSubCategoryTypeWatcher,
@@ -39,5 +47,9 @@ export function* rootSaga() {
     doGetItemsWatcher(),
     doGetInventoryProductsWatcher(),
     doAddInventoryWatcher(),
+    doAddExpenseWatcher(),
+    doGetExpenseWatcher(),
+    doAddsalesmanWatcher(),
+    doGetSalesmanWatcher(),
   ]);
 }

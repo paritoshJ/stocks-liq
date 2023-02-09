@@ -18,7 +18,7 @@ const ExpenseRow = props => {
               marginTop: 4,
               fontSize: 18,
             }}>
-            {getCurrenyPrice(Number(300))}
+            {getCurrenyPrice(Number(props?.item?.amount))}
           </Text>
           <Text
             style={{
@@ -45,7 +45,7 @@ const ExpenseRow = props => {
               fontWeight: '700',
               fontSize: 14,
             }}>
-            Blenders Pride
+            {props?.item?.name}
           </Text>
           <Text
             numberOfLines={2}
@@ -56,7 +56,7 @@ const ExpenseRow = props => {
               marginTop: 4,
               color: themeProvide().black,
             }}>
-            Lorem Ipsum is simply dummy text.
+            {props?.item?.remark}
           </Text>
         </View>
         <TouchableOpacity onPress={props.onMoreIconClick}>

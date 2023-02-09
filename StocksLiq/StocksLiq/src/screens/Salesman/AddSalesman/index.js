@@ -24,11 +24,7 @@ import {TextInput, Checkbox} from 'react-native-paper';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import CheckBoxPlain from '../../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../../assets/svgs/CheckBoxWithTick';
-import {
-  doAddItem,
-  doGetSubCategory,
-  doGetSubCategoryType,
-} from '../../Items/Action';
+import {doAddSalesMan} from '../Action';
 import Loader from '../../../common/loader/Loader';
 
 const AddSalesmanScreen = props => {
@@ -37,19 +33,19 @@ const AddSalesmanScreen = props => {
   const [mobileNumber, setMobileNumber] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const doAddItemApi = () => {
+  const doAddSalesManApi = () => {
     setIsLoading(true);
-    props.doAddItem({
+    props.doAddSalesMan({
       paramData: {
-        expense_name: expenseName,
-        expense_amount: expenseAmount,
-        expense_remark: expenseRemark,
-        exp_id: category,
+        first_name: firstName,
+        last_name: lastName,
+        mobile_number: mobileNumber,
       },
       onSuccess: (isSuccess, status, data) => {
         setIsLoading(false);
         if (isSuccess) {
           props.navigation.goBack();
+          props?.route?.params?.onAddSalesmanPress();
         }
       },
     });
@@ -72,11 +68,15 @@ const AddSalesmanScreen = props => {
       msg = I18n.t('commonEmptyError', {
         label: I18n.t('mobileNumber').toLowerCase(),
       });
+    } else if (mobileNumber.length < 10) {
+      msg = I18n.t('invalidMobile');
+    } else if (mobileNumber.length > 12) {
+      msg = I18n.t('invalidMobile');
     }
     if (isStringNotNull(msg)) {
       showMessageAlert(msg);
     } else {
-      // doAddItemApi();
+      doAddSalesManApi();
     }
   };
   const renderButtonView = () => {
@@ -186,9 +186,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  doGetSubCategory: doGetSubCategory,
-  doGetSubCategoryType: doGetSubCategoryType,
-  doAddItem: doAddItem,
+  doAddSalesMan: doAddSalesMan,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddSalesmanScreen);
