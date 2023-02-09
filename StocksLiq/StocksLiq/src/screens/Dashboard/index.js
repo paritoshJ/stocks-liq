@@ -2,6 +2,7 @@ import {
   View,
   StyleSheet,
   Text,
+  StatusBar,
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
@@ -72,6 +73,10 @@ const DashboardScreen = props => {
   };
   return (
     <SafeAreaView style={styles.safeView}>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={themeProvide().primary_back}
+      />
       <View style={styles.mainView}>
         <ToolbarHeader
           isLogo={true}

@@ -73,6 +73,7 @@ const ItemsScreen = props => {
     setListData([]);
     // setListData([]);
   };
+  // salectedTabId can be string or array
   const getItemsApi = salectedTabId => {
     setLoading(true);
     props.doGetItems({
@@ -104,7 +105,9 @@ const ItemsScreen = props => {
         message={I18n.t('noItemAddText', {tabName: I18n.t('itemsTabName')})}
         buttonTitle={`+ ${I18n.t('itemsTabName')}`}
         onAddClick={() => {
-          props.navigation.navigate('AddItemScreen');
+          props.navigation.navigate('AddItemScreen', {
+            getOnAddItem: getOnAddItem,
+          });
         }}
       />
     );
@@ -294,17 +297,35 @@ const ItemsScreen = props => {
           buttonstyle={[styles.buttonstyleApply]}
           onPress={() => {
             setFilterSheetVisile(false);
+            let checkedItemArr = subCategories.filter(item => {
+              return item.check;
+            });
+
+            if (checkedItemArr.length > 0) {
+              let arr = checkedItemArr.reduce((acc, d) => {
+                acc.push(d.language.cat_id);
+                return acc;
+              },[]);
+              console.log('checkedItemArr', checkedItemArr, arr);
+              getItemsApi(arr);
+            }
           }}
           buttonTitle={I18n.t('apply')}
         />
       </View>
     );
   };
+  const getOnAddItem = () => {
+    resetItems();
+    getItemsApi(salectedTabId);
+  };
   const renderAddButtom = () => {
     return (
       <TouchableOpacity
         onPress={() => {
-          props.navigation.navigate('AddItemScreen');
+          props.navigation.navigate('AddItemScreen', {
+            getOnAddItem: getOnAddItem,
+          });
         }}
         style={styles.AddView}>
         <AddItemSVG />
@@ -324,7 +345,7 @@ const ItemsScreen = props => {
           logoToolbarType={true}
         />
         {renderTopTab()}
-        {listData.length > 0 ? renderEmptyPage() : renderFlatList()}
+        {listData.length === 0 ? renderEmptyPage() : renderFlatList()}
       </View>
       {listData.length > 0 && renderAddButtom()}
       {renderFilterSheet()}

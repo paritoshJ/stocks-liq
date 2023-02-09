@@ -35,13 +35,16 @@ import CheckBoxPlain from '../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../assets/svgs/CheckBoxWithTick';
 import ThemeButton from '../../common/ThemeButton';
 import Loader from '../../common/loader/Loader';
+import {doGetItems} from '../Items/Action';
 
 const InventoryScreen = props => {
   const [isLoading, setLoading] = useState(false);
   const [isEmptyPage, setEmptyPage] = useState(false);
   const [salectedTabId, setSelectedTabId] = useState(null);
   const [categoriesTabs, setCategoriesTabs] = useState([]);
-  const [listData, setListData] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  const [subCategories, setSubCategories] = useState([]);
+
+  const [listData, setListData] = useState([]);
   const [loadingFooter, setLoadingFooter] = useState(false);
   const [filterSheetVisible, setFilterSheetVisile] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -60,7 +63,35 @@ const InventoryScreen = props => {
       setSelectedTabId(store?.getState()?.ItemReducer?.categoryData[0].value);
     }
   }, []);
-
+  useEffect(() => {
+    getItemsApi(salectedTabId);
+  }, [salectedTabId]);
+  const resetItems = () => {
+    setListData([]);
+  };
+  const getOnAddItem = () => {
+    resetItems();
+    getItemsApi(salectedTabId);
+  };
+  const getSubCategories = (cat_id, arr) => {
+    let obj = arr.find(element => element?.language?.cat_id === cat_id);
+    console.log('subcategories', obj?.subcategories);
+    setSubCategories(obj?.subcategories);
+  };
+  // salectedTabId can be string or array
+  const getItemsApi = salectedTabId => {
+    setLoading(true);
+    props.doGetItems({
+      paramData: {cat_id: salectedTabId, search_text: ''},
+      onSuccess: (isSuccess, status, data) => {
+        setLoading(false);
+        if (isSuccess) {
+          console.log('data', data);
+          setListData(data.data);
+        }
+      },
+    });
+  };
   const renderTopTab = () => {
     return (
       <View
@@ -78,7 +109,11 @@ const InventoryScreen = props => {
               title={el.label}
               count={kFormatter(listData.length)}
               onPress={() => {
+                resetItems();
                 setSelectedTabId(el.value);
+                setTimeout(() => {
+                  getSubCategories(el.value, categoriesTabs);
+                }, 1000);
               }}
             />
           );
@@ -178,29 +213,29 @@ const InventoryScreen = props => {
     return (
       <TouchableOpacity
         onPress={() => {
-          // console.log(index);
-          // setItemTypeArr(current =>
-          //   current.map((obj, i) => {
-          //     if (i === index) {
-          //       return {...obj, check: !obj.check};
-          //     }
-          //     return obj;
-          //   }),
-          // );
+          console.log(index);
+          setSubCategories(current =>
+            current.map((obj, i) => {
+              if (i === index) {
+                return {...obj, check: !obj.check};
+              }
+              return obj;
+            }),
+          );
         }}
         style={styles.priceCheckStyle}>
         {el?.check ? <CheckBoxPlain /> : <CheckBoxWithTick />}
-        <Text style={styles.checkTextStyle}>{el?.lang_name}</Text>
+        <Text style={styles.checkTextStyle}>{el?.language?.lang_name}</Text>
       </TouchableOpacity>
     );
   };
   const renderItemTypeInput = () => {
-    let checkedItem = [1, 2, 3, 4].filter(item => {
+    let checkedItem = subCategories.filter(item => {
       return item.check;
     });
     return (
       <View style={{marginTop: 16}}>
-        {[1, 2, 3, 4].map((el, index) => {
+        {subCategories.map((el, index) => {
           return renderCheckBoxItem(el, index);
         })}
       </View>
@@ -245,6 +280,18 @@ const InventoryScreen = props => {
           buttonstyle={[styles.buttonstyleApply]}
           onPress={() => {
             setFilterSheetVisile(false);
+            let checkedItemArr = subCategories.filter(item => {
+              return item.check;
+            });
+
+            if (checkedItemArr.length > 0) {
+              let arr = checkedItemArr.reduce((acc, d) => {
+                acc.push(d.language.cat_id);
+                return acc;
+              }, []);
+              console.log('checkedItemArr', checkedItemArr, arr);
+              getItemsApi(arr);
+            }
           }}
           buttonTitle={I18n.t('apply')}
         />
@@ -255,19 +302,24 @@ const InventoryScreen = props => {
     return (
       <TouchableOpacity
         onPress={() => {
-          props.navigation.navigate('AddInventoryScreen');
+          goToAddinventory();
         }}
         style={styles.AddView}>
         <AddItemSVG />
       </TouchableOpacity>
     );
   };
+  const goToAddinventory = () => {
+    props.navigation.navigate('AddInventoryScreen', {
+      getOnAddItem: getOnAddItem,
+    });
+  };
   const renderEmptyPage = () => {
     return (
       <EmptyPageView
         icon={renderSvgIcon}
         onAddClick={() => {
-          props.navigation.navigate('AddInventoryScreen');
+          goToAddinventory();
         }}
         title={I18n.t('noItemTitle', {tabName: I18n.t('inventoryTabName')})}
         message={I18n.t('noItemAddText', {
@@ -302,8 +354,18 @@ const InventoryScreen = props => {
     </SafeAreaView>
   );
 };
+const mapStateToProps = state => {
+  return {
+    ItemReducer: state.ItemReducer,
+  };
+};
 
-export default InventoryScreen;
+const mapDispatchToProps = {
+  doGetItems: doGetItems,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(InventoryScreen);
+
 const styles = StyleSheet.create({
   mainView: {flex: 1, backgroundColor: themeProvide().page_back},
   safeView: {flex: 1, backgroundColor: themeProvide().primary_back},
@@ -370,9 +432,10 @@ const styles = StyleSheet.create({
     marginVertical: 12,
     backgroundColor: 'rgba(0, 0, 0, 0.04)',
   },
+  priceCheckStyle: {flexDirection: 'row', marginTop: 16, alignItems: 'center'},
   filterViewStyle: {
     paddingHorizontal: 24,
-    backgroundColor: themeProvide().white,
     paddingVertical: 16,
+    backgroundColor: themeProvide().white,
   },
 });

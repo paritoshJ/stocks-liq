@@ -1,8 +1,8 @@
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StatusBar, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import LogoSvg from '../../assets/svgs/logoSvg';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {isStringNotNull, themeProvide} from '../../util/globalMethods';
+import {isStringNotNull, showMessageAlert, themeProvide} from '../../util/globalMethods';
 import {fonts} from '../../../assets/fonts/fonts';
 import I18n from '../../localization';
 import ThemeButton from '../../common/ThemeButton';
@@ -51,8 +51,9 @@ const LoginScreen = props => {
             mobileNumber: mobileNumber,
             otp: response.otp,
           });
+
         } else {
-          alert(response);
+          // alert(response);
         }
       },
     });
@@ -98,16 +99,23 @@ const LoginScreen = props => {
     return <LogoSvg />;
   };
   return (
-    <View style={styles.mainView}>
-      <View style={styles.firstView}>{renderIcon()}</View>
-      <View style={styles.secondView}>{renderLogin()}</View>
-      <Loader
-        loading={isLoading}
-        isTransparent={true}
-        color={themeProvide().primary}
-        size={32}
+    <>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={themeProvide().primary_back}
       />
-    </View>
+
+      <View style={styles.mainView}>
+        <View style={styles.firstView}>{renderIcon()}</View>
+        <View style={styles.secondView}>{renderLogin()}</View>
+        <Loader
+          loading={isLoading}
+          isTransparent={true}
+          color={themeProvide().primary}
+          size={32}
+        />
+      </View>
+    </>
   );
 };
 

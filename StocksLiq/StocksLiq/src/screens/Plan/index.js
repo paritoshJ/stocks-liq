@@ -94,7 +94,11 @@ const PlanScreen = props => {
   };
   const renderIcon = () => {
     return (
-      <LottieView source={require('../../Animation/Plan.json')} autoPlay loop />
+      <LottieView
+        source={require('../../Animation/Plan.json')}
+        autoPlay
+        loop={false}
+      />
     );
   };
   return (

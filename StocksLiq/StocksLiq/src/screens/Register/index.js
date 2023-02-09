@@ -154,7 +154,7 @@ const SignUpScreen = props => {
       <LottieView
         source={require('../../Animation/More Details.json')}
         autoPlay
-        loop
+        loop={false}
       />
     );
   };

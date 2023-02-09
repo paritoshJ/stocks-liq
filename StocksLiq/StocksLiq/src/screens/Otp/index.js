@@ -29,15 +29,15 @@ import LottieView from 'lottie-react-native';
 const OtpScreen = props => {
   const otpRef = useRef(null);
   const [otp, setOtp] = useState('');
+  const [displayOtp, setDisplayOtp] = useState(props?.route?.params?.otp);
   const [isLoading, setLoading] = useState(false);
   const resetOTP = useCallback(() => {
     otpRef.current?.reset();
   }, []);
   useEffect(() => {
-    console.log(props?.route?.params);
-    showMessageAlert('Your demo Otp is ' + props?.route?.params?.otp);
+    showMessageAlert('Your Otp is ' + displayOtp);
     // otpRef.current.setOtp(props?.route?.params?.otp);
-  }, [])
+  }, [displayOtp]);
   
   const renderWelcomeText = () => {
     return <Text style={styles.welcomeText}>{I18n.t('otpVerification')}</Text>;
@@ -125,8 +125,8 @@ const OtpScreen = props => {
         setLoading(false);
         if (isSuccess) {
           resetOTP();
+          setDisplayOtp(response.otp);
         }
-        alert(response);
       },
     });
   };
@@ -165,7 +165,7 @@ const OtpScreen = props => {
         resizeMode={'contain'}
         source={require('../../Animation/Enter Password.json')}
         autoPlay
-        loop
+        loop={false}
       />
     );
   };

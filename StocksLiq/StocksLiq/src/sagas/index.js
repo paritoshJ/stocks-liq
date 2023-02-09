@@ -17,6 +17,10 @@ import {
   doAddItemWatcher,
   doGetItemsWatcher,
 } from '../screens/Items/Saga';
+import {
+  doGetInventoryProductsWatcher,
+  doAddInventoryWatcher,
+} from '../screens/Inventory/Saga';
 // Redux saga: Root saga
 export function* rootSaga() {
   yield all([
@@ -33,5 +37,7 @@ export function* rootSaga() {
     doGetSubCategoryTypeWatcher(),
     doAddItemWatcher(),
     doGetItemsWatcher(),
+    doGetInventoryProductsWatcher(),
+    doAddInventoryWatcher(),
   ]);
 }

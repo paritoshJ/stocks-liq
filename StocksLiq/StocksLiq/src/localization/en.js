@@ -119,4 +119,7 @@ export default {
   shareWithAFriend: 'Share with a friend',
   inviteFriendAmountDesc:
     'Invite friends to Liq Stocks and get %{price} in your wallet on their first purchase of service.',
+  selectProductName: 'Select product name',
+  selectProductError: 'Please select product.',
+  quantity: 'Quantity',
 };

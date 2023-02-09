@@ -58,7 +58,7 @@ const RegisterSuccessScreen = props => {
       <LottieView
         source={require('../../Animation/Confirmation.json')}
         autoPlay
-        loop
+        loop={false}
       />
     );
   };

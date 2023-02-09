@@ -8,20 +8,20 @@ import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import SplashLogoSvg from '../../assets/svgs/splashLogoSvg.js';
 
 const SplashScreen = props => {
-  // const bottomNavColorChange = async (color, isLightTheme) => {
-  //   try {
-  //     changeNavigationBarColor(color, isLightTheme);
-  //   } catch (e) {
-  //     console.log(e); // {success: false}
-  //   }
-  // };
-  // useEffect(() => {
-  //   bottomNavColorChange(themeProvide().primary_1, false);
+  const bottomNavColorChange = async (color, isLightTheme) => {
+    try {
+      changeNavigationBarColor(color, isLightTheme);
+    } catch (e) {
+      console.log(e); // {success: false}
+    }
+  };
+  useEffect(() => {
+    bottomNavColorChange(themeProvide().primary_back, false);
 
-  //   return () => {
-  //     bottomNavColorChange(themeProvide().Background_secondary, true);
-  //   };
-  // }, []);
+    return () => {
+      bottomNavColorChange(themeProvide().primary_back, true);
+    };
+  }, []);
 
   useEffect(() => {
     // unsubscribe();
@@ -44,8 +44,8 @@ const SplashScreen = props => {
   return (
     <>
       <StatusBar
-        barStyle="light-content"
-        backgroundColor={themeProvide().white}
+        barStyle='dark-content'
+        backgroundColor={themeProvide().primary_back}
       />
       <View
         style={{

@@ -136,8 +136,10 @@ const AddItemScreen = props => {
         setIsLoading(false);
         if (isSuccess) {
           props.navigation.goBack();
+          props?.route?.params?.getOnAddItem();
+        } else {
+          showMessageAlert(data.message);
         }
-        showMessageAlert(data.message);
       },
     });
   };

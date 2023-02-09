@@ -24,21 +24,44 @@ import {TextInput, Checkbox} from 'react-native-paper';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import CheckBoxPlain from '../../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../../assets/svgs/CheckBoxWithTick';
-import {
-  doAddItem,
-  doGetSubCategory,
-  doGetSubCategoryType,
-} from '../../Items/Action';
+import {doGetInventoryProducts, doAddInventory} from '../Action';
 import Loader from '../../../common/loader/Loader';
+import {doGetSubCategoryType} from '../../Items/Action';
 
 const AddInventoryScreen = props => {
   const CategoryArr = store?.getState()?.ItemReducer?.categoryData;
   const [productName, setProductName] = useState('');
-  const [SubCategoryArr, setSubCategoryArr] = useState([]);
+  const [productArr, setProductArr] = useState([]);
   const [itemTypeArr, setItemTypeArr] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [category, setCategory] = useState(null);
+  const [productId, setProductId] = useState(null);
   const [subCategory, setSubCategory] = useState(null);
+
+  useEffect(() => {
+    getInventoryProductApi();
+  }, []);
+
+  const getInventoryProductApi = () => {
+    setIsLoading(true);
+    props.doGetInventoryProducts({
+      paramData: {},
+      onSuccess: (isSuccess, status, data) => {
+        setIsLoading(false);
+        if (isSuccess) {
+          console.log('data', data);
+          data?.forEach(element => {
+            element['value'] = element?.id;
+            element['label'] = element?.name;
+          });
+          setTimeout(() => {
+            setProductArr(data);
+            // props.doSaveCategory(data ? data : []);
+          }, 1000);
+          // setListData(data.data);
+        }
+      },
+    });
+  };
 
   const renderItemType = () => {
     return (
@@ -107,7 +130,7 @@ const AddInventoryScreen = props => {
   };
   const getSubCategoryType = cate_id => {
     props.doGetSubCategoryType({
-      paramData: {cat_id: cate_id, lang: getLanguage()},
+      paramData: {item_id: cate_id},
       onSuccess: (isSuccess, status, data) => {
         if (isSuccess) {
           setItemTypeArr(data);
@@ -116,30 +139,29 @@ const AddInventoryScreen = props => {
       },
     });
   };
-  const doAddItemApi = () => {
+  const doAddInventoryApi = () => {
     setIsLoading(true);
     let checkedItemArr = itemTypeArr.filter(item => {
       return item.check;
     });
     let getTypeData = checkedItemArr.reduce((acc, d) => {
       let obj = {
-        Id: d.type_id,
-        Quantity: d.quantity,
+        id: d.type_id,
+        qty: d.quantity,
       };
       acc.push(obj);
       return acc;
     }, []);
-    props.doAddItem({
+    props.doAddInventory({
       paramData: {
-        item_name: productName,
-        cat_id: category,
-        subcat_id: subCategory,
+        item_id: productId,
         types_data: getTypeData,
       },
       onSuccess: (isSuccess, status, data) => {
         setIsLoading(false);
         if (isSuccess) {
           props.navigation.goBack();
+          props?.route?.params?.getOnAddItem();
         }
       },
     });
@@ -153,13 +175,15 @@ const AddInventoryScreen = props => {
       return item.check;
     });
     let msg = '';
-    if (!isStringNotNull(category)) {
-      msg = I18n.t('selectCategoryError');
+    if (!isStringNotNull(productId)) {
+      msg = I18n.t('selectProductError');
     } else if (checkArray.length > 0) {
       checkArray.some(function (item) {
         console.log(item);
         if (!isStringNotNull(item?.quantity)) {
-          msg = I18n.t('enterQauntityError', {type: item.lang_name});
+          msg = I18n.t('enterQauntityError', {
+            type: item.lang_name.toLowerCase(),
+          });
           return item?.quantity === '';
         }
       });
@@ -167,7 +191,7 @@ const AddInventoryScreen = props => {
     if (isStringNotNull(msg)) {
       showMessageAlert(msg);
     } else {
-      doAddItemApi();
+      doAddInventoryApi();
     }
   };
   const renderButtonView = () => {
@@ -244,16 +268,10 @@ const AddInventoryScreen = props => {
     );
   };
   const onItemSelect = (key, value) => {
-    if (key === 'category') {
-      setCategory(value);
-      getSubCategory(value);
-      setSubCategoryArr([]);
+    if (key === 'productId') {
+      setProductId(value);
       setItemTypeArr([]);
-      setSubCategory('');
-    } else if (key === 'subCategory') {
-      setSubCategory(value);
       getSubCategoryType(value);
-      setItemTypeArr([]);
     }
   };
   return (
@@ -274,16 +292,10 @@ const AddInventoryScreen = props => {
           enableAutomaticScroll={true}>
           <View style={styles.paddingView}>
             {renderDropDownView(
-              I18n.t('category'),
-              'category',
-              category,
-              CategoryArr,
-            )}
-            {renderDropDownView(
-              I18n.t('subCategory'),
-              'subCategory',
-              subCategory,
-              SubCategoryArr,
+              I18n.t('selectProductName'),
+              'productId',
+              productId,
+              productArr,
             )}
             {itemTypeArr.length > 0 && renderItemType()}
             {itemTypeArr.length > 0 && renderItemTypeInput()}
@@ -307,9 +319,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  doGetSubCategory: doGetSubCategory,
+  doGetInventoryProducts: doGetInventoryProducts,
   doGetSubCategoryType: doGetSubCategoryType,
-  doAddItem: doAddItem,
+  doAddInventory: doAddInventory,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddInventoryScreen);

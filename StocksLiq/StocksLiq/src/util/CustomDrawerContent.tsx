@@ -66,7 +66,7 @@ const SideMenuData = [{
                     props.navigation.navigate('WalletScreen')
                 break;
                 case 'refer':
-                // navigation.navigate(flag)
+                    props.navigation.navigate('ReferFriendScreen')
                 break;
                 case 'logout':
                 // navigation.navigate(flag)
