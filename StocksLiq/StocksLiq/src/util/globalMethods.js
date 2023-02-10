@@ -4,6 +4,8 @@ import I18n from '../localization/index';
 import moment from 'moment';
 import {PermissionsAndroid, Alert} from 'react-native';
 import {API_LANG} from '../services/api_constants';
+import {store} from '../store/configureStore';
+
 export const isDarkMode = () => {
   return Appearance.getColorScheme() === 'dark' ? false : false;
 };
@@ -272,5 +274,11 @@ export const kFormatter = num => {
 };
 
 export const getCurrenyPrice = num => {
-  return `${I18n.t('priceWithCurrency', {price: num != null ? num : 0})}` ;
+  return `${I18n.t('priceWithCurrency', {price: num != null ? num : 0})}`;
+};
+
+export const isShowOwner = () => {
+  const user_role =
+    store.getState()?.LoginReducer?.userDetails?.user_role ?? 'shop_owner';
+  return user_role === 'shop_owner';
 };

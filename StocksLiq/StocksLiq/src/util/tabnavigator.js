@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {themeProvide} from '../util/globalMethods';
+import {isShowOwner, themeProvide} from '../util/globalMethods';
 import DeviceInfo from 'react-native-device-info';
 import {
   TabIcon,
@@ -36,6 +36,8 @@ import ItemScreenStack from '../routes/ItemsScreenStack';
 import InventoryScreenStack from '../routes/InventoryScreenStack';
 import ExpenseScreenStack from '../routes/ExpenseScreenStack';
 import ReportScreenStack from '../routes/ReportScreenStack';
+import CommissionScreenStack from '../routes/CommissionScreenStack';
+import SalesScreenStack from '../routes/SalesScreenStack';
 import DashbordTabSVG from '../assets/svgs/DashbordTabSVG';
 import ItemTabSvg from '../assets/svgs/ItemTabSVG';
 import ExpenseTabSVG from '../assets/svgs/ExpenseTabSvg';
@@ -44,9 +46,7 @@ import InventoryTabSVG from '../assets/svgs/InventoryTabSvg';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import CustomDrawerContent from './CustomDrawerContent';
 import {createStackNavigator} from '@react-navigation/stack';
-import MoreMenuSvg from '../assets/svgs/MoreMenuSVG';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import SalesTabSvg from '../assets/svgs/SalesTabSvg';
 
 var exit = false;
 const popText = 'Do you want to exit app ?';
@@ -140,22 +140,24 @@ function TabNavigator(props) {
           tabBarLabel: I18n.t('dashboardTabName'),
         })}
       />
-      <Tab.Screen
-        name="ItemsScreen"
-        component={ItemScreenStack}
-        options={{
-          tabBarIcon: ({focused}) => (
-            <ItemTabSvg
-              color={
-                focused
-                  ? themeProvide().activeIconColor
-                  : themeProvide().unActiveIconColor
-              }
-            />
-          ),
-          tabBarLabel: I18n.t('itemsTabName'),
-        }}
-      />
+      {isShowOwner() && (
+        <Tab.Screen
+          name="ItemsScreen"
+          component={ItemScreenStack}
+          options={{
+            tabBarIcon: ({focused}) => (
+              <ItemTabSvg
+                color={
+                  focused
+                    ? themeProvide().activeIconColor
+                    : themeProvide().unActiveIconColor
+                }
+              />
+            ),
+            tabBarLabel: I18n.t('itemsTabName'),
+          }}
+        />
+      )}
       <Tab.Screen
         name="InventoryScreen"
         component={InventoryScreenStack}
@@ -172,6 +174,24 @@ function TabNavigator(props) {
           tabBarLabel: I18n.t('inventoryTabName'),
         }}
       />
+      {!isShowOwner() && (
+        <Tab.Screen
+          name="SalesScreen"
+          component={SalesScreenStack}
+          options={{
+            tabBarIcon: ({focused}) => (
+              <SalesTabSvg
+                color={
+                  focused
+                    ? themeProvide().activeIconColor
+                    : themeProvide().unActiveIconColor
+                }
+              />
+            ),
+            tabBarLabel: I18n.t('salesTabName'),
+          }}
+        />
+      )}
       <Tab.Screen
         name="ExpenseScreen"
         component={ExpenseScreenStack}
@@ -188,22 +208,41 @@ function TabNavigator(props) {
           tabBarLabel: I18n.t('expenseTabName'),
         }}
       />
-      <Tab.Screen
-        name="ReportScreen"
-        component={ReportScreenStack}
-        options={{
-          tabBarIcon: ({focused}) => (
-            <ReportTabSVG
-              color={
-                focused
-                  ? themeProvide().activeIconColor
-                  : themeProvide().unActiveIconColor
-              }
-            />
-          ),
-          tabBarLabel: I18n.t('reportTabName'),
-        }}
-      />
+      {isShowOwner() ? (
+        <Tab.Screen
+          name="ReportScreen"
+          component={ReportScreenStack}
+          options={{
+            tabBarIcon: ({focused}) => (
+              <ReportTabSVG
+                color={
+                  focused
+                    ? themeProvide().activeIconColor
+                    : themeProvide().unActiveIconColor
+                }
+              />
+            ),
+            tabBarLabel: I18n.t('reportTabName'),
+          }}
+        />
+      ) : (
+        <Tab.Screen
+          name="CommissionScreen"
+          component={CommissionScreenStack}
+          options={{
+            tabBarIcon: ({focused}) => (
+              <ReportTabSVG
+                color={
+                  focused
+                    ? themeProvide().activeIconColor
+                    : themeProvide().unActiveIconColor
+                }
+              />
+            ),
+            tabBarLabel: I18n.t('commissionTabName'),
+          }}
+        />
+      )}
     </Tab.Navigator>
   );
 }

@@ -8,6 +8,7 @@ import {
   Alert,
   Modal,
   Animated,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useRef, useMemo, useState} from 'react';
 import {
@@ -43,20 +44,25 @@ import {doGetItems} from './Action';
 const ItemsScreen = props => {
   const [isLoading, setLoading] = useState(false);
   const [isEmptyPage, setEmptyPage] = useState(false);
-  const [salectedTabId, setSelectedTabId] = useState(store?.getState()?.ItemReducer?.categoryData[0]?.value);
-  const [categoriesTabs, setCategoriesTabs] = useState([...store?.getState()?.ItemReducer?.categoryData]);
+  const [salectedTabId, setSelectedTabId] = useState(
+    store?.getState()?.ItemReducer?.categoryData[0]?.value,
+  );
+  const [categoriesTabs, setCategoriesTabs] = useState([
+    ...store?.getState()?.ItemReducer?.categoryData,
+  ]);
   const [subCategories, setSubCategories] = useState([]);
   const [listData, setListData] = useState([]);
   const [loadingFooter, setLoadingFooter] = useState(false);
   const [filterSheetVisible, setFilterSheetVisile] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const [totalRecords, setTotalRecords] = useState(0);
+  // const [totalRecords, setTotalRecords] = useState(0);
 
   // const refRBSheet = useRef();
   let pageSize = 10;
   let searchString = useRef('');
   let pageNo = useRef(1);
   let totalPage = useRef(2000);
+  let totalRecords = useRef(0);
 
   useEffect(() => {
     if (!isArrayNullOrEmpty(store?.getState()?.ItemReducer?.categoryData)) {
@@ -72,22 +78,37 @@ const ItemsScreen = props => {
 
   const resetItems = () => {
     setListData([]);
+    setSearchText('');
+    pageNo.current = 1;
+
     // setListData([]);
   };
   // salectedTabId can be string or array
   const getItemsApi = (salectedTabId, search_text = '') => {
-    setLoading(true);
+    if (pageNo.current === 1) {
+      setLoading(true);
+    }
+
     props.doGetItems({
-      paramData: {cat_id: salectedTabId, search_text: search_text},
+      paramData: {
+        cat_id: salectedTabId,
+        search_text: search_text,
+        page: pageNo.current,
+      },
       onSuccess: (isSuccess, status, data) => {
         setLoading(false);
+        setLoadingFooter(false);
         if (isSuccess) {
           console.log('data', data);
-          setTotalRecords(isStringNotNull(data?.total) ?? 0);
+          totalRecords.current = data?.total;
+          // setTotalRecords(isStringNotNull(data?.total) ?? 0);
           if (!isArrayNullOrEmpty(data?.data)) {
-            const updateArr = [...listData, ...data?.data];
-            console.log('afteupdateArrrConcateLength=>', updateArr.length);
-            setListData(updateArr);
+            if (pageNo.current === 1) {
+              setListData(data?.data);
+            } else {
+              const updateArr = [...listData, ...data?.data];
+              setListData(updateArr);
+            }
           }
         }
       },
@@ -224,14 +245,30 @@ const ItemsScreen = props => {
     setFilterSheetVisile(true);
   };
 
-  const renderFlatListFooter = () => {};
+  const renderFlatListFooter = () => {
+    return (
+      loadingFooter && (
+        <View
+          style={{
+            flex: 1,
+            height: 84,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'white',
+          }}>
+          <ActivityIndicator size={32} color={themeProvide().primary} />
+        </View>
+      )
+    );
+  };
   const memoizedhandleLoadMore = () => {
-    if (!loadingFooter && totalPage.current > pageNo.current) {
+    if (!loadingFooter && totalRecords.current > listData.length) {
       pageNo.current += 1;
       // this.setState({ loadingFooter: true });
       setLoadingFooter(!loadingFooter);
       // callApi(true);
-    } else if (totalPage.current === pageNo.current && loadingFooter) {
+      getItemsApi(salectedTabId, '');
+    } else if (totalRecords.current === pageNo.current && loadingFooter) {
       setLoadingFooter(!loadingFooter);
     }
   };
@@ -304,6 +341,7 @@ const ItemsScreen = props => {
           buttonstyle={[styles.buttonstyleApply]}
           onPress={() => {
             setFilterSheetVisile(false);
+            resetItems();
             let checkedItemArr = subCategories.filter(item => {
               return item.check;
             });

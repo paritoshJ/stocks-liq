@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Keyboard,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import ToolbarHeader from '../../common/ToolbarHeader';
@@ -53,6 +54,7 @@ const InventoryScreen = props => {
   let searchString = useRef('');
   let pageNo = useRef(1);
   let totalPage = useRef(2000);
+  let totalRecords = useRef(0);
 
   const renderSvgIcon = () => {
     return <ItemBigSVG color={themeProvide().primary} />;
@@ -68,6 +70,8 @@ const InventoryScreen = props => {
   }, [salectedTabId]);
   const resetItems = () => {
     setListData([]);
+    pageNo.current = 1;
+    setSearchText('');
   };
   const getOnAddItem = () => {
     resetItems();
@@ -79,15 +83,31 @@ const InventoryScreen = props => {
     setSubCategories(obj?.subcategories);
   };
   // salectedTabId can be string or array;
-  const getItemsApi = (salectedTabId, searchText) => {
-    setLoading(true);
+  const getItemsApi = (salectedTabId, searchText = '') => {
+    if (pageNo.current === 1) {
+      setLoading(true);
+    }
+
     props.doGetItems({
-      paramData: {cat_id: salectedTabId, search_text: searchText},
+      paramData: {
+        cat_id: salectedTabId,
+        search_text: searchText,
+        page: pageNo.current,
+      },
       onSuccess: (isSuccess, status, data) => {
         setLoading(false);
+        setLoadingFooter(false);
         if (isSuccess) {
+          totalRecords.current = data?.total;
           console.log('data', data);
-          setListData(data.data);
+          if (!isArrayNullOrEmpty(data?.data)) {
+            if (pageNo.current === 1) {
+              setListData(data?.data);
+            } else {
+              const updateArr = [...listData, ...data?.data];
+              setListData(updateArr);
+            }
+          }
         }
       },
     });
@@ -198,15 +218,30 @@ const InventoryScreen = props => {
   const onFilterClick = () => {
     setFilterSheetVisile(true);
   };
-
-  const renderFlatListFooter = () => {};
+  const renderFlatListFooter = () => {
+    return (
+      loadingFooter && (
+        <View
+          style={{
+            flex: 1,
+            height: 84,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'white',
+          }}>
+          <ActivityIndicator size={32} color={themeProvide().primary} />
+        </View>
+      )
+    );
+  };
   const memoizedhandleLoadMore = () => {
-    if (!loadingFooter && totalPage.current > pageNo.current) {
+    if (!loadingFooter && totalRecords.current > listData.length) {
       pageNo.current += 1;
       // this.setState({ loadingFooter: true });
       setLoadingFooter(!loadingFooter);
       // callApi(true);
-    } else if (totalPage.current === pageNo.current && loadingFooter) {
+      getItemsApi(salectedTabId, '');
+    } else if (totalRecords.current === pageNo.current && loadingFooter) {
       setLoadingFooter(!loadingFooter);
     }
   };
@@ -279,6 +314,7 @@ const InventoryScreen = props => {
           buttonstyle={[styles.buttonstyleApply]}
           onPress={() => {
             setFilterSheetVisile(false);
+            resetItems();
             let checkedItemArr = subCategories.filter(item => {
               return item.check;
             });

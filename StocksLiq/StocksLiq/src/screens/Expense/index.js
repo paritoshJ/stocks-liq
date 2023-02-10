@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Keyboard,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import ToolbarHeader from '../../common/ToolbarHeader';
@@ -63,6 +64,7 @@ const ExpenseScreen = props => {
   let pageNo = useRef(1);
   let totalPage = useRef(2000);
   let dateRangeRef = useRef(null);
+  let totalRecords = useRef(0);
 
   const renderSvgIcon = () => {
     return <ItemBigSVG color={themeProvide().primary} />;
@@ -72,22 +74,35 @@ const ExpenseScreen = props => {
   }, [salectedTabId]);
 
   const getExpenseApi = (salectedTabId, search_text = '') => {
-    setLoading(true);
+    if (pageNo.current === 1) {
+      setLoading(true);
+    }
     props.doGetExpenses({
       paramData: {
         expense_type: salectedTabId.toLowerCase(),
         search_text: search_text,
         from_date: startDate,
         to_date: endDate,
+        page: pageNo.current,
       },
       onSuccess: (isSuccess, status, data) => {
         setLoading(false);
+        setLoadingFooter(false);
         if (isSuccess) {
           console.log('data', data);
+
           try {
             if (data != null) {
+              totalRecords.current = data?.total;
               setTotalExpense(data?.total_expenses);
-              setListData(data?.expenses_list?.data);
+              if (!isArrayNullOrEmpty(data?.expenses_list?.data)) {
+                if (pageNo.current === 1) {
+                  setListData(data?.expenses_list?.data);
+                } else {
+                  const updateArr = [...listData, ...data?.expenses_list?.data];
+                  setListData(updateArr);
+                }
+              }
             }
           } catch (error) {
             console.log('error', error);
@@ -222,14 +237,30 @@ const ExpenseScreen = props => {
     setFilterSheetVisile(true);
   };
 
-  const renderFlatListFooter = () => {};
+  const renderFlatListFooter = () => {
+    return (
+      loadingFooter && (
+        <View
+          style={{
+            flex: 1,
+            height: 84,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'white',
+          }}>
+          <ActivityIndicator size={32} color={themeProvide().primary} />
+        </View>
+      )
+    );
+  };
   const memoizedhandleLoadMore = () => {
-    if (!loadingFooter && totalPage.current > pageNo.current) {
+    if (!loadingFooter && totalRecords.current > listData.length) {
       pageNo.current += 1;
       // this.setState({ loadingFooter: true });
       setLoadingFooter(!loadingFooter);
       // callApi(true);
-    } else if (totalPage.current === pageNo.current && loadingFooter) {
+      getExpenseApi(salectedTabId);
+    } else if (totalRecords.current === pageNo.current && loadingFooter) {
       setLoadingFooter(!loadingFooter);
     }
   };
@@ -291,6 +322,7 @@ const ExpenseScreen = props => {
           buttonstyle={[styles.buttonstyleApply]}
           onPress={() => {
             setFilterSheetVisile(false);
+            resetItems();
             // dateRangeRef?.current?.onConfirm();
             getExpenseApi(salectedTabId);
           }}
@@ -331,6 +363,8 @@ const ExpenseScreen = props => {
   };
   const resetItems = () => {
     setListData([]);
+    pageNo.current = 1;
+    // setSearchText={}
     // setListData([]);
   };
 

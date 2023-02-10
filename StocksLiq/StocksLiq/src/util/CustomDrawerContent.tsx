@@ -1,6 +1,6 @@
 import React, { Component, useState } from "react";
 import { StyleSheet, TouchableOpacity, Text, FlatList, View, SafeAreaView, Platform } from "react-native";
-import { themeProvide, twoOptionsAlertFunction } from "./globalMethods";
+import { isShowOwner, themeProvide, twoOptionsAlertFunction } from "./globalMethods";
 import {fonts} from '../../assets/fonts/fonts';
 import CloseIconSVG from "../assets/svgs/CloseIconSVG";
 import MyProfileSideMenu from "../assets/svgs/MyProfileSideMenuSvg";
@@ -12,7 +12,7 @@ import I18n from '../localization';
 import {doLogout,setLoggedIn,doClearSession,doSaveUser,doSaveToken} from '../screens/Login/Action';
 import {connect} from 'react-redux';
 import Loader from '../common/loader/Loader';
-const SideMenuData = [{
+const SideMenuDataShopOwner = [{
     title: I18n.t('myProfile_menu'),
     key: 'profile',
     icon: (<MyProfileSideMenu/>),
@@ -43,6 +43,25 @@ const SideMenuData = [{
     id: 5
 }
 ]
+const SideMenuDataSalesman = [{
+    title: I18n.t('myProfile_menu'),
+    key: 'profile',
+    icon: (<MyProfileSideMenu/>),
+    id: 1
+},
+{
+    title: I18n.t('bhejan_menu'),
+    key: 'bhejan',
+    icon: (<MyProfileSideMenu/>),
+    id: 1
+},
+{
+    title: I18n.t('logout_menu'),
+    key: 'logout',
+    icon: (<LogoutMenuSvg/>),
+    id: 5
+}
+]
 
  function CustomDrawerContent(props) {
 
@@ -64,6 +83,9 @@ const SideMenuData = [{
                 break;
                 case 'wallet':
                     props.navigation.navigate('WalletScreen')
+                break;
+                case 'bhejan':
+                    props.navigation.navigate('SalesmanScreen')
                 break;
                 case 'refer':
                     props.navigation.navigate('ReferFriendScreen')
@@ -110,7 +132,7 @@ const SideMenuData = [{
 const renderMenuList = () =>{
     return (<FlatList
         automaticallyAdjustContentInsets={true}
-        data={SideMenuData}
+        data={isShowOwner() ? SideMenuDataShopOwner : SideMenuDataSalesman}
         keyExtractor={(item, index) => item.id.toString()}
         renderItem={({ item, index }) =>
 

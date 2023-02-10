@@ -197,7 +197,7 @@ function* doAddItem(action) {
 }
 
 export function* doAddItemWatcher() {
-  yield takeLatest(ItemActionTypes.DO_ADD_ITEM, doAddItem);
+  yield takeEvery(ItemActionTypes.DO_ADD_ITEM, doAddItem);
 }
 
 function* doGetItems(action) {
