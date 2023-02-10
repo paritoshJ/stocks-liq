@@ -13,6 +13,7 @@ import React, {useEffect, useRef, useMemo, useState} from 'react';
 import {
   getLanguage,
   isArrayNullOrEmpty,
+  isStringNotNull,
   kFormatter,
   themeProvide,
 } from '../../util/globalMethods';
@@ -42,13 +43,15 @@ import {doGetItems} from './Action';
 const ItemsScreen = props => {
   const [isLoading, setLoading] = useState(false);
   const [isEmptyPage, setEmptyPage] = useState(false);
-  const [salectedTabId, setSelectedTabId] = useState(null);
-  const [categoriesTabs, setCategoriesTabs] = useState([]);
+  const [salectedTabId, setSelectedTabId] = useState(store?.getState()?.ItemReducer?.categoryData[0]?.value);
+  const [categoriesTabs, setCategoriesTabs] = useState([...store?.getState()?.ItemReducer?.categoryData]);
   const [subCategories, setSubCategories] = useState([]);
   const [listData, setListData] = useState([]);
   const [loadingFooter, setLoadingFooter] = useState(false);
   const [filterSheetVisible, setFilterSheetVisile] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [totalRecords, setTotalRecords] = useState(0);
+
   // const refRBSheet = useRef();
   let pageSize = 10;
   let searchString = useRef('');
@@ -57,8 +60,6 @@ const ItemsScreen = props => {
 
   useEffect(() => {
     if (!isArrayNullOrEmpty(store?.getState()?.ItemReducer?.categoryData)) {
-      setCategoriesTabs([...store?.getState()?.ItemReducer?.categoryData]);
-      setSelectedTabId(store?.getState()?.ItemReducer?.categoryData[0]?.value);
       getSubCategories(
         store?.getState()?.ItemReducer?.categoryData[0]?.value,
         store?.getState()?.ItemReducer?.categoryData,
@@ -74,15 +75,20 @@ const ItemsScreen = props => {
     // setListData([]);
   };
   // salectedTabId can be string or array
-  const getItemsApi = salectedTabId => {
+  const getItemsApi = (salectedTabId, search_text = '') => {
     setLoading(true);
     props.doGetItems({
-      paramData: {cat_id: salectedTabId, search_text: ''},
+      paramData: {cat_id: salectedTabId, search_text: search_text},
       onSuccess: (isSuccess, status, data) => {
         setLoading(false);
         if (isSuccess) {
           console.log('data', data);
-          setListData(data.data);
+          setTotalRecords(isStringNotNull(data?.total) ?? 0);
+          if (!isArrayNullOrEmpty(data?.data)) {
+            const updateArr = [...listData, ...data?.data];
+            console.log('afteupdateArrrConcateLength=>', updateArr.length);
+            setListData(updateArr);
+          }
         }
       },
     });
@@ -177,12 +183,13 @@ const ItemsScreen = props => {
     if (value.trim().length > 2) {
       searchString.current = value.trim();
       pageNo.current = 1;
-      // callApi(false);
+      getItemsApi(salectedTabId, searchString.current);
     } else {
       searchString.current = '';
       if (value.trim().length === 0) {
         pageNo.current = 1;
         // callApi(false);
+        getItemsApi(salectedTabId, searchString.current);
       }
     }
   };
@@ -305,7 +312,7 @@ const ItemsScreen = props => {
               let arr = checkedItemArr.reduce((acc, d) => {
                 acc.push(d.language.cat_id);
                 return acc;
-              },[]);
+              }, []);
               console.log('checkedItemArr', checkedItemArr, arr);
               getItemsApi(arr);
             }

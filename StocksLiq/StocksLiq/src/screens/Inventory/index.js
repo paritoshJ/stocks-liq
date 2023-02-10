@@ -78,11 +78,11 @@ const InventoryScreen = props => {
     console.log('subcategories', obj?.subcategories);
     setSubCategories(obj?.subcategories);
   };
-  // salectedTabId can be string or array
-  const getItemsApi = salectedTabId => {
+  // salectedTabId can be string or array;
+  const getItemsApi = (salectedTabId, searchText) => {
     setLoading(true);
     props.doGetItems({
-      paramData: {cat_id: salectedTabId, search_text: ''},
+      paramData: {cat_id: salectedTabId, search_text: searchText},
       onSuccess: (isSuccess, status, data) => {
         setLoading(false);
         if (isSuccess) {
@@ -158,11 +158,13 @@ const InventoryScreen = props => {
       searchString.current = value.trim();
       pageNo.current = 1;
       // callApi(false);
+      getItemsApi(salectedTabId, searchString.current);
     } else {
       searchString.current = '';
       if (value.trim().length === 0) {
         pageNo.current = 1;
         // callApi(false);
+        getItemsApi(salectedTabId, searchString.current);
       }
     }
   };
@@ -230,9 +232,6 @@ const InventoryScreen = props => {
     );
   };
   const renderItemTypeInput = () => {
-    let checkedItem = subCategories.filter(item => {
-      return item.check;
-    });
     return (
       <View style={{marginTop: 16}}>
         {subCategories.map((el, index) => {

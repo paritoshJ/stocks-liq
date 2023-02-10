@@ -37,6 +37,9 @@ import CheckBoxWithTick from '../../assets/svgs/CheckBoxWithTick';
 import ThemeButton from '../../common/ThemeButton';
 import Loader from '../../common/loader/Loader';
 import {doGetExpenses} from './Action';
+import moment from 'moment';
+import DateRangePicker from 'rn-select-date-range';
+
 const ExpenseScreen = props => {
   const [isLoading, setLoading] = useState(false);
   const [isEmptyPage, setEmptyPage] = useState(false);
@@ -52,11 +55,14 @@ const ExpenseScreen = props => {
   const [filterSheetVisible, setFilterSheetVisile] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [totalExpense, setTotalExpense] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   // const refRBSheet = useRef();
   let pageSize = 10;
   let searchString = useRef('');
   let pageNo = useRef(1);
   let totalPage = useRef(2000);
+  let dateRangeRef = useRef(null);
 
   const renderSvgIcon = () => {
     return <ItemBigSVG color={themeProvide().primary} />;
@@ -65,10 +71,15 @@ const ExpenseScreen = props => {
     getExpenseApi(salectedTabId);
   }, [salectedTabId]);
 
-  const getExpenseApi = () => {
+  const getExpenseApi = (salectedTabId, search_text = '') => {
     setLoading(true);
     props.doGetExpenses({
-      paramData: {expense_type: salectedTabId.toLowerCase(), search_text: ''},
+      paramData: {
+        expense_type: salectedTabId.toLowerCase(),
+        search_text: search_text,
+        from_date: startDate,
+        to_date: endDate,
+      },
       onSuccess: (isSuccess, status, data) => {
         setLoading(false);
         if (isSuccess) {
@@ -118,8 +129,6 @@ const ExpenseScreen = props => {
     return (
       <FlatList
         contentContainerStyle={{
-          marginHorizontal: 20,
-          paddingBottom: 20,
           justifyContent: 'center',
         }}
         data={listData}
@@ -148,11 +157,13 @@ const ExpenseScreen = props => {
       searchString.current = value.trim();
       pageNo.current = 1;
       // callApi(false);
+      getExpenseApi(salectedTabId, searchString.current);
     } else {
       searchString.current = '';
       if (value.trim().length === 0) {
         pageNo.current = 1;
         // callApi(false);
+        getExpenseApi(salectedTabId, searchString.current);
       }
     }
   };
@@ -242,7 +253,24 @@ const ExpenseScreen = props => {
             {'Filter'}
           </Text>
           <View style={styles.filterInnerStyle} />
-          {/* {renderItemTypeInput()} */}
+          <DateRangePicker
+            ref={dateRangeRef}
+            onSelectDateRange={range => {
+              console.log('range', range);
+              // setRange(range);
+              setStartDate(range.firstDate);
+              setEndDate(range.secondDate);
+            }}
+            blockSingleDateSelection={true}
+            responseFormat="YYYY-MM-DD"
+            maxDate={moment()}
+            minDate={moment().subtract(100, 'days')}
+            clearBtnTitle={''}
+            confirmBtnTitle={''}
+            selectedDateContainerStyle={styles.selectedDateContainerStyle}
+            selectedDateStyle={styles.selectedDateStyle}
+          />
+
           {renderFilterButtonView()}
         </View>
       </RenderModal>
@@ -254,6 +282,7 @@ const ExpenseScreen = props => {
         <ThemeButton
           buttonstyle={[styles.buttonstyleCancel]}
           onPress={() => {
+            // dateRangeRef?.current?.onClear();
             setFilterSheetVisile(false);
           }}
           buttonTitle={I18n.t('cancel')}
@@ -262,6 +291,8 @@ const ExpenseScreen = props => {
           buttonstyle={[styles.buttonstyleApply]}
           onPress={() => {
             setFilterSheetVisile(false);
+            // dateRangeRef?.current?.onConfirm();
+            getExpenseApi(salectedTabId);
           }}
           buttonTitle={I18n.t('apply')}
         />
@@ -319,7 +350,10 @@ const ExpenseScreen = props => {
           logoToolbarType={true}
         />
         {renderTopTab()}
-        {listData.length === 0 ? renderEmptyPage() : renderFlatList()}
+        <View style={{marginHorizontal: 20, paddingBottom: 20}}>
+          {listData.length === 0 && renderFlatListHeader(listData.length === 0)}
+          {listData.length === 0 ? renderEmptyPage() : renderFlatList()}
+        </View>
       </View>
       {listData.length > 0 && renderAddButtom()}
       {renderFilterSheet()}
@@ -422,5 +456,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     backgroundColor: themeProvide().white,
     paddingVertical: 16,
+  },
+  selectedDateContainerStyle: {
+    height: 35,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: themeProvide().primary,
+  },
+  selectedDateStyle: {
+    fontWeight: 'bold',
+    color: 'white',
   },
 });
