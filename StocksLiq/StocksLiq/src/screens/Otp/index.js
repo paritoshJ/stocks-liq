@@ -38,7 +38,7 @@ const OtpScreen = props => {
     showMessageAlert('Your Otp is ' + displayOtp);
     // otpRef.current.setOtp(props?.route?.params?.otp);
   }, [displayOtp]);
-  
+
   const renderWelcomeText = () => {
     return <Text style={styles.welcomeText}>{I18n.t('otpVerification')}</Text>;
   };
@@ -106,13 +106,19 @@ const OtpScreen = props => {
       onSuccess: (isSuccess, status, response) => {
         setLoading(false);
         if (isSuccess && !isObjectNullOrUndefined(response?.data)) {
-          props.doSaveToken(response?.data?.token);
-          props.doSaveUser(response?.data);
-          setTimeout(() => {
-            props.setLoggedIn(true);
-          }, 1000);
+          if (response?.data?.is_deleted === 1) {
+            showMessageAlert(
+              'Your account is deleted please contact to admin for further info.',
+            );
+          } else {
+            props.doSaveToken(response?.data?.token);
+            props.doSaveUser(response?.data);
+            setTimeout(() => {
+              props.setLoggedIn(true);
+            }, 1000);
+          }
         } else {
-          alert(response);
+          showMessageAlert(response);
         }
       },
     });

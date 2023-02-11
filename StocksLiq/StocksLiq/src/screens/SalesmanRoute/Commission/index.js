@@ -159,7 +159,7 @@ const CommissionScreen = props => {
         showsVerticalScrollIndicator={false}
         initialNumToRender={listData.length}
         ListFooterComponent={renderFlatListFooter()}
-        ListHeaderComponent={renderFlatListHeader()}
+        // ListHeaderComponent={renderFlatListHeader()}
         onEndReachedThreshold={0.8}
         onEndReached={memoizedhandleLoadMore}
         onScrollBeginDrag={Keyboard.dismiss}
@@ -376,9 +376,10 @@ const CommissionScreen = props => {
           logoToolbarType={true}
         />
         {renderTopTab()}
-        {isEmptyPage ? renderEmptyPage() : renderFlatList()}
+        {renderFlatListHeader()}
+        {listData.length === 0 ? renderEmptyPage() : renderFlatList()}
       </View>
-      {renderAddButtom()}
+      {listData.length > 0 && renderAddButtom()}
       {renderFilterSheet()}
       <Loader
         loading={isLoading}
@@ -428,6 +429,8 @@ const styles = StyleSheet.create({
     height: 44,
     alignItems: 'center',
     flexDirection: 'row',
+    marginHorizontal: 20,
+    paddingVertical: 16,
   },
   filterView: {
     backgroundColor: themeProvide().primary,

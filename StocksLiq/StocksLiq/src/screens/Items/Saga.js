@@ -32,7 +32,7 @@ function* doGetCategory(action) {
     yield action.payload.onSuccess(
       response?.data?.status,
       response.status,
-      response?.data?.data,
+      response?.data?.status ? response?.data?.data : response?.data?.message,
     );
   } catch (error) {
     console.log('doGetCategory', error);

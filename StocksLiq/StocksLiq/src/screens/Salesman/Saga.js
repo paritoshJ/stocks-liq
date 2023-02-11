@@ -10,7 +10,11 @@ import {
 import {SalesmanActionTypes} from './Action_type';
 import {request} from '../../services/service';
 import {HTTP_METHODS} from '../../services/api_constants';
-import {DO_ADD_SALESMAN, DO_GET_SALESMAN} from '../../services/api_end_points';
+import {
+  DO_ADD_SALESMAN,
+  DO_DELETE_SALESMAN,
+  DO_GET_SALESMAN,
+} from '../../services/api_end_points';
 import {store} from '../../store/configureStore';
 
 function* doAddsalesman(action) {
@@ -62,7 +66,7 @@ function* doGetSalesman(action) {
     const {response} = yield request(
       DO_GET_SALESMAN,
       HTTP_METHODS.GET,
-      {},
+      action.payload.paramData,
       {},
       true,
       store.getState().LoginReducer.bearerToken,
@@ -101,4 +105,50 @@ function* doGetSalesman(action) {
 
 export function* doGetSalesmanWatcher() {
   yield takeLatest(SalesmanActionTypes.GET_SALESMAN, doGetSalesman);
+}
+
+function* doDeleteSalesman(action) {
+  try {
+    const {response} = yield request(
+      DO_DELETE_SALESMAN,
+      HTTP_METHODS.POST,
+      action.payload.paramData,
+      {},
+      true,
+      store.getState().LoginReducer.bearerToken,
+    );
+    console.log('doDeleteSalesman', response);
+    yield action.payload.onSuccess(
+      response?.data?.status,
+      response.status,
+      response?.data,
+    );
+  } catch (error) {
+    console.log('doDeleteSalesman', error);
+    if (error.response) {
+      if (error.response.status === 500) {
+        yield action.payload.onSuccess(
+          false,
+          error.response.status,
+          'Something went wrong',
+        );
+      } else {
+        if (error.response.status !== 401) {
+          yield action.payload.onSuccess(
+            false,
+            error.response.status,
+            error.response.data.message
+              ? error.response.data.message
+              : 'Something went wrong',
+          );
+        }
+      }
+    } else {
+      yield action.payload.onSuccess(false, 500, 'Something went wrong');
+    }
+  }
+}
+
+export function* doDeleteSalesmanWatcher() {
+  yield takeLatest(SalesmanActionTypes.DO_DELETE_SALESMAN, doDeleteSalesman);
 }

@@ -137,4 +137,7 @@ export default {
   enterBottleCommission: '₹ %{type} bottle commission',
   errorBottleQuantity: 'Please enter %{type} bottle quantity.',
   enterBottleQuantity: '₹ %{type} bottle quantity',
+  deleteUserAsk: 'Do you want to delete this user?',
+  accountDeleteInfo:
+    'Your account is deleted please contact to admin for further info.',
 };

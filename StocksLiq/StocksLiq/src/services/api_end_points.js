@@ -24,6 +24,7 @@ export const DO_ADD_EXPENSE = `${API_DOMAIN_QA}/add-expenses`;
 export const DO_GET_EXPENSES = `${API_DOMAIN_QA}/get-expenses`;
 export const DO_ADD_SALESMAN = `${API_DOMAIN_QA}/add-salesman`;
 export const DO_GET_SALESMAN = `${API_DOMAIN_QA}/get-salesman`;
+export const DO_DELETE_SALESMAN = `${API_DOMAIN_QA}/delete-salesman`;
 
 // export const GET_CLAIM_STATUS_SUMMERY = (
 //   memberType,

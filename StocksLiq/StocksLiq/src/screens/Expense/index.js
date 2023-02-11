@@ -113,6 +113,7 @@ const ExpenseScreen = props => {
     });
   };
   const renderTopTab = () => {
+    console.log('categoriesTabs',categoriesTabs)
     return (
       <View
         style={{
@@ -145,6 +146,9 @@ const ExpenseScreen = props => {
       <FlatList
         contentContainerStyle={{
           justifyContent: 'center',
+
+          marginHorizontal: 20,
+          paddingBottom: 20,
         }}
         data={listData}
         extraData={listData}
@@ -182,7 +186,7 @@ const ExpenseScreen = props => {
       }
     }
   };
-  const renderFlatListHeader = () => {
+  const renderSearchViewHeader = () => {
     return (
       <>
         <View style={styles.searchMainView}>
@@ -208,6 +212,12 @@ const ExpenseScreen = props => {
             <FilterSvgIcon />
           </TouchableOpacity>
         </View>
+      </>
+    );
+  };
+  const renderFlatListHeader = isData => {
+    return (
+      <>
         <View style={styles.totalExpenseView}>
           <Text
             style={{
@@ -353,11 +363,11 @@ const ExpenseScreen = props => {
             getOnAddExpense: getOnAddExpense,
           });
         }}
-        title={I18n.t('noItemTitle', {tabName: I18n.t('inventoryTabName')})}
+        title={I18n.t('noItemTitle', {tabName: I18n.t('expenseTabName')})}
         message={I18n.t('noItemAddText', {
-          tabName: I18n.t('inventoryTabName'),
+          tabName: I18n.t('expenseTabName'),
         })}
-        buttonTitle={`+ ${I18n.t('inventoryTabName')}`}
+        buttonTitle={`+ ${I18n.t('expenseTabName')}`}
       />
     );
   };
@@ -384,10 +394,9 @@ const ExpenseScreen = props => {
           logoToolbarType={true}
         />
         {renderTopTab()}
-        <View style={{marginHorizontal: 20, paddingBottom: 20}}>
-          {listData.length === 0 && renderFlatListHeader(listData.length === 0)}
-          {listData.length === 0 ? renderEmptyPage() : renderFlatList()}
-        </View>
+        {renderSearchViewHeader()}
+
+        {listData.length === 0 ? renderEmptyPage() : renderFlatList()}
       </View>
       {listData.length > 0 && renderAddButtom()}
       {renderFilterSheet()}
@@ -440,6 +449,8 @@ const styles = StyleSheet.create({
     height: 44,
     alignItems: 'center',
     flexDirection: 'row',
+    marginHorizontal: 20,
+    paddingVertical: 16,
   },
   filterView: {
     backgroundColor: themeProvide().primary,

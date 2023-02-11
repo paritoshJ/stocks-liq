@@ -11,6 +11,7 @@ import {
   isArrayNullOrEmpty,
   getLanguage,
   themeProvide,
+  showMessageAlert,
 } from '../../util/globalMethods';
 import ToolbarHeader from '../../common/ToolbarHeader';
 import {fonts} from '../../../assets/fonts/fonts';
@@ -31,7 +32,7 @@ const DashboardScreen = props => {
     props.doGetCategory({
       paramsData: {lang: getLanguage()},
       onSuccess: (isSuccess, status, data) => {
-        if (isSuccess) {
+        if (isSuccess && typeof data !== 'string') {
           data?.forEach(element => {
             element['value'] = element?.language?.cat_id;
             element['label'] = element?.language?.lang_name;
@@ -39,6 +40,8 @@ const DashboardScreen = props => {
           setTimeout(() => {
             props.doSaveCategory(data ? data : []);
           }, 1000);
+        } else {
+          showMessageAlert(data);
         }
       },
     });

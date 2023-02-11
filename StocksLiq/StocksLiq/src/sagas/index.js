@@ -17,6 +17,7 @@ import {
 import {
   doAddsalesmanWatcher,
   doGetSalesmanWatcher,
+  doDeleteSalesmanWatcher,
 } from '../screens/Salesman/Saga';
 import {
   doGetCategoryWatcher,
@@ -51,5 +52,6 @@ export function* rootSaga() {
     doGetExpenseWatcher(),
     doAddsalesmanWatcher(),
     doGetSalesmanWatcher(),
+    doDeleteSalesmanWatcher(),
   ]);
 }

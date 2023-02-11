@@ -140,6 +140,7 @@ const ItemsScreen = props => {
     );
   };
   const renderTopTab = () => {
+    console.log('categoriesTabs',categoriesTabs)
     return (
       <View
         style={{
@@ -186,7 +187,6 @@ const ItemsScreen = props => {
         showsVerticalScrollIndicator={false}
         initialNumToRender={listData.length}
         ListFooterComponent={renderFlatListFooter()}
-        ListHeaderComponent={renderFlatListHeader()}
         onEndReachedThreshold={0.8}
         onEndReached={memoizedhandleLoadMore}
         onScrollBeginDrag={Keyboard.dismiss}
@@ -220,7 +220,7 @@ const ItemsScreen = props => {
         <View style={styles.inputViewStyle}>
           <SearchSvgIcon />
           <TextInput
-            placeholderText={I18n.t('search')}
+             placeholder={I18n.t('search')}
             value={searchText}
             style={styles.inputStyle}
             placeholderColor={themeProvide().borderBlack}
@@ -390,6 +390,7 @@ const ItemsScreen = props => {
           logoToolbarType={true}
         />
         {renderTopTab()}
+        {renderFlatListHeader()}
         {listData.length === 0 ? renderEmptyPage() : renderFlatList()}
       </View>
       {listData.length > 0 && renderAddButtom()}
@@ -442,6 +443,8 @@ const styles = StyleSheet.create({
     height: 44,
     alignItems: 'center',
     flexDirection: 'row',
+    marginHorizontal: 20,
+    paddingVertical: 16,
   },
   filterView: {
     backgroundColor: themeProvide().primary,

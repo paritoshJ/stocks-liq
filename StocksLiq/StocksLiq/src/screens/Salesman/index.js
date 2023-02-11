@@ -8,13 +8,16 @@ import {
   Alert,
   Modal,
   Animated,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useRef, useMemo, useState} from 'react';
 import {
   getLanguage,
   isArrayNullOrEmpty,
   kFormatter,
+  showMessageAlert,
   themeProvide,
+  twoOptionsAlertFunction,
 } from '../../util/globalMethods';
 import ToolbarHeader from '../../common/ToolbarHeader';
 import I18n from '../../localization';
@@ -37,14 +40,14 @@ import CheckBoxPlain from '../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../assets/svgs/CheckBoxWithTick';
 import ThemeButton from '../../common/ThemeButton';
 import Loader from '../../common/loader/Loader';
-import {doGetSalesMan} from './Action';
+import {doGetSalesMan, doDeleteSalesMan} from './Action';
 
 const SalesmanScreen = props => {
   const [isLoading, setLoading] = useState(false);
   const [isEmptyPage, setEmptyPage] = useState(false);
   const [salectedTabId, setSelectedTabId] = useState(null);
   const [categoriesTabs, setCategoriesTabs] = useState([]);
-  const [listData, setListData] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  const [listData, setListData] = useState([]);
   const [loadingFooter, setLoadingFooter] = useState(false);
   const [filterSheetVisible, setFilterSheetVisile] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -53,6 +56,7 @@ const SalesmanScreen = props => {
   let searchString = useRef('');
   let pageNo = useRef(1);
   let totalPage = useRef(2000);
+  let totalRecords = useRef(0);
 
   useEffect(() => {
     getSalesmanApi();
@@ -97,13 +101,17 @@ const SalesmanScreen = props => {
         ListFooterComponent={renderFlatListFooter()}
         // ListHeaderComponent={renderFlatListHeader()}
         onEndReachedThreshold={0.8}
-        onEndReached={memoizedhandleLoadMore}
+        // onEndReached={memoizedhandleLoadMore}
         onScrollBeginDrag={Keyboard.dismiss}
         renderItem={({item, index}) => (
           <SalesmanRow
             item={item}
             onItemClick={() => {}}
-            onMoreIconClick={() => {}}
+            onMoreIconClick={() => {
+              twoOptionsAlertFunction(I18n.t('deleteUserAsk'), () => {
+                doDeleteSalesmanApi(item.id, index);
+              });
+            }}
           />
         )}
       />
@@ -153,14 +161,30 @@ const SalesmanScreen = props => {
     setFilterSheetVisile(true);
   };
 
-  const renderFlatListFooter = () => {};
+  const renderFlatListFooter = () => {
+    return (
+      loadingFooter && (
+        <View
+          style={{
+            flex: 1,
+            height: 84,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'white',
+          }}>
+          <ActivityIndicator size={32} color={themeProvide().primary} />
+        </View>
+      )
+    );
+  };
   const memoizedhandleLoadMore = () => {
-    if (!loadingFooter && totalPage.current > pageNo.current) {
+    if (!loadingFooter && totalRecords.current > listData.length) {
       pageNo.current += 1;
       // this.setState({ loadingFooter: true });
       setLoadingFooter(!loadingFooter);
       // callApi(true);
-    } else if (totalPage.current === pageNo.current && loadingFooter) {
+      getSalesmanApi();
+    } else if (totalRecords.current === listData.length && loadingFooter) {
       setLoadingFooter(!loadingFooter);
     }
   };
@@ -189,20 +213,46 @@ const SalesmanScreen = props => {
     getSalesmanApi();
   };
   const getSalesmanApi = () => {
-    setLoading(true);
+    if (pageNo.current === 1) {
+      setLoading(true);
+    }
     props.doGetSalesMan({
+      paramData: {page: pageNo.current},
       onSuccess: (isSuccess, status, data) => {
         setLoading(false);
+        setLoadingFooter(false);
         if (isSuccess) {
           console.log('data', data);
+          totalRecords.current = data?.total;
           try {
             if (data != null) {
-              setListData(data?.data);
+              if (!isArrayNullOrEmpty(data?.data)) {
+                if (pageNo.current === 1) {
+                  setListData(data?.data);
+                } else {
+                  const updateArr = [...listData, ...data?.data];
+                  setListData(updateArr);
+                }
+              }
             }
           } catch (error) {
             console.log('error', error);
             setListData([]);
           }
+        }
+      },
+    });
+  };
+  const doDeleteSalesmanApi = (id, index) => {
+    setLoading(true);
+    props.doDeleteSalesMan({
+      paramData: {user_id: id},
+      onSuccess: (isSuccess, status, data) => {
+        setLoading(false);
+        if (isSuccess) {
+          listData.splice(index, 1);
+        } else {
+          showMessageAlert(data.message);
         }
       },
     });
@@ -254,6 +304,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   doGetSalesMan: doGetSalesMan,
+  doDeleteSalesMan: doDeleteSalesMan,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SalesmanScreen);

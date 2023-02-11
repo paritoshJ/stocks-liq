@@ -41,8 +41,12 @@ import {doGetItems} from '../Items/Action';
 const InventoryScreen = props => {
   const [isLoading, setLoading] = useState(false);
   const [isEmptyPage, setEmptyPage] = useState(false);
-  const [salectedTabId, setSelectedTabId] = useState(null);
-  const [categoriesTabs, setCategoriesTabs] = useState([]);
+  const [salectedTabId, setSelectedTabId] = useState(
+    store?.getState()?.ItemReducer?.categoryData[0]?.value,
+  );
+  const [categoriesTabs, setCategoriesTabs] = useState([
+    ...store?.getState()?.ItemReducer?.categoryData,
+  ]);
   const [subCategories, setSubCategories] = useState([]);
 
   const [listData, setListData] = useState([]);
@@ -59,12 +63,16 @@ const InventoryScreen = props => {
   const renderSvgIcon = () => {
     return <ItemBigSVG color={themeProvide().primary} />;
   };
+
   useEffect(() => {
     if (!isArrayNullOrEmpty(store?.getState()?.ItemReducer?.categoryData)) {
-      setCategoriesTabs([...store?.getState()?.ItemReducer?.categoryData]);
-      setSelectedTabId(store?.getState()?.ItemReducer?.categoryData[0].value);
+      getSubCategories(
+        store?.getState()?.ItemReducer?.categoryData[0]?.value,
+        store?.getState()?.ItemReducer?.categoryData,
+      );
     }
   }, []);
+
   useEffect(() => {
     getItemsApi(salectedTabId);
   }, [salectedTabId]);
@@ -159,7 +167,6 @@ const InventoryScreen = props => {
         showsVerticalScrollIndicator={false}
         initialNumToRender={listData.length}
         ListFooterComponent={renderFlatListFooter()}
-        ListHeaderComponent={renderFlatListHeader()}
         onEndReachedThreshold={0.8}
         onEndReached={memoizedhandleLoadMore}
         onScrollBeginDrag={Keyboard.dismiss}
@@ -376,9 +383,10 @@ const InventoryScreen = props => {
           logoToolbarType={true}
         />
         {renderTopTab()}
-        {isEmptyPage ? renderEmptyPage() : renderFlatList()}
+        {renderFlatListHeader()}
+        {listData.length === 0 ? renderEmptyPage() : renderFlatList()}
       </View>
-      {renderAddButtom()}
+      {listData.length > 0 && renderAddButtom()}
       {renderFilterSheet()}
       <Loader
         loading={isLoading}
@@ -428,6 +436,8 @@ const styles = StyleSheet.create({
     height: 44,
     alignItems: 'center',
     flexDirection: 'row',
+    marginHorizontal: 20,
+    paddingVertical: 16,
   },
   filterView: {
     backgroundColor: themeProvide().primary,

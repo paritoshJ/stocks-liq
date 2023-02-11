@@ -48,8 +48,7 @@ const ReferFriendScreen = props => {
     });
   };
 
-  const onSharePress = () => {
-  };
+  const onSharePress = () => {};
   const renderButtonView = () => {
     return (
       <View style={styles.buttonView}>
@@ -79,7 +78,11 @@ const ReferFriendScreen = props => {
         <Text style={styles.referCode}>
           {I18n.t('referalLabel')}{' '}
           <Text style={styles.actualCode}>
-            {I18n.t('referalCode', {code: '4frt5'})}
+            {I18n.t('referalCode', {
+              code:
+                store.getState()?.LoginReducer?.userDetails?.referral_code ??
+                '54345',
+            })}
           </Text>
         </Text>
       </View>

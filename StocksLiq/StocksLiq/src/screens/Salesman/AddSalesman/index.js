@@ -46,6 +46,8 @@ const AddSalesmanScreen = props => {
         if (isSuccess) {
           props.navigation.goBack();
           props?.route?.params?.onAddSalesmanPress();
+        } else {
+          showMessageAlert(data?.message);
         }
       },
     });
