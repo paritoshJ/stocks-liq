@@ -217,8 +217,10 @@ function* doGetItems(action) {
       response?.data?.data,
     );
   } catch (error) {
+    // yield action.payload.onSuccess(false, 500, 'Something went wrong');
+
     console.log('doGetItems', error);
-    if (error.response) {
+    if (error?.response) {
       if (error.response.status === 500) {
         yield action.payload.onSuccess(
           false,

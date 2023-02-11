@@ -280,5 +280,5 @@ export const getCurrenyPrice = num => {
 export const isShowOwner = () => {
   const user_role =
     store.getState()?.LoginReducer?.userDetails?.user_role ?? 'shop_owner';
-  return user_role === 'shop_owner';
+  return user_role !== 'shop_owner';
 };

@@ -1,7 +1,8 @@
 import React from 'react';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import ReportScreen from '../screens/Reports/index';
+import CommissionScreen from '../screens/SalesmanRoute/Commission/index';
+import AddCommissionScreen from '../screens/SalesmanRoute/Commission/AddCommission/index';
 
 const ReportStack = createStackNavigator();
 const CommissionScreenStack = ({navigation, route}) => {
@@ -21,8 +22,15 @@ const CommissionScreenStack = ({navigation, route}) => {
         headerBackTitleVisible: false,
       }}>
       <ReportStack.Screen
-        name="ReportScreen"
-        component={ReportScreen}
+        name="CommissionScreen"
+        component={CommissionScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ReportStack.Screen
+        name="AddCommissionScreen"
+        component={AddCommissionScreen}
         options={{
           headerShown: false,
         }}

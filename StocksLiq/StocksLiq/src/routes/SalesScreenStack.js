@@ -1,8 +1,8 @@
 import React from 'react';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import InventoryScreen from '../screens/Inventory/index';
-import AddInventoryScreen from '../screens/Inventory/AddInventory/index';
+import SalesScreen from '../screens/SalesmanRoute/Sales/index';
+import AddSalesScreen from '../screens/SalesmanRoute/Sales/AddSales/AddSalesScreen';
 
 const InventoryStack = createStackNavigator();
 const SalesScreenStack = ({navigation, route}) => {
@@ -22,15 +22,15 @@ const SalesScreenStack = ({navigation, route}) => {
         headerBackTitleVisible: false,
       }}>
       <InventoryStack.Screen
-        name="InventoryScreen"
-        component={InventoryScreen}
+        name="SalesScreen"
+        component={SalesScreen}
         options={{
           headerShown: false,
         }}
       />
       <InventoryStack.Screen
-        name="AddInventoryScreen"
-        component={AddInventoryScreen}
+        name="AddSalesScreen"
+        component={AddSalesScreen}
         options={{
           headerShown: false,
         }}
