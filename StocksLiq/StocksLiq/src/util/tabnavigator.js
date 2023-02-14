@@ -30,6 +30,8 @@ import AddSalesmanScreen from '../screens/Salesman/AddSalesman/index';
 import WalletScreen from '../screens/Wallet/index';
 import RedeemRequestScreen from '../screens/Wallet/RedeemRequest/index';
 import ReferFriendScreen from '../screens/ReferFriend/index';
+import AddBhejanScreen from '../screens/SalesmanRoute/Bhejan/AddBhejan/index';
+import BhejanScreen from '../screens/SalesmanRoute/Bhejan/index';
 
 import HomeScreenStack from '../routes/HomeScreenStack';
 import ItemScreenStack from '../routes/ItemsScreenStack';
@@ -104,6 +106,7 @@ function TabNavigator(props) {
       initialRouteName="DashboardScreen"
       tabBarOptions={{
         showLabel: true,
+        tabBarHideOnKeyboard: true,
         style: {
           elevation: 2,
           backgroundColor: themeProvide().primary,
@@ -315,6 +318,16 @@ function RootNavigation() {
       <Stack.Screen
         name={'ReferFriendScreen'}
         component={ReferFriendScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={'BhejanScreen'}
+        component={BhejanScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={'AddBhejanScreen'}
+        component={AddBhejanScreen}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

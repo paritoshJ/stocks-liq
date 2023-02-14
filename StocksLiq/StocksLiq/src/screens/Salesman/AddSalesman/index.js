@@ -104,7 +104,7 @@ const AddSalesmanScreen = props => {
       setMobileNumber(value);
     }
   };
-  const renderInputView = (label, placeholder, value, key, multiline) => {
+  const renderInputView = (label, placeholder, value, key, multiline, keyboardType) => {
     return (
       <View style={styles.renderInputView}>
         <TextInput
@@ -122,6 +122,7 @@ const AddSalesmanScreen = props => {
               error: themeProvide().primary,
             },
           }}
+          keyboardType={keyboardType}
           placeholderColor={themeProvide().borderBlack}
           activeUnderlineColor={themeProvide().black}
           underlineColorAndroid={renderDevider()}
@@ -153,6 +154,7 @@ const AddSalesmanScreen = props => {
               firstName,
               'firstName',
               false,
+              'default',
             )}
             {renderInputView(
               I18n.t('lastNameSales'),
@@ -160,6 +162,7 @@ const AddSalesmanScreen = props => {
               lastName,
               'lastName',
               false,
+              'default',
             )}
             {renderInputView(
               I18n.t('mobileNumber'),
@@ -167,6 +170,7 @@ const AddSalesmanScreen = props => {
               mobileNumber,
               'mobileNumber',
               false,
+              'phone-pad',
             )}
             {renderButtonView()}
           </View>

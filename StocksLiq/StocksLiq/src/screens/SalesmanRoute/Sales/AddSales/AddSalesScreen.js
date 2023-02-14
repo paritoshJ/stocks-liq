@@ -24,12 +24,10 @@ import {TextInput, Checkbox} from 'react-native-paper';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import CheckBoxPlain from '../../../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../../../assets/svgs/CheckBoxWithTick';
-import {
-  doAddItem,
-  doGetSubCategory,
-  doGetSubCategoryType,
-} from '../../../Items/Action';
+import {doGetSubCategory, doGetSubCategoryType} from '../../../Items/Action';
+import {doAddSale} from './../Action';
 import Loader from '../../../../common/loader/Loader';
+import {doGetInventoryProducts} from '../../../Inventory/Action';
 
 const AddSalesScreen = props => {
   const CategoryArr = store?.getState()?.ItemReducer?.categoryData;
@@ -39,7 +37,36 @@ const AddSalesScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [category, setCategory] = useState(null);
   const [subCategory, setSubCategory] = useState(null);
+  const [productArr, setProductArr] = useState([]);
+  const [productId, setProductId] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
+  useEffect(() => {
+    getInventoryProductApi();
+  }, []);
+  const getInventoryProductApi = () => {
+    setIsLoading(true);
+    props.doGetInventoryProducts({
+      paramData: {},
+      onSuccess: (isSuccess, status, data) => {
+        setIsLoading(false);
+        if (isSuccess) {
+          console.log('data', data);
+          data?.forEach(element => {
+            element['value'] = element?.id;
+            element['label'] = element?.name;
+          });
+          setTimeout(() => {
+            setProductArr(data);
+            // props.doSaveCategory(data ? data : []);
+          }, 1000);
+          // setListData(data.data);
+        } else {
+          showMessageAlert(data?.message);
+        }
+      },
+    });
+  };
   const renderItemType = () => {
     return (
       <>
@@ -61,7 +88,7 @@ const AddSalesScreen = props => {
         {checkedItem.map((el, index) => {
           return renderInputView(
             el.lang_name,
-            isStringNotNull(el.price) ? el.price : '',
+            isStringNotNull(el.quantity) ? el.quantity : '',
             el.type_id,
           );
         })}
@@ -107,7 +134,7 @@ const AddSalesScreen = props => {
   };
   const getSubCategoryType = cate_id => {
     props.doGetSubCategoryType({
-      paramData: {cat_id: cate_id, lang: getLanguage()},
+      paramData: {item_id: cate_id, lang: getLanguage()},
       onSuccess: (isSuccess, status, data) => {
         if (isSuccess) {
           setItemTypeArr(data);
@@ -116,7 +143,7 @@ const AddSalesScreen = props => {
       },
     });
   };
-  const doAddItemApi = () => {
+  const doAddSalesApi = () => {
     setIsLoading(true);
     let checkedItemArr = itemTypeArr.filter(item => {
       return item.check;
@@ -124,16 +151,14 @@ const AddSalesScreen = props => {
     let getTypeData = checkedItemArr.reduce((acc, d) => {
       let obj = {
         id: d.type_id,
-        price: d.price,
+        qty: d.quantity,
       };
       acc.push(obj);
       return acc;
     }, []);
-    props.doAddItem({
+    props.doAddSale({
       paramData: {
-        item_name: productName,
-        cat_id: category,
-        subcat_id: subCategory,
+        item_id: productId,
         types_data: getTypeData,
       },
       onSuccess: (isSuccess, status, data) => {
@@ -156,19 +181,23 @@ const AddSalesScreen = props => {
       return item.check;
     });
     let msg = '';
-    if (!isStringNotNull(category)) {
-      msg = I18n.t('selectCategoryError');
-    } else if (!isStringNotNull(subCategory)) {
-      msg = I18n.t('selectSubCategoryError');
-    } else if (!isStringNotNull(productName)) {
+    // if (!isStringNotNull(category)) {
+    //   msg = I18n.t('selectCategoryError');
+    // } else if (!isStringNotNull(subCategory)) {
+    //   msg = I18n.t('selectSubCategoryError');
+    // } else 
+    if (!isStringNotNull(productName)) {
       msg = I18n.t('productNameError');
     } else if (checkArray.length === 0) {
       msg = I18n.t('itemTypeError');
     } else if (checkArray.length > 0) {
       checkArray.some(function (item) {
         console.log(item);
-        if (!isStringNotNull(item?.price)) {
-          msg = I18n.t('enterPriceError', {type: item.lang_name});
+        if (!isStringNotNull(item?.quantity)) {
+          msg = I18n.t('enterQauntityError', {type: item.lang_name});
+          return item?.price === '';
+        } else if (item?.quantity <= 0) {
+          msg = I18n.t('enterZeroQuantityError', {type: item.lang_name});
           return item?.price === '';
         }
       });
@@ -176,7 +205,7 @@ const AddSalesScreen = props => {
     if (isStringNotNull(msg)) {
       showMessageAlert(msg);
     } else {
-      doAddItemApi();
+      doAddSalesApi();
     }
   };
   const renderButtonView = () => {
@@ -186,7 +215,7 @@ const AddSalesScreen = props => {
           buttonstyle={[styles.buttonstyle]}
           textStyle={styles.buttonTextstyle}
           onPress={() => {
-            // onSavePress();
+            onSavePress();
           }}
           buttonTitle={I18n.t('save')}
         />
@@ -220,7 +249,7 @@ const AddSalesScreen = props => {
       setItemTypeArr(current =>
         current.map(obj => {
           if (obj.type_id === key) {
-            return {...obj, price: value};
+            return {...obj, quantity: value};
           }
           return obj;
         }),
@@ -241,14 +270,8 @@ const AddSalesScreen = props => {
     return (
       <View style={styles.renderInputView}>
         <TextInput
-          label={
-            key != 'productName' ? I18n.t('typePrice', {type: label}) : label
-          }
-          placeholder={
-            key === 'productName'
-              ? I18n.t('enterType', {type: label})
-              : I18n.t('enterPrice', {type: label})
-          }
+          label={I18n.t('bottleQuantity', {type: label})}
+          placeholder={I18n.t('enterQuantity', {type: label})}
           value={value}
           dense={false}
           mode={'outlined'}
@@ -260,12 +283,55 @@ const AddSalesScreen = props => {
               error: themeProvide().primary,
             },
           }}
+          keyboardType={'number-pad'}
           placeholderColor={themeProvide().borderBlack}
           activeUnderlineColor={themeProvide().black}
           underlineColorAndroid={renderDevider()}
           onChangeText={value1 => _onChangeText(key, value1)}
         />
       </View>
+    );
+  };
+  const onProductSelect = item => {
+    // console.log('onProductSelect', item);
+    setSelectedProduct(item);
+    setProductId(item?.id);
+    setProductName(item?.name);
+    getSubCategoryType(item?.id);
+  };
+  const renderProdcutInputView = label => {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          props.navigation.navigate('SearchPage', {
+            navigation: props.navigation,
+            cate_id: category,
+            subcat_id: subCategory,
+            onProductSelect: onProductSelect,
+          });
+        }}
+        style={styles.renderInputView}>
+        <TextInput
+          label={label}
+          placeholder={I18n.t('enterType', {type: label})}
+          value={productName}
+          dense={false}
+          mode={'outlined'}
+          style={styles.inputStyle}
+          error={false}
+          editable={false}
+          pointerEvents={'none'}
+          theme={{
+            colors: {
+              primary: themeProvide().black,
+              error: themeProvide().primary,
+            },
+          }}
+          placeholderColor={themeProvide().borderBlack}
+          activeUnderlineColor={themeProvide().black}
+          underlineColorAndroid={renderDevider()}
+        />
+      </TouchableOpacity>
     );
   };
   const onItemSelect = (key, value) => {
@@ -298,7 +364,7 @@ const AddSalesScreen = props => {
           keyboardShouldPersistTaps="handled"
           enableAutomaticScroll={true}>
           <View style={styles.paddingView}>
-            {renderDropDownView(
+            {/* {renderDropDownView(
               I18n.t('category'),
               'category',
               category,
@@ -309,8 +375,19 @@ const AddSalesScreen = props => {
               'subCategory',
               subCategory,
               SubCategoryArr,
+            )} */}
+            {/* {productArr.length > 0 &&
+              renderDropDownView(
+                I18n.t('selectProductName'),
+                'productId',
+                productId,
+                productArr,
+              )} */}
+            {renderProdcutInputView(
+              I18n.t('productName'),
+              productName,
+              'productName',
             )}
-            {renderInputView(I18n.t('productName'), productName, 'productName')}
             {itemTypeArr.length > 0 && renderItemType()}
             {itemTypeArr.length > 0 && renderItemTypeInput()}
             {renderButtonView()}
@@ -335,7 +412,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   doGetSubCategory: doGetSubCategory,
   doGetSubCategoryType: doGetSubCategoryType,
-  doAddItem: doAddItem,
+  doGetInventoryProducts: doGetInventoryProducts,
+  doAddSale: doAddSale,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddSalesScreen);

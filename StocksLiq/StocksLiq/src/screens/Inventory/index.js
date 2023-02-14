@@ -88,6 +88,9 @@ const InventoryScreen = props => {
   const getSubCategories = (cat_id, arr) => {
     let obj = arr.find(element => element?.language?.cat_id === cat_id);
     console.log('subcategories', obj?.subcategories);
+    obj?.subcategories.map(item => {
+      item.check = true;
+    });
     setSubCategories(obj?.subcategories);
   };
   // salectedTabId can be string or array;

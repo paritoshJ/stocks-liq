@@ -3,6 +3,7 @@ import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import SalesScreen from '../screens/SalesmanRoute/Sales/index';
 import AddSalesScreen from '../screens/SalesmanRoute/Sales/AddSales/AddSalesScreen';
+import SearchPage from '../common/SearchPage/index';
 
 const InventoryStack = createStackNavigator();
 const SalesScreenStack = ({navigation, route}) => {
@@ -31,6 +32,13 @@ const SalesScreenStack = ({navigation, route}) => {
       <InventoryStack.Screen
         name="AddSalesScreen"
         component={AddSalesScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <InventoryStack.Screen
+        name="SearchPage"
+        component={SearchPage}
         options={{
           headerShown: false,
         }}

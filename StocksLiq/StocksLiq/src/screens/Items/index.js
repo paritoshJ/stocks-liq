@@ -117,6 +117,10 @@ const ItemsScreen = props => {
   const getSubCategories = (cat_id, arr) => {
     let obj = arr.find(element => element?.language?.cat_id === cat_id);
     console.log('subcategories', obj?.subcategories);
+    obj?.subcategories.map(item => {
+      item.check = true;
+    });
+
     setSubCategories(obj?.subcategories);
   };
 
@@ -140,7 +144,7 @@ const ItemsScreen = props => {
     );
   };
   const renderTopTab = () => {
-    console.log('categoriesTabs',categoriesTabs)
+    console.log('categoriesTabs', categoriesTabs);
     return (
       <View
         style={{
@@ -220,7 +224,7 @@ const ItemsScreen = props => {
         <View style={styles.inputViewStyle}>
           <SearchSvgIcon />
           <TextInput
-             placeholder={I18n.t('search')}
+            placeholder={I18n.t('search')}
             value={searchText}
             style={styles.inputStyle}
             placeholderColor={themeProvide().borderBlack}

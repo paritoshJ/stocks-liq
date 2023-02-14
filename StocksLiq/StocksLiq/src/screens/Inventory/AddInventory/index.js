@@ -185,6 +185,9 @@ const AddInventoryScreen = props => {
             type: item.lang_name.toLowerCase(),
           });
           return item?.quantity === '';
+        } else if (item?.quantity <= 0) {
+          msg = I18n.t('enterZeroQuantityError', {type: item.lang_name});
+          return item?.price === '';
         }
       });
     }
@@ -252,6 +255,7 @@ const AddInventoryScreen = props => {
           dense={false}
           mode={'outlined'}
           style={styles.inputStyle}
+          keyboardType={'number-pad'}
           error={false}
           theme={{
             colors: {

@@ -85,7 +85,7 @@ const SideMenuDataSalesman = [{
                     props.navigation.navigate('WalletScreen')
                 break;
                 case 'bhejan':
-                    props.navigation.navigate('SalesmanScreen')
+                    props.navigation.navigate('BhejanScreen')
                 break;
                 case 'refer':
                     props.navigation.navigate('ReferFriendScreen')
@@ -119,7 +119,7 @@ const SideMenuDataSalesman = [{
     }
 
     const renderMenuHeader = () =>{
-        return (<View style={{flexDirection:'row',alignItems:'center'}}>
+        return (<View style={{flexDirection:'row',alignItems:'center', marginTop:16}}>
         <Text style={styles.menuText}>{I18n.t('menu_header_text')}</Text>
         <TouchableOpacity onPress={()=>{
             props.navigation.closeDrawer();

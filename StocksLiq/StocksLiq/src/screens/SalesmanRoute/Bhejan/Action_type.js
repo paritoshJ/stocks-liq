@@ -1,0 +1,5 @@
+export const BhejaActionTypes = {
+  GET_BHEJAN: 'GET_BHEJAN',
+  DO_ADD_BHEJAN: 'DO_ADD_BHEJAN',
+  DO_DELETE_BHEJAN: 'DO_DELETE_BHEJAN',
+};

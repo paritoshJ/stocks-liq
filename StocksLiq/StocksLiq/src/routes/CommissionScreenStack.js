@@ -3,8 +3,9 @@ import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import CommissionScreen from '../screens/SalesmanRoute/Commission/index';
 import AddCommissionScreen from '../screens/SalesmanRoute/Commission/AddCommission/index';
+import SearchPage from '../common/SearchPage/index';
 
-const ReportStack = createStackNavigator();
+const CommissionStack = createStackNavigator();
 const CommissionScreenStack = ({navigation, route}) => {
   React.useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
@@ -15,27 +16,34 @@ const CommissionScreenStack = ({navigation, route}) => {
     }
   }, [navigation, route]);
   return (
-    <ReportStack.Navigator
+    <CommissionStack.Navigator
       screenOptions={{
         headerBackImage: '',
         headerBackTitle: '',
         headerBackTitleVisible: false,
       }}>
-      <ReportStack.Screen
+      <CommissionStack.Screen
         name="CommissionScreen"
         component={CommissionScreen}
         options={{
           headerShown: false,
         }}
       />
-      <ReportStack.Screen
+      <CommissionStack.Screen
         name="AddCommissionScreen"
         component={AddCommissionScreen}
         options={{
           headerShown: false,
         }}
       />
-    </ReportStack.Navigator>
+      <CommissionStack.Screen
+        name="SearchPage"
+        component={SearchPage}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </CommissionStack.Navigator>
   );
 };
 

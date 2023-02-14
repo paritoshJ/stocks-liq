@@ -39,7 +39,7 @@ import CheckBoxPlain from '../../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../../assets/svgs/CheckBoxWithTick';
 import ThemeButton from '../../../common/ThemeButton';
 import Loader from '../../../common/loader/Loader';
-import {doGetItems} from '../../Items/Action';
+import {doGetSales} from './Action';
 
 const SalesScreen = props => {
   const [isLoading, setLoading] = useState(false);
@@ -89,7 +89,7 @@ const SalesScreen = props => {
       setLoading(true);
     }
 
-    props.doGetItems({
+    props.doGetSales({
       paramData: {
         cat_id: salectedTabId,
         search_text: search_text,
@@ -117,6 +117,9 @@ const SalesScreen = props => {
   const getSubCategories = (cat_id, arr) => {
     let obj = arr.find(element => element?.language?.cat_id === cat_id);
     console.log('subcategories', obj?.subcategories);
+    obj?.subcategories.map(item => {
+      item.check = true;
+    });
     setSubCategories(obj?.subcategories);
   };
 
@@ -128,11 +131,11 @@ const SalesScreen = props => {
     return (
       <EmptyPageView
         icon={renderSvgIcon}
-        title={I18n.t('noItemTitle', {tabName: I18n.t('itemsTabName')})}
-        message={I18n.t('noItemAddText', {tabName: I18n.t('itemsTabName')})}
-        buttonTitle={`+ ${I18n.t('itemsTabName')}`}
+        title={I18n.t('noItemTitle', {tabName: I18n.t('salesTabName')})}
+        message={I18n.t('noItemAddText', {tabName: I18n.t('salesTabName')})}
+        buttonTitle={`+ ${I18n.t('salesTabName')}`}
         onAddClick={() => {
-          props.navigation.navigate('AddItemScreen', {
+          props.navigation.navigate('AddSalesScreen', {
             getOnAddItem: getOnAddItem,
           });
         }}
@@ -220,7 +223,7 @@ const SalesScreen = props => {
         <View style={styles.inputViewStyle}>
           <SearchSvgIcon />
           <TextInput
-            placeholderText={I18n.t('search')}
+            placeholder={I18n.t('search')}
             value={searchText}
             style={styles.inputStyle}
             placeholderColor={themeProvide().borderBlack}
@@ -411,7 +414,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  doGetItems: doGetItems,
+  doGetSales: doGetSales,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SalesScreen);

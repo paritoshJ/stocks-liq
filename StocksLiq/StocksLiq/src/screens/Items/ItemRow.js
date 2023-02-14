@@ -57,9 +57,11 @@ const ItemRow = props => {
             {props?.item?.category?.lang_name}
           </Text>
         </View>
-        <TouchableOpacity onPress={props.onMoreIconClick}>
-          <MoreSvgIcon />
-        </TouchableOpacity>
+        {!props?.isIconNotShow && (
+          <TouchableOpacity onPress={props.onMoreIconClick}>
+            <MoreSvgIcon />
+          </TouchableOpacity>
+        )}
       </View>
       {props?.item?.type?.length > 0 && (
         <FlatList

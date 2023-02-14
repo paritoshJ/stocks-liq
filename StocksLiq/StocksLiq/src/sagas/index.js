@@ -30,6 +30,14 @@ import {
   doGetInventoryProductsWatcher,
   doAddInventoryWatcher,
 } from '../screens/Inventory/Saga';
+import {
+  doAddSalesWatcher,
+  doGetSalesWatcher,
+} from '../screens/SalesmanRoute/Sales/saga';
+import {
+  doAddCommissionWatcher,
+  doGetCommissionWatcher,
+} from '../screens/SalesmanRoute/Commission/saga';
 // Redux saga: Root saga
 export function* rootSaga() {
   yield all([
@@ -53,5 +61,9 @@ export function* rootSaga() {
     doAddsalesmanWatcher(),
     doGetSalesmanWatcher(),
     doDeleteSalesmanWatcher(),
+    doAddSalesWatcher(),
+    doGetSalesWatcher(),
+    doAddCommissionWatcher(),
+    doGetCommissionWatcher(),
   ]);
 }

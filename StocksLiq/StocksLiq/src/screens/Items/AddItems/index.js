@@ -166,6 +166,9 @@ const AddItemScreen = props => {
         if (!isStringNotNull(item?.price)) {
           msg = I18n.t('enterPriceError', {type: item.lang_name});
           return item?.price === '';
+        } else if (item?.price <= 0) {
+          msg = I18n.t('enterZeroPriceError', {type: item.lang_name});
+          return item?.price === '';
         }
       });
     }
@@ -256,6 +259,9 @@ const AddItemScreen = props => {
               error: themeProvide().primary,
             },
           }}
+          keyboardType={
+            key === 'productName' ? 'visible-password' : 'number-pad'
+          }
           placeholderColor={themeProvide().borderBlack}
           activeUnderlineColor={themeProvide().black}
           underlineColorAndroid={renderDevider()}
@@ -313,7 +319,7 @@ const AddItemScreen = props => {
           </View>
         </KeyboardAwareScrollView>
       </View>
-       <Loader
+      <Loader
         loading={isLoading}
         isTransparent={true}
         color={themeProvide().primary}

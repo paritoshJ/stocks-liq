@@ -24,11 +24,8 @@ import {TextInput, Checkbox} from 'react-native-paper';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import CheckBoxPlain from '../../../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../../../assets/svgs/CheckBoxWithTick';
-import {
-  doAddItem,
-  doGetSubCategory,
-  doGetSubCategoryType,
-} from '../../../Items/Action';
+import {doGetSubCategory, doGetSubCategoryType} from '../../../Items/Action';
+import {doAddCommission} from '../Action';
 import Loader from '../../../../common/loader/Loader';
 
 const AddCommissionScreen = props => {
@@ -39,7 +36,8 @@ const AddCommissionScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [category, setCategory] = useState(null);
   const [subCategory, setSubCategory] = useState(null);
-
+  const [productId, setProductId] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const renderItemType = () => {
     return (
       <>
@@ -63,14 +61,14 @@ const AddCommissionScreen = props => {
             <>
               {renderInputView(
                 el.lang_name,
-                isStringNotNull(el.price) ? el.price : '',
+                isStringNotNull(el.quantity) ? el.quantity : '',
                 el.type_id,
                 'typeBottleQuantity',
                 true,
               )}
               {renderInputView(
                 el.lang_name,
-                isStringNotNull(el.quanity) ? el.quanity : '',
+                isStringNotNull(el.price) ? el.price : '',
                 el.type_id,
                 'typeBottleCommission',
                 false,
@@ -120,7 +118,7 @@ const AddCommissionScreen = props => {
   };
   const getSubCategoryType = cate_id => {
     props.doGetSubCategoryType({
-      paramData: {cat_id: cate_id, lang: getLanguage()},
+      paramData: {item_id: cate_id, lang: getLanguage()},
       onSuccess: (isSuccess, status, data) => {
         if (isSuccess) {
           setItemTypeArr(data);
@@ -138,15 +136,14 @@ const AddCommissionScreen = props => {
       let obj = {
         id: d.type_id,
         price: d.price,
+        qty: d.quantity,
       };
       acc.push(obj);
       return acc;
     }, []);
-    props.doAddItem({
+    props.doAddCommission({
       paramData: {
-        item_name: productName,
-        cat_id: category,
-        subcat_id: subCategory,
+        item_id: productId,
         types_data: getTypeData,
       },
       onSuccess: (isSuccess, status, data) => {
@@ -169,20 +166,21 @@ const AddCommissionScreen = props => {
       return item.check;
     });
     let msg = '';
-    if (!isStringNotNull(category)) {
-      msg = I18n.t('selectCategoryError');
-    } else if (!isStringNotNull(subCategory)) {
-      msg = I18n.t('selectSubCategoryError');
-    } else if (!isStringNotNull(productName)) {
+    if (!isStringNotNull(productName)) {
       msg = I18n.t('productNameError');
     } else if (checkArray.length === 0) {
       msg = I18n.t('itemTypeError');
     } else if (checkArray.length > 0) {
       checkArray.some(function (item) {
         console.log(item);
-        if (!isStringNotNull(item?.price)) {
+        if (!isStringNotNull(item?.quantity)) {
+          msg = I18n.t('enterQauntityError', {type: item.lang_name});
+        } else if (item?.quantity <= 0) {
+          msg = I18n.t('enterZeroQuantityError', {type: item.lang_name});
+        } else if (!isStringNotNull(item?.price)) {
           msg = I18n.t('enterPriceError', {type: item.lang_name});
-          return item?.price === '';
+        } else if (item?.price <= 0) {
+          msg = I18n.t('enterZeroPriceError', {type: item.lang_name});
         }
       });
     }
@@ -199,7 +197,7 @@ const AddCommissionScreen = props => {
           buttonstyle={[styles.buttonstyle]}
           textStyle={styles.buttonTextstyle}
           onPress={() => {
-            // onSavePress();
+            onSavePress();
           }}
           buttonTitle={I18n.t('save')}
         />
@@ -227,6 +225,7 @@ const AddCommissionScreen = props => {
     );
   };
   const _onChangeText = (key, itemKey, value) => {
+    console.log('itemKey', itemKey);
     if (key === 'productName') {
       setProductName(value);
     } else {
@@ -235,7 +234,7 @@ const AddCommissionScreen = props => {
           if (obj.type_id === key) {
             return itemKey === 'typeBottleCommission'
               ? {...obj, price: value}
-              : {...obj, quanity: value};
+              : {...obj, quantity: value};
           }
           return obj;
         }),
@@ -283,6 +282,7 @@ const AddCommissionScreen = props => {
               error: themeProvide().primary,
             },
           }}
+          keyboardType={'number-pad'}
           placeholderColor={themeProvide().borderBlack}
           activeUnderlineColor={themeProvide().black}
           underlineColorAndroid={renderDevider()}
@@ -304,13 +304,55 @@ const AddCommissionScreen = props => {
       setItemTypeArr([]);
     }
   };
+  const onProductSelect = item => {
+    // console.log('onProductSelect', item);
+    setSelectedProduct(item);
+    setProductId(item?.id);
+    setProductName(item?.name);
+    getSubCategoryType(item?.id);
+  };
+  const renderProdcutInputView = label => {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          props.navigation.navigate('SearchPage', {
+            navigation: props.navigation,
+            cate_id: category,
+            subcat_id: subCategory,
+            onProductSelect: onProductSelect,
+          });
+        }}
+        style={styles.renderInputView}>
+        <TextInput
+          label={label}
+          placeholder={I18n.t('enterType', {type: label})}
+          value={productName}
+          dense={false}
+          mode={'outlined'}
+          style={styles.inputStyle}
+          error={false}
+          editable={false}
+          pointerEvents={'none'}
+          theme={{
+            colors: {
+              primary: themeProvide().black,
+              error: themeProvide().primary,
+            },
+          }}
+          placeholderColor={themeProvide().borderBlack}
+          activeUnderlineColor={themeProvide().black}
+          underlineColorAndroid={renderDevider()}
+        />
+      </TouchableOpacity>
+    );
+  };
   return (
     <SafeAreaView style={styles.safeView}>
       <View style={styles.mainView}>
         <ToolbarHeader
           isLogo={false}
           backgroundColor={themeProvide().white}
-          title={I18n.t('addSales')}
+          title={I18n.t('addCommission')}
           onPress={() => {
             props.navigation.goBack();
           }}
@@ -321,7 +363,7 @@ const AddCommissionScreen = props => {
           keyboardShouldPersistTaps="handled"
           enableAutomaticScroll={true}>
           <View style={styles.paddingView}>
-            {renderDropDownView(
+            {/* {renderDropDownView(
               I18n.t('category'),
               'category',
               category,
@@ -332,8 +374,12 @@ const AddCommissionScreen = props => {
               'subCategory',
               subCategory,
               SubCategoryArr,
+            )} */}
+            {renderProdcutInputView(
+              I18n.t('productName'),
+              productName,
+              'productName',
             )}
-            {renderInputView(I18n.t('productName'), productName, 'productName')}
             {itemTypeArr.length > 0 && renderItemType()}
             {itemTypeArr.length > 0 && renderItemTypeInput()}
             {renderButtonView()}
@@ -358,7 +404,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   doGetSubCategory: doGetSubCategory,
   doGetSubCategoryType: doGetSubCategoryType,
-  doAddItem: doAddItem,
+  doAddCommission: doAddCommission,
 };
 
 export default connect(

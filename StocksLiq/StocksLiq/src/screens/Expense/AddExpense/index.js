@@ -56,6 +56,8 @@ const AddExpenseScreen = props => {
       msg = I18n.t('expenseNameError');
     } else if (!isStringNotNull(expenseAmount)) {
       msg = I18n.t('expenseAmountError');
+    } else if (expenseAmount <= 0) {
+      msg = I18n.t('enterZeroPriceError', {type: I18n.t('expenseAmount')});
     } else if (!isStringNotNull(expenseRemark)) {
       msg = I18n.t('expenseRemarkError');
     }
@@ -108,7 +110,7 @@ const AddExpenseScreen = props => {
       setExpenseRemark(value);
     }
   };
-  const renderInputView = (label, placeholder, value, key, multiline) => {
+  const renderInputView = (label, placeholder, value, key, multiline, keybordType) => {
     return (
       <View style={styles.renderInputView}>
         <TextInput
@@ -126,6 +128,7 @@ const AddExpenseScreen = props => {
               error: themeProvide().primary,
             },
           }}
+          keyboardType={key === 'expenseAmount' ? 'number-pad' : 'default'}
           placeholderColor={themeProvide().borderBlack}
           activeUnderlineColor={themeProvide().black}
           underlineColorAndroid={renderDevider()}

@@ -36,7 +36,7 @@ import CheckBoxPlain from '../../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../../assets/svgs/CheckBoxWithTick';
 import ThemeButton from '../../../common/ThemeButton';
 import Loader from '../../../common/loader/Loader';
-import {doGetItems} from '../../Items/Action';
+import {doGetCommission} from './Action';
 
 const CommissionScreen = props => {
   const [isLoading, setLoading] = useState(false);
@@ -80,6 +80,9 @@ const CommissionScreen = props => {
   const getSubCategories = (cat_id, arr) => {
     let obj = arr.find(element => element?.language?.cat_id === cat_id);
     console.log('subcategories', obj?.subcategories);
+    obj?.subcategories.map(item => {
+      item.check = true;
+    });
     setSubCategories(obj?.subcategories);
   };
   // salectedTabId can be string or array;
@@ -88,7 +91,7 @@ const CommissionScreen = props => {
       setLoading(true);
     }
 
-    props.doGetItems({
+    props.doGetCommission({
       paramData: {
         cat_id: salectedTabId,
         search_text: searchText,
@@ -356,11 +359,11 @@ const CommissionScreen = props => {
         onAddClick={() => {
           goToAddinventory();
         }}
-        title={I18n.t('noItemTitle', {tabName: I18n.t('inventoryTabName')})}
+        title={I18n.t('noItemTitle', {tabName: I18n.t('commissionTabName')})}
         message={I18n.t('noItemAddText', {
-          tabName: I18n.t('inventoryTabName'),
+          tabName: I18n.t('commissionTabName'),
         })}
-        buttonTitle={`+ ${I18n.t('inventoryTabName')}`}
+        buttonTitle={`+ ${I18n.t('commissionTabName')}`}
       />
     );
   };
@@ -397,7 +400,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  doGetItems: doGetItems,
+  doGetCommission: doGetCommission,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommissionScreen);

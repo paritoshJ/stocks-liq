@@ -51,14 +51,14 @@ const DashboardScreen = props => {
       <>
         <Text style={styles.label}>{label}</Text>
         <View style={{flexDirection: 'row', marginTop: 12}}>
-          {renderCard(I18n.t('totalSales'), '$12910')}
+          {renderCard(I18n.t('totalSales'), '₹12910')}
           {renderCardGap()}
-          {renderCard(I18n.t('totalExpens'), '$2910')}
+          {renderCard(I18n.t('totalExpens'), '₹2910')}
         </View>
         <View style={{flexDirection: 'row', marginVertical: 16}}>
-          {renderCard(I18n.t('totalCommission'), '$910')}
+          {renderCard(I18n.t('totalCommission'), '₹910')}
           {renderCardGap()}
-          {renderCard(I18n.t('totalCollection'), '$12910')}
+          {renderCard(I18n.t('totalCollection'), '₹12910')}
         </View>
       </>
     );
