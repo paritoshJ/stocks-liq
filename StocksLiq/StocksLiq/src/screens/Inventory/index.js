@@ -297,7 +297,7 @@ const InventoryScreen = props => {
             style={{
               fontFamily: fonts.InterRegular,
               fontWeight: '900',
-              fontSize: 44,
+              fontSize: 32,
               textAlign: 'center',
               color: themeProvide().black,
             }}>

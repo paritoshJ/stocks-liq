@@ -2,7 +2,7 @@ import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {themeProvide, getCurrenyPrice} from '../../util/globalMethods';
 import MyProfileSideMenuSvg from '../../assets/svgs/MyProfileSideMenuSvg';
-import MoreSvgIcon from '../../assets/svgs/MoreSvgIcon';
+import DeleteIconSvg from '../../assets/svgs/DeleteIconSvg';
 import {fonts} from '../../../assets/fonts/fonts';
 
 const SalesmanRow = props => {
@@ -33,7 +33,7 @@ const SalesmanRow = props => {
           </Text>
         </View>
         <TouchableOpacity onPress={props.onMoreIconClick}>
-          <MoreSvgIcon />
+          <DeleteIconSvg />
         </TouchableOpacity>
       </View>
     </TouchableOpacity>

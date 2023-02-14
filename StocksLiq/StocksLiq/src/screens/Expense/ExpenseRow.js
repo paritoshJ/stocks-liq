@@ -2,8 +2,10 @@ import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {themeProvide, getCurrenyPrice} from '../../util/globalMethods';
 import MoreMenuSvg from '../../assets/svgs/MoreMenuSVG';
-import MoreSvgIcon from '../../assets/svgs/MoreSvgIcon';
+import DeleteIconSvg from '../../assets/svgs/DeleteIconSvg';
 import {fonts} from '../../../assets/fonts/fonts';
+import I18n from 'i18n-js';
+import moment from 'moment';
 
 const ExpenseRow = props => {
   const priceView = () => {
@@ -28,7 +30,9 @@ const ExpenseRow = props => {
               marginTop: 4,
               color: 'rgba(0, 0, 0, 0.5)',
             }}>
-            Added on 20 Jan, 22 at 5:12Pm
+            {I18n.t('addedOn', {
+              date: moment(props?.item?.created_at).format('Do MMM YY h:mm a'),
+            })}
           </Text>
         </View>
       </View>
@@ -60,7 +64,7 @@ const ExpenseRow = props => {
           </Text>
         </View>
         <TouchableOpacity onPress={props.onMoreIconClick}>
-          <MoreSvgIcon />
+          <DeleteIconSvg />
         </TouchableOpacity>
       </View>
       {priceView()}

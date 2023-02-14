@@ -143,4 +143,6 @@ export default {
   deleteUserAsk: 'Do you want to delete this user?',
   accountDeleteInfo:
     'Your account is deleted please contact to admin for further info.',
+  filterTitle: 'Filter',
+  addedOn: 'Added on %{date}',
 };

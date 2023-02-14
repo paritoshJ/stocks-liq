@@ -162,6 +162,8 @@ const AddInventoryScreen = props => {
         if (isSuccess) {
           props.navigation.goBack();
           props?.route?.params?.getOnAddItem();
+        } else {
+          showMessageAlert(data?.message);
         }
       },
     });

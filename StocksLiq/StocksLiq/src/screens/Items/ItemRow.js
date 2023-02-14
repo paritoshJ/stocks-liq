@@ -2,7 +2,7 @@ import {View, StyleSheet, Text, TouchableOpacity, FlatList} from 'react-native';
 import React from 'react';
 import {themeProvide, getCurrenyPrice} from '../../util/globalMethods';
 import MoreMenuSvg from '../../assets/svgs/MoreMenuSVG';
-import MoreSvgIcon from '../../assets/svgs/MoreSvgIcon';
+import DeleteIconSvg from '../../assets/svgs/DeleteIconSvg';
 import {fonts} from '../../../assets/fonts/fonts';
 import {Item} from 'react-native-paper/lib/typescript/components/List/List';
 
@@ -59,7 +59,7 @@ const ItemRow = props => {
         </View>
         {!props?.isIconNotShow && (
           <TouchableOpacity onPress={props.onMoreIconClick}>
-            <MoreSvgIcon />
+            <DeleteIconSvg />
           </TouchableOpacity>
         )}
       </View>

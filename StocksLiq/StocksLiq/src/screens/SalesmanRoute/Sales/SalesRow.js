@@ -1,7 +1,7 @@
 import {View, StyleSheet, Text, TouchableOpacity, FlatList} from 'react-native';
 import React from 'react';
 import {themeProvide, getCurrenyPrice} from '../../../util/globalMethods';
-import MoreSvgIcon from '../../../assets/svgs/MoreSvgIcon';
+import DeleteIconSvg from '../../../assets/svgs/DeleteIconSvg';
 import {fonts} from '../../../../assets/fonts/fonts';
 
 const SalesRow = props => {
@@ -56,7 +56,7 @@ const SalesRow = props => {
           </Text>
         </View>
         <TouchableOpacity onPress={props.onMoreIconClick}>
-          <MoreSvgIcon />
+          <DeleteIconSvg />
         </TouchableOpacity>
       </View>
       {props?.item?.type?.length > 0 && (

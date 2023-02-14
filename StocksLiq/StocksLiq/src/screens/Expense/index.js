@@ -287,11 +287,11 @@ const ExpenseScreen = props => {
             style={{
               fontFamily: fonts.InterRegular,
               fontWeight: '900',
-              fontSize: 44,
+              fontSize: 32,
               textAlign: 'center',
               color: themeProvide().black,
             }}>
-            {'Filter'}
+            {I18n.t('filterTitle')}
           </Text>
           <View style={styles.filterInnerStyle} />
           <DateRangePicker

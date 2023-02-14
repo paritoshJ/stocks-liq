@@ -2,7 +2,7 @@ import {View, StyleSheet, FlatList, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {themeProvide, getCurrenyPrice} from '../../util/globalMethods';
 import MoreMenuSvg from '../../assets/svgs/MoreMenuSVG';
-import MoreSvgIcon from '../../assets/svgs/MoreSvgIcon';
+import DeleteIconSvg from '../../assets/svgs/DeleteIconSvg';
 import {fonts} from '../../../assets/fonts/fonts';
 import I18n from 'i18n-js';
 
@@ -81,7 +81,7 @@ const InventoryRow = props => {
           </Text>
         </View>
         <TouchableOpacity onPress={props.onMoreIconClick}>
-          <MoreSvgIcon />
+          <DeleteIconSvg />
         </TouchableOpacity>
       </View>
       {props?.item?.type?.length > 0 && (

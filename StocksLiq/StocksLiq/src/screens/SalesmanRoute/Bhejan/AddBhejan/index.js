@@ -40,6 +40,8 @@ const AddBhejanScreen = props => {
         if (isSuccess) {
           props.navigation.goBack();
           props?.route?.params?.getOnAddExpense();
+        } else {
+          showMessageAlert(data?.message);
         }
       },
     });
