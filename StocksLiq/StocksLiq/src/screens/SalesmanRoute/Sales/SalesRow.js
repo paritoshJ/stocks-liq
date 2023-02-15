@@ -7,7 +7,7 @@ import {fonts} from '../../../../assets/fonts/fonts';
 const SalesRow = props => {
   const priceView = item => {
     return (
-      <View style={{width: '33%', marginTop: 10}}>
+      <View style={{width: '33%', flex:1, marginTop: 10}}>
         <Text
           style={{
             fontFamily: fonts.InterRegular,
@@ -55,9 +55,9 @@ const SalesRow = props => {
             {props?.item?.category?.lang_name}
           </Text>
         </View>
-        <TouchableOpacity onPress={props.onMoreIconClick}>
+        {/* <TouchableOpacity onPress={props.onMoreIconClick}>
           <DeleteIconSvg />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       {props?.item?.type?.length > 0 && (
         <FlatList

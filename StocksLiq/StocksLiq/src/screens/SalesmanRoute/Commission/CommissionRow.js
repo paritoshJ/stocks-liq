@@ -79,9 +79,9 @@ const CommissionRow = props => {
             {props?.item?.category?.lang_name}
           </Text>
         </View>
-        <TouchableOpacity onPress={props.onMoreIconClick}>
+        {/* <TouchableOpacity onPress={props.onMoreIconClick}>
           <DeleteIconSvg />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       {props?.item?.type?.length > 0 && (
         <FlatList

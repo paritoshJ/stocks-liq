@@ -9,7 +9,7 @@ import {Item} from 'react-native-paper/lib/typescript/components/List/List';
 const ItemRow = props => {
   const priceView = item => {
     return (
-      <View style={{width: '33%', marginTop: 10}}>
+      <View style={{width: '33%', flex:1, marginTop: 10}}>
         <Text
           style={{
             fontFamily: fonts.InterRegular,
@@ -57,11 +57,11 @@ const ItemRow = props => {
             {props?.item?.category?.lang_name}
           </Text>
         </View>
-        {!props?.isIconNotShow && (
+        {/* {!props?.isIconNotShow && (
           <TouchableOpacity onPress={props.onMoreIconClick}>
             <DeleteIconSvg />
           </TouchableOpacity>
-        )}
+        )} */}
       </View>
       {props?.item?.type?.length > 0 && (
         <FlatList

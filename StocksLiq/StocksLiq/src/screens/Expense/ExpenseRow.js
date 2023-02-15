@@ -63,9 +63,9 @@ const ExpenseRow = props => {
             {props?.item?.remark}
           </Text>
         </View>
-        <TouchableOpacity onPress={props.onMoreIconClick}>
+        {/* <TouchableOpacity onPress={props.onMoreIconClick}>
           <DeleteIconSvg />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       {priceView()}
     </TouchableOpacity>

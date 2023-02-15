@@ -259,9 +259,7 @@ const AddItemScreen = props => {
               error: themeProvide().primary,
             },
           }}
-          keyboardType={
-            key === 'productName' ? 'visible-password' : 'number-pad'
-          }
+          keyboardType={key === 'productName' ? 'default' : 'number-pad'}
           placeholderColor={themeProvide().borderBlack}
           activeUnderlineColor={themeProvide().black}
           underlineColorAndroid={renderDevider()}

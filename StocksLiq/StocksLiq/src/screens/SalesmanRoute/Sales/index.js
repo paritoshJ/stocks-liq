@@ -356,6 +356,8 @@ const SalesScreen = props => {
               }, []);
               console.log('checkedItemArr', checkedItemArr, arr);
               getItemsApi(arr);
+            } else {
+              getItemsApi(salectedTabId);
             }
           }}
           buttonTitle={I18n.t('apply')}
