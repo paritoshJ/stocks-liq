@@ -15,7 +15,7 @@ const SalesRow = props => {
             fontSize: 14,
             color: 'rgba(0, 0, 0, 0.5)',
           }}>
-          {item?.language?.lang_name}
+          {item?.types?.language?.lang_name}
         </Text>
         <Text
           style={{
@@ -25,7 +25,7 @@ const SalesRow = props => {
             marginTop: 4,
             fontSize: 12,
           }}>
-          {item?.qty}
+          {item?.total_qty}
         </Text>
       </View>
     );
@@ -59,9 +59,9 @@ const SalesRow = props => {
           <DeleteIconSvg />
         </TouchableOpacity> */}
       </View>
-      {props?.item?.type?.length > 0 && (
+      {props?.item?.sales?.length > 0 && (
         <FlatList
-          data={props?.item?.type}
+          data={props?.item?.sales}
           // horizontal
           numColumns={3}
           ListHeaderComponent={() => {

@@ -63,43 +63,43 @@ function TabNavigator(props) {
     headerLeft: null,
     backgroundColor: 'white',
   };
-  const handleBackPress = () => {
-    if (!props.navigation.canGoBack()) {
-      if (!exit) {
-        exit = true;
-        Alert.alert(
-          '',
-          popText,
-          [
-            {
-              text: 'YES',
-              onPress: () => {
-                BackHandler.exitApp();
-              },
-              style: 'destructive',
-            },
-            {text: 'NO'},
-          ],
-          {cancelable: false},
-        );
-        //ToastAndroid.show('Tap again to exit ', 1000);
-        setTimeout(() => {
-          exit = false;
-        }, 2000);
-        return true;
-      } else {
-        return true;
-      }
-    }
-  };
+  // const handleBackPress = () => {
+  //   if (!props.navigation.canGoBack()) {
+  //     if (!exit) {
+  //       exit = true;
+  //       Alert.alert(
+  //         '',
+  //         popText,
+  //         [
+  //           {
+  //             text: 'YES',
+  //             onPress: () => {
+  //               BackHandler.exitApp();
+  //             },
+  //             style: 'destructive',
+  //           },
+  //           {text: 'NO'},
+  //         ],
+  //         {cancelable: false},
+  //       );
+  //       //ToastAndroid.show('Tap again to exit ', 1000);
+  //       setTimeout(() => {
+  //         exit = false;
+  //       }, 2000);
+  //       return true;
+  //     } else {
+  //       return true;
+  //     }
+  //   }
+  // };
 
-  useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
-    return () => {
-      console.log('MOVE OUT BACK PRESS :');
-      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
-    };
-  }, []);
+  // useEffect(() => {
+  //   BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+  //   return () => {
+  //     console.log('MOVE OUT BACK PRESS :');
+  //     BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+  //   };
+  // }, []);
 
   return (
     <Tab.Navigator

@@ -17,7 +17,7 @@ const CommissionRow = props => {
               fontSize: 14,
               color: 'rgba(0, 0, 0, 0.5)',
             }}>
-            {item?.language?.lang_name}
+            {item?.types?.language?.lang_name}
           </Text>
           <Text
             style={{
@@ -27,7 +27,7 @@ const CommissionRow = props => {
               marginTop: 4,
               fontSize: 12,
             }}>
-            {getCurrenyPrice(Number(item?.type_price))}
+            {item?.total_qty}
           </Text>
         </View>
         <View style={{marginTop: 10}}>
@@ -48,7 +48,7 @@ const CommissionRow = props => {
               marginTop: 4,
               fontSize: 12,
             }}>
-            {getCurrenyPrice(Number(item?.type_price))}
+            {getCurrenyPrice(Number(item?.commission_price))}
           </Text>
         </View>
       </View>
@@ -83,9 +83,9 @@ const CommissionRow = props => {
           <DeleteIconSvg />
         </TouchableOpacity> */}
       </View>
-      {props?.item?.type?.length > 0 && (
+      {props?.item?.commission?.length > 0 && (
         <FlatList
-          data={props?.item?.type}
+          data={props?.item?.commission}
           // horizontal
           numColumns={3}
           ListHeaderComponent={() => {
