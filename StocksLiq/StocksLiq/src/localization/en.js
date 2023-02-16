@@ -1,5 +1,8 @@
 export default {
   appName: 'Liq Stocks',
+  englishLang: 'English',
+  hindiLang: 'हिंदी',
+  selectLanguage: 'Select Language',
   currencySymbol: '₹',
   priceWithCurrency: '₹%{price}',
   dashboardTabName: 'Dashboard',

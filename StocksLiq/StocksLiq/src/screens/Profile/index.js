@@ -19,7 +19,7 @@ import {
 import ToolbarHeader from '../../common/ToolbarHeader';
 import I18n from '../../localization';
 import {fonts} from '../../../assets/fonts/fonts';
-import {doGetUserProfile} from '../Profile/Action';
+import {doGetUserProfile, doChangeLanguage} from '../Profile/Action';
 import {doDeleteUser, setLoggedIn, doSaveUser} from '../Login/Action';
 import {connect} from 'react-redux';
 import Loader from '../../common/loader/Loader';

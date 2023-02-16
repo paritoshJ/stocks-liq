@@ -8,9 +8,9 @@ import {navigationRef} from './src/routes/RefRootNavigation';
 import RootNavigator from './src/util/Root';
 import SplashScreen from './src/screens/SplashScreen';
 import Tabnavigator from './src/util/tabnavigator';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 Icon.loadFont();
-
 const App = _props => {
   LogBox.ignoreLogs(['Warning: ...']);
   // console.disableYellowBox = true;
@@ -28,7 +28,6 @@ const App = _props => {
     setSignIn(storeData.LoginReducer.isLoggedIn);
   };
   store.subscribe(getSignIn);
-  
   // store.subscribe(getSignIn);
 
   return (

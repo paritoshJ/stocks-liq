@@ -8,6 +8,7 @@
 import I18n from 'i18n-js';
 // import {store} from './redux/store';
 import * as RNLocalize from 'react-native-localize';
+import {API_LANG} from '../services/api_constants';
 import en from './en';
 import hi from './hi';
 

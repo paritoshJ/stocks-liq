@@ -24,7 +24,9 @@ import {doVerifyUser, doLoginUser} from './Action';
 import {connect} from 'react-redux';
 import Loader from '../../common/loader/Loader';
 import {doSendOtp, setLoggedIn, doSaveUser, doSaveToken} from '../Login/Action';
+import {doChangeLanguage} from '../Profile/Action';
 import LottieView from 'lottie-react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OtpScreen = props => {
   const otpRef = useRef(null);
@@ -95,7 +97,9 @@ const OtpScreen = props => {
       },
     });
   };
-  const onLogin = () => {
+  const onLogin = async () => {
+    const hasFirstLaunched = await AsyncStorage.getItem('@user_language');
+    console.log(hasFirstLaunched);
     props.doLoginUser({
       paramData: {
         mobile_number: props?.route?.params?.mobileNumber,
@@ -113,8 +117,12 @@ const OtpScreen = props => {
           } else {
             props.doSaveToken(response?.data?.token);
             props.doSaveUser(response?.data);
-            setTimeout(() => {
+            setTimeout(async () => {
               props.setLoggedIn(true);
+              props.doChangeLanguage({
+                paramData: {lang_code: hasFirstLaunched},
+                onSuccess: () => {},
+              });
             }, 1000);
           }
         } else {
@@ -207,6 +215,7 @@ const mapDispatchToProps = {
   setLoggedIn: setLoggedIn,
   doLoginUser: doLoginUser,
   doSaveUser: doSaveUser,
+  doChangeLanguage: doChangeLanguage,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OtpScreen);

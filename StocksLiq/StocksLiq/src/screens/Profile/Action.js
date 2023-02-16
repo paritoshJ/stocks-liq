@@ -14,3 +14,10 @@ export const doEditUserProfile = ({paramData, onSuccess}) => ({
     onSuccess: onSuccess,
   },
 });
+export const doChangeLanguage = ({paramData, onSuccess}) => ({
+  type: ProfileActionTypes.DO_CHANGE_LANGUAGE,
+  payload: {
+    paramData: paramData,
+    onSuccess: onSuccess,
+  },
+});

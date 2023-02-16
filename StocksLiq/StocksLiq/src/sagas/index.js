@@ -9,6 +9,7 @@ import {postSignUpUserWatcher} from '../screens/Register/Saga';
 import {
   doGetProfileWatcher,
   doEditProfileWatcher,
+  doChangeLanguageWatcher,
 } from '../screens/Profile/Saga';
 import {
   doGetExpenseWatcher,
@@ -65,5 +66,6 @@ export function* rootSaga() {
     doGetSalesWatcher(),
     doAddCommissionWatcher(),
     doGetCommissionWatcher(),
+    doChangeLanguageWatcher(),
   ]);
 }

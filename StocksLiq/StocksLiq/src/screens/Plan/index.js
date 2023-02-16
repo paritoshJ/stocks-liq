@@ -2,7 +2,7 @@ import {Platform, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import LogoSvg from '../../assets/svgs/logoSvg';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {themeProvide} from '../../util/globalMethods';
+import {showMessageAlert, themeProvide} from '../../util/globalMethods';
 import {fonts} from '../../../assets/fonts/fonts';
 import I18n from '../../localization';
 import ThemeButton from '../../common/ThemeButton';
@@ -14,11 +14,14 @@ const PlanScreen = props => {
   };
   const onLoginPress = () => {
     // props.navigation.navigate('OtpScreen',{});
+    props.navigation.navigate('RegisterSuccessScreen', {
+      userData: props?.route?.params?.userData,
+    });
   };
   const renderTrialButton = () => {
     return (
       <ThemeButton
-        onPress={() => onLoginPress()}
+        onPress={() => showMessageAlert('Subscription Plan is in-progress')}
         buttonstyle={styles.trialButton}
         textStyle={{color: themeProvide().primary}}
         buttonTitle={I18n.t('freetrialDays', {noOfDays: '7'})}

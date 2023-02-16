@@ -1,4 +1,5 @@
 export const ProfileActionTypes = {
   DO_GET_PROFILE: 'DO_GET_PROFILE',
   DO_EDIT_PROFILE: 'DO_EDIT_PROFILE',
+  DO_CHANGE_LANGUAGE: 'DO_CHANGE_LANGUAGE',
 };

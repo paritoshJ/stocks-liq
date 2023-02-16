@@ -5,7 +5,8 @@ import moment from 'moment';
 import {PermissionsAndroid, Alert} from 'react-native';
 import {API_LANG} from '../services/api_constants';
 import {store} from '../store/configureStore';
-
+import en from '../localization/en';
+import hi from '../localization/hi';
 export const isDarkMode = () => {
   return Appearance.getColorScheme() === 'dark' ? false : false;
 };
@@ -265,6 +266,17 @@ export const getLanguage = () => {
   // return langType === API_LANG.ENGLISH ?  "en" :''
   return API_LANG.ENGLISH;
   // return API_LANG.HINDI;
+};
+const availableTranslations = {
+  en,
+  hi,
+};
+
+export const changeLanguage = languageCode => {
+  I18n.translations = {
+    [languageCode]: availableTranslations[languageCode],
+  };
+  I18n.locale = languageCode;
 };
 
 export const kFormatter = num => {

@@ -11,6 +11,7 @@ export default {
   black: '#000000',
   activeIconColor: '#000000',
   unActiveIconColor: '#FFFFFF',
+  lightWhiteColor: '#F2F2F2',
   borderBlack: '#00000030',
   headerBlack: '#1F2024',
   errorText: '#FC1717',

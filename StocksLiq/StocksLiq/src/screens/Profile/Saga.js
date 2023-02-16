@@ -10,7 +10,11 @@ import {
 import {ProfileActionTypes} from './Action_type';
 import {request} from '../../services/service';
 import {HTTP_METHODS} from '../../services/api_constants';
-import {DO_GET_PROFILE, DO_EDIT_PROFILE} from '../../services/api_end_points';
+import {
+  DO_GET_PROFILE,
+  DO_CHANGE_LANGUAGE,
+  DO_EDIT_PROFILE,
+} from '../../services/api_end_points';
 import {store} from '../../store/configureStore';
 
 function* doGetProfile(action) {
@@ -103,4 +107,50 @@ function* doEditProfile(action) {
 
 export function* doEditProfileWatcher() {
   yield takeLatest(ProfileActionTypes.DO_EDIT_PROFILE, doEditProfile);
+}
+
+function* doChangeLanguage(action) {
+  try {
+    const {response} = yield request(
+      DO_CHANGE_LANGUAGE,
+      HTTP_METHODS.POST,
+      action.payload.paramData,
+      {},
+      true,
+      store.getState().LoginReducer.bearerToken,
+    );
+    console.log('doChangeLanguage', store.getState().LoginReducer);
+    yield action.payload.onSuccess(
+      response?.data?.status,
+      response.status,
+      response?.data?.message,
+    );
+  } catch (error) {
+    console.log('doChangeLanguage', error);
+    if (error.response) {
+      if (error.response.status === 500) {
+        yield action.payload.onSuccess(
+          false,
+          error.response.status,
+          'Something went wrong',
+        );
+      } else {
+        if (error.response.status !== 401) {
+          yield action.payload.onSuccess(
+            false,
+            error.response.status,
+            error.response.data.message
+              ? error.response.data.message
+              : 'Something went wrong',
+          );
+        }
+      }
+    } else {
+      yield action.payload.onSuccess(false, 500, 'Something went wrong');
+    }
+  }
+}
+
+export function* doChangeLanguageWatcher() {
+  yield takeLatest(ProfileActionTypes.DO_CHANGE_LANGUAGE, doChangeLanguage);
 }
