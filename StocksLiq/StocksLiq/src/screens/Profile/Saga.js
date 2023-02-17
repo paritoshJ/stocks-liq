@@ -119,7 +119,7 @@ function* doChangeLanguage(action) {
       true,
       store.getState().LoginReducer.bearerToken,
     );
-    console.log('doChangeLanguage', store.getState().LoginReducer);
+    console.log('doChangeLanguage', response);
     yield action.payload.onSuccess(
       response?.data?.status,
       response.status,

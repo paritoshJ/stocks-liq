@@ -1,7 +1,8 @@
 export default {
-  appName: 'Liq Stocks',
+  appName: 'Liq stocks',
   selectLanguage: 'भाषा चुने',
   englishLang: 'English',
+  language: 'भाषा',
   hindiLang: 'हिंदी',
   currencySymbol: '₹',
   priceWithCurrency: '₹%{price}',
@@ -148,4 +149,9 @@ export default {
     'Your account is deleted please contact to admin for further info.',
   filterTitle: 'Filter',
   addedOn: 'Added on %{date}',
+  langChangeText: 'क्या आप भाषा बदलना चाहते हैं?',
+  yesText: 'हाँ',
+  noText: 'नहीं',
+  okText: 'ठीक',
+  restartApp: 'अपडेट की गई भाषा देखने के लिए कृपया एप्लिकेशन को पुनरारंभ करें।',
 };

@@ -1,5 +1,5 @@
 import {Platform, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import LogoSvg from '../../assets/svgs/logoSvg';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {themeProvide} from '../../util/globalMethods';
@@ -8,9 +8,14 @@ import I18n from '../../localization';
 import ThemeButton from '../../common/ThemeButton';
 import {connect} from 'react-redux';
 import {doSaveUser, doSaveToken, setLoggedIn} from '../Login/Action';
+import {doChangeLanguage} from '../Profile/Action';
 import LottieView from 'lottie-react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Loader from '../../common/loader/Loader';
 
 const RegisterSuccessScreen = props => {
+  const [isLoading, setLoading] = useState(false);
+
   const renderWelcomeText = () => {
     return (
       <Text style={styles.welcomeText}>
@@ -27,11 +32,19 @@ const RegisterSuccessScreen = props => {
       </View>
     );
   };
-  const onGoToDashboard = () => {
+  const onGoToDashboard = async () => {
+    const hasFirstLaunched = await AsyncStorage.getItem('@user_language');
     props.doSaveToken(props?.route?.params?.userData?.token);
-    props.doSaveUser(props?.route?.params?.userData);
+    props.doSaveUser(props?.route?.params?.userData);  
     setTimeout(() => {
-      props.setLoggedIn(true);
+      setLoading(true);
+      props.doChangeLanguage({
+        paramData: {lang_code: hasFirstLaunched},
+        onSuccess: () => {
+          setLoading(false);
+          props.setLoggedIn(true);
+        },
+      });
     }, 1000);
   };
   const renderButton = () => {
@@ -72,6 +85,12 @@ const RegisterSuccessScreen = props => {
         <View style={styles.firstView}>{renderIcon()}</View>
         <View style={styles.secondView}>{renderOtpView()}</View>
       </View>
+      <Loader
+        loading={isLoading}
+        isTransparent={true}
+        color={themeProvide().primary}
+        size={32}
+      />
     </KeyboardAwareScrollView>
   );
 };
@@ -85,6 +104,7 @@ const mapDispatchToProps = {
   doSaveUser: doSaveUser,
   doSaveToken: doSaveToken,
   setLoggedIn: setLoggedIn,
+  doChangeLanguage: doChangeLanguage,
 };
 
 export default connect(

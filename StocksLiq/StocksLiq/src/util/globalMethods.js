@@ -218,7 +218,12 @@ export const convertStringToBase64 = str => {
   }
 };
 
-export const twoOptionsAlertFunction = (msg, onYesPress) => {
+export const twoOptionsAlertFunction = (
+  msg,
+  onYesPress,
+  yes = 'Ok',
+  no = 'Cancel',
+) => {
   //function to make two option alert
   Alert.alert(
     //This is title
@@ -226,9 +231,9 @@ export const twoOptionsAlertFunction = (msg, onYesPress) => {
     //This is body text
     msg,
     [
-      {text: 'OK', onPress: onYesPress},
+      {text: yes, onPress: onYesPress},
       {
-        text: 'Cancel',
+        text: no,
         onPress: () => console.log('No Pressed'),
         style: 'cancel',
       },
@@ -249,14 +254,18 @@ export const getFirstLetterCaps = str => {
   }
 };
 
-export const showMessageAlert = (msg, onYesPress = () => {}) => {
+export const showMessageAlert = (
+  msg,
+  onYesPress = () => {},
+  yes = I18n.t('okText'),
+) => {
   //function to make two option alert
   Alert.alert(
     //This is title
     I18n.t('appName'),
     //This is body text
     msg,
-    [{text: 'OK', onPress: onYesPress, style: 'cancel'}],
+    [{text: yes, onPress: onYesPress, style: 'cancel'}],
     {cancelable: false},
     //on clicking out side, Alert will not dismiss
   );

@@ -115,15 +115,21 @@ const OtpScreen = props => {
               'Your account is deleted please contact to admin for further info.',
             );
           } else {
-            props.doSaveToken(response?.data?.token);
-            props.doSaveUser(response?.data);
-            setTimeout(async () => {
-              props.setLoggedIn(true);
-              props.doChangeLanguage({
-                paramData: {lang_code: hasFirstLaunched},
-                onSuccess: () => {},
+            if (response?.data?.is_premium !== 0) {
+              props.doSaveToken(response?.data?.token);
+              props.doSaveUser(response?.data);
+              setTimeout(async () => {
+                props.setLoggedIn(true);
+                props.doChangeLanguage({
+                  paramData: {lang_code: hasFirstLaunched},
+                  onSuccess: () => {},
+                });
+              }, 1000);
+            } else {
+              props.navigation.navigate('PlanScreen', {
+                userData: response?.data,
               });
-            }, 1000);
+            }
           }
         } else {
           showMessageAlert(response);
