@@ -32,6 +32,8 @@ import RedeemRequestScreen from '../screens/Wallet/RedeemRequest/index';
 import ReferFriendScreen from '../screens/ReferFriend/index';
 import AddBhejanScreen from '../screens/SalesmanRoute/Bhejan/AddBhejan/index';
 import BhejanScreen from '../screens/SalesmanRoute/Bhejan/index';
+import RecievableScreen from '../screens/SalesmanRoute/Recievebals/index';
+import AddRecievebaleScreen from '../screens/SalesmanRoute/Recievebals/AddRecievebals/index';
 
 import HomeScreenStack from '../routes/HomeScreenStack';
 import ItemScreenStack from '../routes/ItemsScreenStack';
@@ -49,6 +51,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import CustomDrawerContent from './CustomDrawerContent';
 import {createStackNavigator} from '@react-navigation/stack';
 import SalesTabSvg from '../assets/svgs/SalesTabSvg';
+import SearchPage from '../common/SearchPage/index';
 
 var exit = false;
 const popText = 'Do you want to exit app ?';
@@ -329,6 +332,23 @@ function RootNavigation() {
         name={'AddBhejanScreen'}
         component={AddBhejanScreen}
         options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={'AddRecievebaleScreen'}
+        component={AddRecievebaleScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={'RecievableScreen'}
+        component={RecievableScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="SearchPage"
+        component={SearchPage}
+        options={{
+          headerShown: false,
+        }}
       />
     </Stack.Navigator>
   );

@@ -22,13 +22,14 @@ import {store} from '../../../../store/configureStore';
 import {Dropdown} from 'react-native-element-dropdown';
 import {TextInput, Checkbox} from 'react-native-paper';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {doAddBhejan} from '../Action';
+import {doAddRecievable} from '../Action';
 import Loader from '../../../../common/loader/Loader';
 import {doGetSubCategoryType} from '../../../Items/Action';
+
 import CheckBoxPlain from '../../../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../../../assets/svgs/CheckBoxWithTick';
 
-const AddBhejanScreen = props => {
+const AddRecievebaleScreen = props => {
   const CategoryArr = store?.getState()?.ExpenseReducer?.expenseTypeArray;
   const [expenseName, setExpenseName] = useState('');
   const [expenseAmount, setExpenseAmount] = useState('');
@@ -53,9 +54,9 @@ const AddBhejanScreen = props => {
     });
   };
 
-  const doAddBhejanApi = () => {
+  const doAddRecievableApi = () => {
     setIsLoading(true);
-    props.doAddBhejan({
+    props.doAddRecievable({
       paramData: {
         exp_name: expenseName,
         amount: expenseAmount,
@@ -144,7 +145,7 @@ const AddBhejanScreen = props => {
     if (isStringNotNull(msg)) {
       showMessageAlert(msg);
     } else {
-      doAddBhejanApi();
+      doAddRecievableApi();
     }
   };
   const renderButtonView = () => {
@@ -306,7 +307,7 @@ const AddBhejanScreen = props => {
         <ToolbarHeader
           isLogo={false}
           backgroundColor={themeProvide().white}
-          title={I18n.t('addBhejan')}
+          title={I18n.t('addReceivable')}
           onPress={() => {
             props.navigation.goBack();
           }}
@@ -358,11 +359,14 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  doAddBhejan: doAddBhejan,
+  doAddRecievable: doAddRecievable,
   doGetSubCategoryType: doGetSubCategoryType,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddBhejanScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(AddRecievebaleScreen);
 
 const styles = StyleSheet.create({
   mainView: {flex: 1, backgroundColor: themeProvide().white},

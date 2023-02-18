@@ -7,7 +7,7 @@ import {
   takeEvery,
   debounce,
 } from 'redux-saga/effects';
-import {BhejaActionTypes} from './Action_type';
+import {RecievableActionTypes} from './Action_type';
 import {request} from '../../../services/service';
 import {HTTP_METHODS} from '../../../services/api_constants';
 import {
@@ -17,7 +17,7 @@ import {
 } from '../../../services/api_end_points';
 import {store} from '../../../store/configureStore';
 
-function* doAddBhejan(action) {
+function* doAddRecievable(action) {
   try {
     const {response} = yield request(
       DO_ADD_BHEJAN,
@@ -57,11 +57,11 @@ function* doAddBhejan(action) {
   }
 }
 
-export function* doAddBhejanWatcher() {
-  yield takeLatest(BhejaActionTypes.DO_ADD_BHEJAN, doAddBhejan);
+export function* doAddRecievableWatcher() {
+  yield takeLatest(RecievableActionTypes.DO_ADD_RECIEVABLES, doAddRecievable);
 }
 
-function* doGetBhejan(action) {
+function* doGetRecievable(action) {
   try {
     const {response} = yield request(
       DO_GET_BHEJAN,
@@ -103,11 +103,11 @@ function* doGetBhejan(action) {
   }
 }
 
-export function* doGetBhejanWatcher() {
-  yield takeLatest(BhejaActionTypes.GET_BHEJAN, doGetBhejan);
+export function* doGetRecievableWatcher() {
+  yield takeLatest(RecievableActionTypes.GET_RECIEVABLES, doGetRecievable);
 }
 
-function* doDeleteBhejan(action) {
+function* doDeleteRecievable(action) {
   try {
     const {response} = yield request(
       DO_DELETE_BHEJAN,
@@ -149,6 +149,9 @@ function* doDeleteBhejan(action) {
   }
 }
 
-export function* doDeleteBhejanWatcher() {
-  yield takeLatest(BhejaActionTypes.DO_DELETE_BHEJAN, doDeleteBhejan);
+export function* doDeleteRecievableWatcher() {
+  yield takeLatest(
+    RecievableActionTypes.DO_DELETE_RECIEVABLES,
+    doDeleteRecievable,
+  );
 }

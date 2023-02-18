@@ -19,7 +19,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import RNExitApp from 'react-native-exit-app';
 
-const SideMenuDataShopOwner = [{
+ function CustomDrawerContent(props) {
+
+    const SideMenuDataShopOwner = [{
     title: I18n.t('myProfile_menu'),
     key: 'profile',
     icon: (<MyProfileSideMenu/>),
@@ -54,24 +56,27 @@ const SideMenuDataSalesman = [{
     title: I18n.t('myProfile_menu'),
     key: 'profile',
     icon: (<MyProfileSideMenu/>),
-    id: 1
+    id: 6
 },
 {
     title: I18n.t('bhejan_menu'),
     key: 'bhejan',
     icon: (<MyProfileSideMenu/>),
-    id: 1
+    id: 7
+},
+{
+    title: I18n.t('receivable_menu'),
+    key: 'receivable',
+    icon: (<MyProfileSideMenu/>),
+    id: 8
 },
 {
     title: I18n.t('logout_menu'),
     key: 'logout',
     icon: (<LogoutMenuSvg/>),
-    id: 5
+    id: 9
 }
 ]
-
- function CustomDrawerContent(props) {
-
     const [menuTitle, setMenuTitle] = useState('')
     const [language, setLanguage] = useState('')
     const [isLoading, setIsLoading] = useState(false)
@@ -98,6 +103,9 @@ const SideMenuDataSalesman = [{
                 break;
                 case 'bhejan':
                     props.navigation.navigate('BhejanScreen')
+                break;
+                case 'receivable':
+                    props.navigation.navigate('RecievableScreen')
                 break;
                 case 'refer':
                     props.navigation.navigate('ReferFriendScreen')

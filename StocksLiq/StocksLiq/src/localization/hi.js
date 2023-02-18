@@ -44,6 +44,8 @@ export default {
   helloUserText: 'नमस्ते, %{username}\nबधाई',
   successText: 'आपको सफलतापूर्वक रजिस्टर कर लिया है',
   bhejan_menu: 'भेजन',
+  receivable_menu: 'आगमन',
+  addReceivable: 'आगमन जोड़ें',
   myProfile_menu: 'प्रोफाइल',
   salesman_menu: 'विक्रेता',
   wallet_menu: 'पर्स',
@@ -61,7 +63,7 @@ export default {
   allTime: 'पूरे समय',
   deleteAccount: 'खाता हटाना',
   editProfile: 'प्रोफ़ाइल संपादित करें',
-  noItemTitle: 'कोई %{tabName}  नहीं जोड़ा गया',
+  noItemTitle: 'कोई %{tabName} नहीं जोड़ा गया',
   noItemAddText:
     'नमस्ते, आपने अभी तक कोई %{tabName}\nनहीं जोड़ा है, इसलिए कृपया ऐड\nबटन पर क्लिक करें और अपना %{tabName} जोड़ें।.',
   cancel: 'रद्द',

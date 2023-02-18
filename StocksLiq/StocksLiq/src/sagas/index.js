@@ -39,6 +39,16 @@ import {
   doAddCommissionWatcher,
   doGetCommissionWatcher,
 } from '../screens/SalesmanRoute/Commission/saga';
+import {
+  doAddRecievableWatcher,
+  doGetRecievableWatcher,
+  doDeleteRecievableWatcher,
+} from '../screens/SalesmanRoute/Recievebals/Saga';
+import {
+  doAddBhejanWatcher,
+  doGetBhejanWatcher,
+  doDeleteBhejanWatcher,
+} from '../screens/SalesmanRoute/Bhejan/Saga';
 // Redux saga: Root saga
 export function* rootSaga() {
   yield all([
@@ -67,5 +77,11 @@ export function* rootSaga() {
     doAddCommissionWatcher(),
     doGetCommissionWatcher(),
     doChangeLanguageWatcher(),
+    doAddRecievableWatcher(),
+    doGetRecievableWatcher(),
+    doDeleteRecievableWatcher(),
+    doAddBhejanWatcher(),
+    doGetBhejanWatcher(),
+    doDeleteBhejanWatcher(),
   ]);
 }

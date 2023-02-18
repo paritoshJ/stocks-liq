@@ -14,7 +14,7 @@ import {SearchBar} from 'react-native-elements';
 import {isArrayNullOrEmpty, themeProvide} from '../../util/globalMethods';
 import ToolbarHeader from '../ToolbarHeader';
 import {connect} from 'react-redux';
-import ItemRow from '../../screens/Items/ItemRow';
+import SearchProductRow from './SearchProductRow';
 import {Keyboard} from 'react-native';
 import {TextInput} from 'react-native';
 import SearchSvgIcon from '../../assets/svgs/SearchSvgIcon';
@@ -110,7 +110,7 @@ const SearchScreen = props => {
   const ItemView = ({item}) => {
     return (
       // Flat List Item
-      <ItemRow
+      <SearchProductRow
         isIconNotShow={true}
         item={item}
         onItemClick={() => {

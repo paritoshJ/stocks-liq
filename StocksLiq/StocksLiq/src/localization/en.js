@@ -44,6 +44,9 @@ export default {
   helloUserText: 'Hi, %{username}\nCongratulation',
   successText: 'You have successfully registered',
   bhejan_menu: 'Bhejan',
+  receivable_menu: 'Arrival',
+  addReceivable: 'Add Arrival',
+
   myProfile_menu: 'My Profile',
   salesman_menu: 'Salesman',
   wallet_menu: 'Wallet',
