@@ -99,6 +99,8 @@ export default {
   enterPriceError: 'कृपया %{type} कीमत दर्ज करें।',
   enterZeroPriceError: '%{type} कीमत 0 नहीं हो सकती।',
   enterZeroQuantityError: '%{type} मात्रा 0 नहीं हो सकती।',
+  enterEmptyRemarkError: '%{type} टिप्पणी दर्ज करें।',
+  bheajnRemarkPlaceholder: 'टिप्पणी',
   enterPrice: '₹ %{type} कीमत',
   enterType: '%{type} दर्ज करें',
   typePrice: '%{type} कीमत',
@@ -156,4 +158,5 @@ export default {
   noText: 'नहीं',
   okText: 'ठीक',
   restartApp: 'अपडेट की गई भाषा देखने के लिए कृपया एप्लिकेशन को पुनरारंभ करें।',
+  totalPrice: '₹%{price}',
 };

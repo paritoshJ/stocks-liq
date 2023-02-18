@@ -30,6 +30,9 @@ export const DO_GET_SALES = `${API_DOMAIN_QA}/get-sales`;
 export const DO_ADD_COMMISSION = `${API_DOMAIN_QA}/add-commission`;
 export const DO_GET_COMMISSION = `${API_DOMAIN_QA}/get-commission`;
 export const DO_CHANGE_LANGUAGE = `${API_DOMAIN_QA}/change-langcode`;
+export const DO_ADD_BHEJAN = `${API_DOMAIN_QA}/add-bhejan`;
+export const DO_GET_BHEJAN = `${API_DOMAIN_QA}/get-bhejan`;
+export const DO_GET_DASHBOARD_VALUES = `${API_DOMAIN_QA}/dashboard-data`;
 
 // export const GET_CLAIM_STATUS_SUMMERY = (
 //   memberType,

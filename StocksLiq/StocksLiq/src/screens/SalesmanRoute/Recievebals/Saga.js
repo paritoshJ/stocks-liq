@@ -65,7 +65,7 @@ function* doGetRecievable(action) {
   try {
     const {response} = yield request(
       DO_GET_BHEJAN,
-      HTTP_METHODS.GET,
+      HTTP_METHODS.POST,
       action.payload.paramData,
       {},
       true,

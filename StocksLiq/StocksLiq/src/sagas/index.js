@@ -49,6 +49,7 @@ import {
   doGetBhejanWatcher,
   doDeleteBhejanWatcher,
 } from '../screens/SalesmanRoute/Bhejan/Saga';
+import {doGetDashboardValuesWatcher} from '../screens/Dashboard/Saga';
 // Redux saga: Root saga
 export function* rootSaga() {
   yield all([
@@ -83,5 +84,6 @@ export function* rootSaga() {
     doAddBhejanWatcher(),
     doGetBhejanWatcher(),
     doDeleteBhejanWatcher(),
+    doGetDashboardValuesWatcher(),
   ]);
 }

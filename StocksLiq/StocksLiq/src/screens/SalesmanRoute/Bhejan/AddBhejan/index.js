@@ -55,12 +55,23 @@ const AddBhejanScreen = props => {
 
   const doAddBhejanApi = () => {
     setIsLoading(true);
+    let checkedItemArr = itemTypeArr.filter(item => {
+      return item.check;
+    });
+    let getTypeData = checkedItemArr.reduce((acc, d) => {
+      let obj = {
+        id: d.type_id,
+        qty: d.quantity,
+        remark: d.remark,
+      };
+      acc.push(obj);
+      return acc;
+    }, []);
     props.doAddBhejan({
       paramData: {
-        exp_name: expenseName,
-        amount: expenseAmount,
-        remark: expenseRemark,
-        exp_type: category,
+        item_id: productId,
+        bhejan_type: 'send',
+        types_data: getTypeData,
       },
       onSuccess: (isSuccess, status, data) => {
         setIsLoading(false);
@@ -127,17 +138,15 @@ const AddBhejanScreen = props => {
       msg = I18n.t('productNameError');
     } else if (checkArray.length === 0) {
       msg = I18n.t('itemTypeError');
-    } else if (!isStringNotNull(expenseRemark)) {
-      msg = I18n.t('expenseRemarkError');
     } else if (checkArray.length > 0) {
       checkArray.some(function (item) {
         console.log(item);
         if (!isStringNotNull(item?.quantity)) {
           msg = I18n.t('enterQauntityError', {type: item.lang_name});
-          return item?.price === '';
         } else if (item?.quantity <= 0) {
           msg = I18n.t('enterZeroQuantityError', {type: item.lang_name});
-          return item?.price === '';
+        } else if (!isStringNotNull(item?.remark)) {
+          msg = I18n.t('enterEmptyRemarkError', {type: item.lang_name});
         }
       });
     }
@@ -181,44 +190,16 @@ const AddBhejanScreen = props => {
       </View>
     );
   };
-  const _onChangeText = (key, value) => {
-    if (key === 'expenseRemark') {
-      setExpenseRemark(value);
-    } else {
-      setItemTypeArr(current =>
-        current.map(obj => {
-          if (obj.type_id === key) {
-            return {...obj, quantity: value};
-          }
-          return obj;
-        }),
-      );
-    }
-  };
-  const renderRemarkInputView = (label, placeholder, value, key, multiline) => {
-    return (
-      <View style={styles.renderInputView}>
-        <TextInput
-          label={label}
-          placeholder={placeholder}
-          value={value}
-          dense={false}
-          mode={'outlined'}
-          style={[styles.inputStyle, multiline && {minHeight: 100}]}
-          multiline={multiline}
-          error={false}
-          theme={{
-            colors: {
-              primary: themeProvide().black,
-              error: themeProvide().primary,
-            },
-          }}
-          placeholderColor={themeProvide().borderBlack}
-          activeUnderlineColor={themeProvide().black}
-          underlineColorAndroid={renderDevider()}
-          onChangeText={value1 => _onChangeText(key, value1)}
-        />
-      </View>
+  const _onChangeText = (key, itemKey, value) => {
+    setItemTypeArr(current =>
+      current.map(obj => {
+        if (obj.type_id === key) {
+          return itemKey === 'typeBottleRemark'
+            ? {...obj, remark: value}
+            : {...obj, quantity: value};
+        }
+        return obj;
+      }),
     );
   };
   const onItemSelect = (key, value) => {
@@ -245,24 +226,48 @@ const AddBhejanScreen = props => {
     return (
       <>
         {checkedItem.map((el, index) => {
-          return renderInputView(
-            el.lang_name,
-            isStringNotNull(el.quantity) ? el.quantity : '',
-            el.type_id,
+          return (
+            <>
+              {renderInputView(
+                el.lang_name,
+                isStringNotNull(el.quantity) ? el.quantity : '',
+                el.type_id,
+                'typeBottleQuantity',
+                false,
+              )}
+              <View style={styles.renderInputView}>
+                {renderInputView(
+                  el.lang_name,
+                  isStringNotNull(el.remark) ? el.remark : '',
+                  el.type_id,
+                  'typeBottleRemark',
+                  true,
+                )}
+              </View>
+            </>
           );
         })}
       </>
     );
   };
-  const renderInputView = (label, value, key) => {
+  const renderInputView = (label, value, key, itemKey, multiline) => {
     return (
       <View style={styles.renderInputView}>
         <TextInput
-          label={I18n.t('bottleQuantity', {type: label})}
-          placeholder={I18n.t('enterQuantity', {type: label})}
+          label={
+            itemKey === 'typeBottleRemark'
+              ? I18n.t('expenseRemark')
+              : I18n.t('bottleQuantity', {type: label})
+          }
+          placeholder={
+            itemKey === 'typeBottleRemark'
+              ? I18n.t('bheajnRemarkPlaceholder')
+              : I18n.t('enterQuantity', {type: label})
+          }
           value={value}
           dense={false}
           mode={'outlined'}
+          multiline={multiline}
           style={styles.inputStyle}
           error={false}
           theme={{
@@ -271,11 +276,13 @@ const AddBhejanScreen = props => {
               error: themeProvide().primary,
             },
           }}
-          keyboardType={'number-pad'}
+          keyboardType={
+            itemKey === 'typeBottleRemark' ? 'default' : 'number-pad'
+          }
           placeholderColor={themeProvide().borderBlack}
           activeUnderlineColor={themeProvide().black}
           underlineColorAndroid={renderDevider()}
-          onChangeText={value1 => _onChangeText(key, value1)}
+          onChangeText={value1 => _onChangeText(key, itemKey, value1)}
         />
       </View>
     );
@@ -331,13 +338,6 @@ const AddBhejanScreen = props => {
 
             {itemTypeArr.length > 0 && renderItemType()}
             {itemTypeArr.length > 0 && renderItemTypeInput()}
-            {renderRemarkInputView(
-              I18n.t('expenseRemark'),
-              I18n.t('expenseRemarkPlaceholder'),
-              expenseRemark,
-              'expenseRemark',
-              true,
-            )}
             {renderButtonView()}
           </View>
         </KeyboardAwareScrollView>

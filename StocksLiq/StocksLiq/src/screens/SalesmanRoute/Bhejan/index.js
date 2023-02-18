@@ -30,7 +30,6 @@ import {connect} from 'react-redux';
 import {store} from '../../../store/configureStore';
 import TabHeader from '../../../common/TabHeader';
 import {FlatList} from 'react-native-gesture-handler';
-import SalesmanRow from '../../Salesman/SalesmanRow';
 import FilterSvgIcon from '../../../assets/svgs/FilterSvgIcon';
 import AddItemSVG from '../../../assets/svgs/AddItemSVG';
 import {TextInput} from 'react-native';
@@ -40,7 +39,8 @@ import CheckBoxPlain from '../../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../../assets/svgs/CheckBoxWithTick';
 import ThemeButton from '../../../common/ThemeButton';
 import Loader from '../../../common/loader/Loader';
-import {doGetSalesMan, doDeleteSalesMan} from '../../Salesman/Action';
+import {doGetBhejan} from './Action';
+import BhejanRow from '../Recievebals/BhejanRow';
 
 const BhejanScreen = props => {
   const [isLoading, setLoading] = useState(false);
@@ -59,7 +59,7 @@ const BhejanScreen = props => {
   let totalRecords = useRef(0);
 
   useEffect(() => {
-    getSalesmanApi();
+    getBhejanApi();
   }, []);
 
   const renderSvgIcon = () => {
@@ -104,7 +104,7 @@ const BhejanScreen = props => {
         // onEndReached={memoizedhandleLoadMore}
         onScrollBeginDrag={Keyboard.dismiss}
         renderItem={({item, index}) => (
-          <SalesmanRow
+          <BhejanRow
             item={item}
             onItemClick={() => {}}
             onMoreIconClick={() => {
@@ -183,7 +183,7 @@ const BhejanScreen = props => {
       // this.setState({ loadingFooter: true });
       setLoadingFooter(!loadingFooter);
       // callApi(true);
-      getSalesmanApi();
+      getBhejanApi();
     } else if (totalRecords.current === listData.length && loadingFooter) {
       setLoadingFooter(!loadingFooter);
     }
@@ -210,14 +210,18 @@ const BhejanScreen = props => {
     );
   };
   const onAddBhejanPress = () => {
-    getSalesmanApi();
+    getBhejanApi();
   };
-  const getSalesmanApi = () => {
+  const getBhejanApi = () => {
     if (pageNo.current === 1) {
       setLoading(true);
     }
-    props.doGetSalesMan({
-      paramData: {page: pageNo.current},
+    props.doGetBhejan({
+      paramData: {
+        page: pageNo.current,
+        search_text: searchString.current,
+        bhejan_type: 'send',
+      },
       onSuccess: (isSuccess, status, data) => {
         setLoading(false);
         setLoadingFooter(false);
@@ -303,8 +307,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  doGetSalesMan: doGetSalesMan,
-  doDeleteSalesMan: doDeleteSalesMan,
+  doGetBhejan: doGetBhejan,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(BhejanScreen);

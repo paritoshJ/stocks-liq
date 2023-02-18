@@ -100,6 +100,8 @@ export default {
   enterPriceError: 'Please enter %{type} price.',
   enterZeroPriceError: '%{type} price can’t be 0.',
   enterZeroQuantityError: '%{type} quantity can’t be 0.',
+  enterEmptyRemarkError: '%{type} remark can’t be empty.',
+  bheajnRemarkPlaceholder: 'Enter Remark',
   enterPrice: '₹ %{type} price',
   enterType: 'Enter %{type}',
   typePrice: '%{type} price',
@@ -156,5 +158,6 @@ export default {
   yesText: 'Yes',
   noText: 'No',
   okText: 'OK',
-  restartApp:'Please restart the application to see updated language.',
+  restartApp: 'Please restart the application to see updated language.',
+  totalPrice: '₹%{price}',
 };

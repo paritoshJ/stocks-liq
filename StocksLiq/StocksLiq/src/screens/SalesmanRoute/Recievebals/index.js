@@ -30,7 +30,7 @@ import {connect} from 'react-redux';
 import {store} from '../../../store/configureStore';
 import TabHeader from '../../../common/TabHeader';
 import {FlatList} from 'react-native-gesture-handler';
-import SalesmanRow from '../../Salesman/SalesmanRow';
+import BhejanRow from './BhejanRow';
 import FilterSvgIcon from '../../../assets/svgs/FilterSvgIcon';
 import AddItemSVG from '../../../assets/svgs/AddItemSVG';
 import {TextInput} from 'react-native';
@@ -40,7 +40,7 @@ import CheckBoxPlain from '../../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../../assets/svgs/CheckBoxWithTick';
 import ThemeButton from '../../../common/ThemeButton';
 import Loader from '../../../common/loader/Loader';
-import {doGetSalesMan, doDeleteSalesMan} from '../../Salesman/Action';
+import {doGetRecievable} from './Action';
 
 const RecievableScreen = props => {
   const [isLoading, setLoading] = useState(false);
@@ -59,7 +59,7 @@ const RecievableScreen = props => {
   let totalRecords = useRef(0);
 
   useEffect(() => {
-    getSalesmanApi();
+    getRecievableApi();
   }, []);
 
   const renderSvgIcon = () => {
@@ -104,7 +104,7 @@ const RecievableScreen = props => {
         // onEndReached={memoizedhandleLoadMore}
         onScrollBeginDrag={Keyboard.dismiss}
         renderItem={({item, index}) => (
-          <SalesmanRow
+          <BhejanRow
             item={item}
             onItemClick={() => {}}
             onMoreIconClick={() => {
@@ -183,7 +183,7 @@ const RecievableScreen = props => {
       // this.setState({ loadingFooter: true });
       setLoadingFooter(!loadingFooter);
       // callApi(true);
-      getSalesmanApi();
+      getRecievableApi();
     } else if (totalRecords.current === listData.length && loadingFooter) {
       setLoadingFooter(!loadingFooter);
     }
@@ -210,14 +210,18 @@ const RecievableScreen = props => {
     );
   };
   const onAddBhejanPress = () => {
-    getSalesmanApi();
+    getRecievableApi();
   };
-  const getSalesmanApi = () => {
+  const getRecievableApi = () => {
     if (pageNo.current === 1) {
       setLoading(true);
     }
-    props.doGetSalesMan({
-      paramData: {page: pageNo.current},
+    props.doGetRecievable({
+      paramData: {
+        page: pageNo.current,
+        search_text: searchString.current,
+        bhejan_type: 'receive',
+      },
       onSuccess: (isSuccess, status, data) => {
         setLoading(false);
         setLoadingFooter(false);
@@ -303,8 +307,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  doGetSalesMan: doGetSalesMan,
-  doDeleteSalesMan: doDeleteSalesMan,
+  doGetRecievable: doGetRecievable,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecievableScreen);

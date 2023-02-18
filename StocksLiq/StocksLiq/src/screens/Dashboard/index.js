@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   isArrayNullOrEmpty,
   getLanguage,
@@ -17,16 +17,22 @@ import ToolbarHeader from '../../common/ToolbarHeader';
 import {fonts} from '../../../assets/fonts/fonts';
 import I18n from '../../localization';
 import {doGetCategory, doSaveCategory} from '../Items/Action';
+import {doGetDashbordValues} from './Action';
 import {connect} from 'react-redux';
 import {store} from '../../store/configureStore';
+import Loader from '../../common/loader/Loader';
 
 const DashboardScreen = props => {
+  const [isLoading, setLoading] = useState(false);
+  const [dashboardData, setDashboardData] = useState(null);
+
   useEffect(() => {
     // props.navigation.openDrawer();
     if (isArrayNullOrEmpty(store?.getState()?.ItemReducer?.categoryData)) {
       getCategory();
     }
     getCategory();
+    getDashbordValues();
   }, []);
   const getCategory = () => {
     props.doGetCategory({
@@ -46,19 +52,40 @@ const DashboardScreen = props => {
       },
     });
   };
-  const renderRecords = (label, item) => {
+  const getDashbordValues = () => {
+    setLoading(true);
+    props.doGetDashbordValues({
+      paramsData: {lang: getLanguage()},
+      onSuccess: (isSuccess, status, data) => {
+        setLoading(false);
+        console.log('doGetDashbordValues', data?.data);
+        if (isSuccess && typeof data !== 'string') {
+          setDashboardData(data?.data);
+        } else {
+          showMessageAlert(data);
+        }
+      },
+    });
+  };
+  const renderRecords = (
+    label,
+    totalSale,
+    totalExpens,
+    totalCommission,
+    totalCollection,
+  ) => {
     return (
       <>
         <Text style={styles.label}>{label}</Text>
         <View style={{flexDirection: 'row', marginTop: 12}}>
-          {renderCard(I18n.t('totalSales'), '₹12910')}
+          {renderCard(I18n.t('totalSales'), totalSale)}
           {renderCardGap()}
-          {renderCard(I18n.t('totalExpens'), '₹2910')}
+          {renderCard(I18n.t('totalExpens'), totalExpens)}
         </View>
         <View style={{flexDirection: 'row', marginVertical: 16}}>
-          {renderCard(I18n.t('totalCommission'), '₹910')}
+          {renderCard(I18n.t('totalCommission'), totalCommission)}
           {renderCardGap()}
-          {renderCard(I18n.t('totalCollection'), '₹12910')}
+          {renderCard(I18n.t('totalCollection'), totalCollection)}
         </View>
       </>
     );
@@ -89,11 +116,41 @@ const DashboardScreen = props => {
           logoToolbarType={true}
         />
         <View style={styles.titleView}>
-          {renderRecords(I18n.t('today'), null)}
+          {renderRecords(
+            I18n.t('today'),
+            I18n.t('totalPrice', {price: `${dashboardData?.today_sales}`}),
+            I18n.t('totalPrice', {price: `${dashboardData?.today_expenses}`}),
+            I18n.t('totalPrice', {price: `${dashboardData?.today_commission}`}),
+            I18n.t('totalPrice', {
+              price: `${
+                dashboardData?.today_sales +
+                dashboardData?.today_expenses +
+                dashboardData?.today_commission
+              }`,
+            }),
+          )}
           {renderCardGap()}
-          {renderRecords(I18n.t('allTime'), null)}
+          {renderRecords(
+            I18n.t('allTime'),
+            I18n.t('totalPrice', {price: `${dashboardData?.total_sales}`}),
+            I18n.t('totalPrice', {price: `${dashboardData?.total_expenses}`}),
+            I18n.t('totalPrice', {price: `${dashboardData?.total_commission}`}),
+            I18n.t('totalPrice', {
+              price: `${
+                dashboardData?.total_sales +
+                dashboardData?.total_expenses +
+                dashboardData?.total_commission
+              }`,
+            }),
+          )}
         </View>
       </View>
+      <Loader
+        loading={isLoading}
+        isTransparent={true}
+        color={themeProvide().primary}
+        size={32}
+      />
     </SafeAreaView>
   );
 };
@@ -107,6 +164,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   doGetCategory: doGetCategory,
   doSaveCategory: doSaveCategory,
+  doGetDashbordValues: doGetDashbordValues,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardScreen);
