@@ -115,35 +115,41 @@ const DashboardScreen = props => {
           }}
           logoToolbarType={true}
         />
-        <View style={styles.titleView}>
-          {renderRecords(
-            I18n.t('today'),
-            I18n.t('totalPrice', {price: `${dashboardData?.today_sales}`}),
-            I18n.t('totalPrice', {price: `${dashboardData?.today_expenses}`}),
-            I18n.t('totalPrice', {price: `${dashboardData?.today_commission}`}),
-            I18n.t('totalPrice', {
-              price: `${
-                dashboardData?.today_sales +
-                dashboardData?.today_expenses +
-                dashboardData?.today_commission
-              }`,
-            }),
-          )}
-          {renderCardGap()}
-          {renderRecords(
-            I18n.t('allTime'),
-            I18n.t('totalPrice', {price: `${dashboardData?.total_sales}`}),
-            I18n.t('totalPrice', {price: `${dashboardData?.total_expenses}`}),
-            I18n.t('totalPrice', {price: `${dashboardData?.total_commission}`}),
-            I18n.t('totalPrice', {
-              price: `${
-                dashboardData?.total_sales +
-                dashboardData?.total_expenses +
-                dashboardData?.total_commission
-              }`,
-            }),
-          )}
-        </View>
+        {dashboardData && (
+          <View style={styles.titleView}>
+            {renderRecords(
+              I18n.t('today'),
+              I18n.t('totalPrice', {price: `${dashboardData?.today_sales}`}),
+              I18n.t('totalPrice', {price: `${dashboardData?.today_expenses}`}),
+              I18n.t('totalPrice', {
+                price: `${dashboardData?.today_commission}`,
+              }),
+              I18n.t('totalPrice', {
+                price: `${
+                  dashboardData?.today_sales +
+                  dashboardData?.today_expenses +
+                  dashboardData?.today_commission
+                }`,
+              }),
+            )}
+            {renderCardGap()}
+            {renderRecords(
+              I18n.t('allTime'),
+              I18n.t('totalPrice', {price: `${dashboardData?.total_sales}`}),
+              I18n.t('totalPrice', {price: `${dashboardData?.total_expenses}`}),
+              I18n.t('totalPrice', {
+                price: `${dashboardData?.total_commission}`,
+              }),
+              I18n.t('totalPrice', {
+                price: `${
+                  dashboardData?.total_sales +
+                  dashboardData?.total_expenses +
+                  dashboardData?.total_commission
+                }`,
+              }),
+            )}
+          </View>
+        )}
       </View>
       <Loader
         loading={isLoading}
