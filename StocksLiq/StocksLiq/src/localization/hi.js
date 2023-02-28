@@ -66,6 +66,9 @@ export default {
   noItemTitle: 'कोई %{tabName} नहीं जोड़ा गया',
   noItemAddText:
     'नमस्ते, आपने अभी तक कोई %{tabName}\nनहीं जोड़ा है, इसलिए कृपया ऐड\nबटन पर क्लिक करें और अपना %{tabName} जोड़ें।.',
+  noWalletAddText:
+    'नमस्ते, आपने अभी तक कोई रिकॉर्ड\nनहीं जोड़ा है, इसलिए कृपया रेफर ए फ्रेंड बटन पर क्लिक करें और अपना पैसा बनाएं।',
+
   cancel: 'रद्द',
   update: 'अपडेट',
   yourStoreName: 'स्टोर नाम',
@@ -159,4 +162,9 @@ export default {
   okText: 'ठीक',
   restartApp: 'अपडेट की गई भाषा देखने के लिए कृपया एप्लिकेशन को पुनरारंभ करें।',
   totalPrice: '₹%{price}',
+  appleStore: 'Apple store\nLink:- %{url}',
+  googleStore: 'Google Play Store\nLink:- %{url}',
+  invalidUpi: 'यूपीआई आईडी अमान्य है।',
+  shareMsgLink:
+    'यह रहा आपका रेफ़रल लिंक\nक्या आप एप्लिकेशन इंस्टॉल करने के लिए तैयार हैं?\n1. Liq Stocks को %{type} से डाउनलोड करें। \n2. इस  %{referal} रेफ़रल कोड के साथ एक खाता बनाएँ।',
 };

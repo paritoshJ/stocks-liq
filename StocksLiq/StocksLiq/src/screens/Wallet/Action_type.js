@@ -1,0 +1,4 @@
+export const WalletActionTypes = {
+  GET_WALLET: 'GET_WALLET',
+  ADD_WIDTHRWAL_REQUEST: 'ADD_WIDTHRWAL_REQUEST',
+};

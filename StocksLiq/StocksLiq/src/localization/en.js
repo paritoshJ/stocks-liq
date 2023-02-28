@@ -67,6 +67,9 @@ export default {
   noItemTitle: 'No %{tabName} added',
   noItemAddText:
     'Hi, You have not added any %{tabName}\ntill yet, so please click on add\nbutton and add your %{tabName}.',
+  noWalletAddText:
+    'Hi, You have not added any record\ntill yet, so please click on Refer\na friend button and create your money.',
+
   cancel: 'Cancel',
   update: 'Update',
   yourStoreName: 'Store Name',
@@ -160,4 +163,9 @@ export default {
   okText: 'OK',
   restartApp: 'Please restart the application to see updated language.',
   totalPrice: '₹%{price}',
+  appleStore: 'Apple store\nLink:- %{url}',
+  googleStore: 'Google Play Store\nLink:- %{url}',
+  invalidUpi: 'UPI Id is invalid.',
+  shareMsgLink:
+    "Here's your referal link\nReady to install?\n1. Downlaod the Liq Stocks from %{type}\n2. Create an account with this %{referal} Referral code.",
 };

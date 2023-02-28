@@ -38,28 +38,60 @@ import CheckBoxPlain from '../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../assets/svgs/CheckBoxWithTick';
 import ThemeButton from '../../common/ThemeButton';
 import Loader from '../../common/loader/Loader';
+import {doGetWallet} from './Action';
 
 const WalletScreen = props => {
   const [isLoading, setLoading] = useState(false);
   const [isEmptyPage, setEmptyPage] = useState(false);
   const [salectedTabId, setSelectedTabId] = useState(null);
   const [categoriesTabs, setCategoriesTabs] = useState([]);
-  const [listData, setListData] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  const [listData, setListData] = useState([]);
   const [loadingFooter, setLoadingFooter] = useState(false);
   const [filterSheetVisible, setFilterSheetVisile] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [totalAmount, setTotalAmount] = useState(0);
+
   // const refRBSheet = useRef();
   let pageSize = 10;
   let searchString = useRef('');
   let pageNo = useRef(1);
   let totalPage = useRef(2000);
+  let totalRecords = useRef(0);
 
   useEffect(() => {
     if (!isArrayNullOrEmpty(store?.getState()?.ItemReducer?.categoryData)) {
       setCategoriesTabs([...store?.getState()?.ItemReducer?.categoryData]);
       setSelectedTabId(store?.getState()?.ItemReducer?.categoryData[0].cat_id);
     }
+    getWalletApi();
   }, []);
+  const getWalletApi = () => {
+    console.log(pageNo.current);
+    setLoading(pageNo.current === 1);
+
+    props.doGetWallet({
+      paramData: {
+        page: pageNo.current,
+      },
+      onSuccess: (isSuccess, status, data) => {
+        setLoading(false);
+        setLoadingFooter(false);
+        if (isSuccess) {
+          console.log('data', data);
+          totalRecords.current = data?.data?.total ?? 0;
+          setTotalAmount(data?.wallet_amount ?? 0);
+          if (!isArrayNullOrEmpty(data?.data?.data)) {
+            if (pageNo.current === 1) {
+              setListData(data?.data?.data);
+            } else {
+              const updateArr = [...listData, ...data?.data?.data];
+              setListData(updateArr);
+            }
+          }
+        }
+      },
+    });
+  };
 
   const renderSvgIcon = () => {
     return <ItemBigSVG color={themeProvide().primary} />;
@@ -69,11 +101,13 @@ const WalletScreen = props => {
     return (
       <EmptyPageView
         icon={renderSvgIcon}
-        title={I18n.t('noItemTitle', {tabName: I18n.t('salesman_menu')})}
-        message={I18n.t('noItemAddText', {tabName: I18n.t('salesman_menu')})}
-        buttonTitle={`+ ${I18n.t('salesman_menu')}`}
+        title={I18n.t('noItemTitle', {tabName: I18n.t('wallet_menu')})}
+        message={I18n.t('noWalletAddText')}
+        buttonTitle={`+ ${I18n.t('wallet_menu')}`}
+        hideAddButton={true}
+        hideSvg={true}
         onAddClick={() => {
-          props.navigation.navigate('AddSalesmanScreen');
+          // props.navigation.navigate('AddSalesmanScreen');
         }}
       />
     );
@@ -222,20 +256,27 @@ const WalletScreen = props => {
       </TouchableOpacity>
     );
   };
+  const getOnAddRedeemRequest = () => {
+    setListData([]);
+    pageNo.current = 1;
+    getWalletApi();
+  };
   const renderFilterButtonView = () => {
     return (
       <View style={styles.buttonView}>
         <ThemeButton
           buttonstyle={[styles.buttonstyleCancel]}
           onPress={() => {
-            props.navigation.navigate('ReferFriendScreen')
+            props.navigation.navigate('ReferFriendScreen');
           }}
           buttonTitle={I18n.t('refer_a_friend_menu')}
         />
         <ThemeButton
           buttonstyle={[styles.buttonstyleApply]}
           onPress={() => {
-            props.navigation.navigate('RedeemRequestScreen')
+            props.navigation.navigate('RedeemRequestScreen', {
+              getOnAddRedeemRequest: getOnAddRedeemRequest,
+            });
           }}
           buttonTitle={I18n.t('redeem_request')}
         />
@@ -264,7 +305,7 @@ const WalletScreen = props => {
               marginTop: 4,
               fontSize: 32,
             }}>
-            {getCurrenyPrice(Number(9400))}
+            {getCurrenyPrice(Number(totalAmount))}
           </Text>
           <Text
             style={{
@@ -277,7 +318,7 @@ const WalletScreen = props => {
             Total earnings
           </Text>
         </View>
-        {isEmptyPage ? renderEmptyPage() : renderFlatList()}
+        {listData.length === 0 ? renderEmptyPage() : renderFlatList()}
       </View>
       {renderFilterButtonView()}
       <Loader
@@ -295,7 +336,9 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  doGetWallet: doGetWallet,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletScreen);
 

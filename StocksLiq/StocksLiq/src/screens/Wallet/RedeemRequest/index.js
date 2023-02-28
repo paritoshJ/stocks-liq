@@ -24,32 +24,30 @@ import {TextInput, Checkbox} from 'react-native-paper';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import CheckBoxPlain from '../../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../../assets/svgs/CheckBoxWithTick';
-import {
-  doAddItem,
-  doGetSubCategory,
-  doGetSubCategoryType,
-} from '../../Items/Action';
+import {doAddWalletRequest} from '../Action';
 import Loader from '../../../common/loader/Loader';
 
 const RedeemRequestScreen = props => {
   const [redeemAmount, setRedeemAmount] = useState('');
   const [upiId, setUpiId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const upiRegex = '/^[w.-]+@[w.-]+$/';
 
-  const doAddItemApi = () => {
+  const doAddWalletRequest = () => {
     setIsLoading(true);
-    props.doAddItem({
+    props.doAddWalletRequest({
       paramData: {
-        expense_name: expenseName,
-        expense_amount: expenseAmount,
-        expense_remark: expenseRemark,
-        exp_id: category,
+        amount: redeemAmount,
+        upi_id: upiId,
       },
       onSuccess: (isSuccess, status, data) => {
         setIsLoading(false);
-        if (isSuccess) {
-          props.navigation.goBack();
-        }
+        showMessageAlert(data?.message, () => {
+          if (isSuccess) {
+            props.navigation.goBack();
+            props?.route?.params?.getOnAddRedeemRequest();
+          }
+        });
       },
     });
   };
@@ -67,11 +65,13 @@ const RedeemRequestScreen = props => {
       msg = I18n.t('commonEmptyError', {
         label: I18n.t('upiId').toLowerCase(),
       });
+    } else if (!/^[\w.-]+@[\w.-]+$/.test(upiId)) {
+      msg = I18n.t('invalidUpi');
     }
     if (isStringNotNull(msg)) {
       showMessageAlert(msg);
     } else {
-      // doAddItemApi();
+      doAddWalletRequest();
     }
   };
   const renderButtonView = () => {
@@ -113,6 +113,7 @@ const RedeemRequestScreen = props => {
               error: themeProvide().primary,
             },
           }}
+          keyboardType={key === 'redeemAmount' ? 'number-pad' : 'default'}
           placeholderColor={themeProvide().borderBlack}
           activeUnderlineColor={themeProvide().black}
           underlineColorAndroid={renderDevider()}
@@ -172,9 +173,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  doGetSubCategory: doGetSubCategory,
-  doGetSubCategoryType: doGetSubCategoryType,
-  doAddItem: doAddItem,
+  doAddWalletRequest: doAddWalletRequest,
 };
 
 export default connect(

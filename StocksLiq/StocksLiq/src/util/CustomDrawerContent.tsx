@@ -80,7 +80,7 @@ const SideMenuDataSalesman = [{
     const [menuTitle, setMenuTitle] = useState('')
     const [language, setLanguage] = useState('')
     const [isLoading, setIsLoading] = useState(false)
-    const options = [
+    let options = [
         { label: I18n.t('englishLang'), value: API_LANG.ENGLISH, testID: "english-lang", accessibilityLabel: "english-lang" },
         { label: I18n.t('hindiLang'), value: API_LANG.HINDI, testID: "hindi-lang", accessibilityLabel: "hindi-lang" },
       ];

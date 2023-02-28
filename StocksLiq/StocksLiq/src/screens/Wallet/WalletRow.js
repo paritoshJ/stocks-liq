@@ -6,6 +6,8 @@ import MoreSvgIcon from '../../assets/svgs/MoreSvgIcon';
 import {fonts} from '../../../assets/fonts/fonts';
 import DebitSVG from '../../assets/svgs/DebitSVG';
 import CreaditSVG from '../../assets/svgs/CreaditSVG';
+import I18n from 'i18n-js';
+import moment from 'moment';
 
 const WalletRow = props => {
   return (
@@ -19,7 +21,7 @@ const WalletRow = props => {
               fontWeight: '700',
               fontSize: 14,
             }}>
-            John@ybl
+            {props?.item?.upi_id ?? props?.item?.user_name ?? 'N/A'}
           </Text>
           <Text
             numberOfLines={2}
@@ -30,20 +32,22 @@ const WalletRow = props => {
               marginTop: 4,
               color: themeProvide().black,
             }}>
-            20Jan, 22 at 5:12Pm
+            {I18n.t('addedOn', {
+              date: moment(props?.item?.created_at).format('Do MMM YY h:mm a'),
+            })}
           </Text>
         </View>
         <View style={{flexDirection: 'row'}} onPress={props.onMoreIconClick}>
-          {true ? <DebitSVG /> : <CreaditSVG />}
+          {props.item.type !== 'earn' ? <DebitSVG /> : <CreaditSVG />}
           <Text
             numberOfLines={2}
             style={{
               fontFamily: fonts.InterRegular,
               fontWeight: '700',
-              marginHorizontal:4,
+              marginHorizontal: 4,
               fontSize: 14,
             }}>
-            {getCurrenyPrice(Number(5400))}
+            {getCurrenyPrice(Number(props?.item?.amount ?? 0))}
           </Text>
         </View>
       </View>

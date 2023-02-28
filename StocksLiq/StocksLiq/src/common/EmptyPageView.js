@@ -13,12 +13,15 @@ const EmptyPageView = props => {
   const Icon = props.icon;
   const hideAddButton =
     props?.hideAddButton != undefined ? props?.hideAddButton : false;
+  const hideSvg = props?.hideSvg != undefined ? props?.hideSvg : false;
   return (
     <ScrollView contentContainerStyle={styles.mainView}>
       <View style={styles.mainView}>
-        <View style={styles.circleStyle}>
-          <Icon />
-        </View>
+        {!hideSvg && (
+          <View style={styles.circleStyle}>
+            <Icon />
+          </View>
+        )}
         <Text style={[styles.titleStyle, props.titleStyle]}>{props.title}</Text>
         <Text style={[styles.msgStyle, props.msgStyle]}>{props.message}</Text>
         {!hideAddButton && (

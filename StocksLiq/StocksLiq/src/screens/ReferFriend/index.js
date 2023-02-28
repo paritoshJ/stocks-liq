@@ -10,6 +10,7 @@ import React, {useEffect, useState} from 'react';
 import {
   getCurrenyPrice,
   getLanguage,
+  getShareExcludeActivity,
   isStringNotNull,
   showMessageAlert,
   themeProvide,
@@ -26,6 +27,7 @@ import {
   doGetSubCategoryType,
 } from '../Items/Action';
 import Loader from '../../common/loader/Loader';
+import Share from 'react-native-share';
 
 const ReferFriendScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
@@ -48,7 +50,24 @@ const ReferFriendScreen = props => {
     });
   };
 
-  const onSharePress = () => {};
+  const onSharePress = async () => {
+    const options = {
+      message: I18n.t('shareMsgLink', {
+        type: I18n.t(Platform.OS === 'android' ? 'googleStore' : 'appleStore', {
+          url:
+            Platform.OS === 'android'
+              ? 'https://play.google.com/store/apps/details?id=com.stocksliq'
+              : 'http://itunes.com/apps/com.stocksliq',
+        }),
+        referal:
+          store.getState()?.LoginReducer?.userDetails?.referral_code ??
+          '#FAST_USER',
+      }),
+      title: I18n.t('appName'),
+      excludedActivityTypes: getShareExcludeActivity(),
+    };
+    const shareResponse = await Share.open(options);
+  };
   const renderButtonView = () => {
     return (
       <View style={styles.buttonView}>
