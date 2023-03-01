@@ -16,6 +16,7 @@ import {
   isArrayNullOrEmpty,
   isStringNotNull,
   kFormatter,
+  showMessageAlert,
   themeProvide,
 } from '../../../util/globalMethods';
 import ToolbarHeader from '../../../common/ToolbarHeader';
@@ -39,7 +40,7 @@ import CheckBoxPlain from '../../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../../assets/svgs/CheckBoxWithTick';
 import ThemeButton from '../../../common/ThemeButton';
 import Loader from '../../../common/loader/Loader';
-import {doGetSales} from './Action';
+import {doGetSales, doAddSale} from './Action';
 
 const SalesScreen = props => {
   const [isLoading, setLoading] = useState(false);
@@ -198,6 +199,9 @@ const SalesScreen = props => {
             item={item}
             onItemClick={() => {}}
             onMoreIconClick={() => {}}
+            onUpdateItemClick={(productId, getItemType) => {
+              doAddSalesApi(productId, getItemType);
+            }}
           />
         )}
       />
@@ -369,6 +373,10 @@ const SalesScreen = props => {
     resetItems();
     getItemsApi(salectedTabId);
   };
+  const onUpdateItem = () => {
+    resetItems();
+    getItemsApi(salectedTabId);
+  };
   const renderAddButtom = () => {
     return (
       <TouchableOpacity
@@ -382,7 +390,36 @@ const SalesScreen = props => {
       </TouchableOpacity>
     );
   };
-
+  const doAddSalesApi = (productId, getTypeData) => {
+    // setIsLoading(true);
+    // let checkedItemArr = itemTypeArr.filter(item => {
+    //   return item.check;
+    // });
+    // let getTypeData = checkedItemArr.reduce((acc, d) => {
+    //   let obj = {
+    //     id: d.type_id,
+    //     qty: d.quantity,
+    //   };
+    //   acc.push(obj);
+    //   return acc;
+    // }, []);
+    props.doAddSale({
+      paramData: {
+        item_id: productId,
+        types_data: getTypeData,
+      },
+      onSuccess: (isSuccess, status, data) => {
+        // setIsLoading(false);
+        if (isSuccess) {
+          onUpdateItem();
+          // props.navigation.goBack();
+          // props?.route?.params?.getOnAddItem();
+        } else {
+          showMessageAlert(data.message);
+        }
+      },
+    });
+  };
   return (
     <SafeAreaView style={styles.safeView}>
       <View style={styles.mainView}>
@@ -417,6 +454,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   doGetSales: doGetSales,
+  doAddSale: doAddSale,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SalesScreen);
