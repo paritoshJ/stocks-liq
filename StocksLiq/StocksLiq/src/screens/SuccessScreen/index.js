@@ -1,4 +1,4 @@
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import LogoSvg from '../../assets/svgs/logoSvg';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -35,7 +35,7 @@ const RegisterSuccessScreen = props => {
   const onGoToDashboard = async () => {
     const hasFirstLaunched = await AsyncStorage.getItem('@user_language');
     props.doSaveToken(props?.route?.params?.userData?.token);
-    props.doSaveUser(props?.route?.params?.userData);  
+    props.doSaveUser(props?.route?.params?.userData);
     setTimeout(() => {
       setLoading(true);
       props.doChangeLanguage({
@@ -48,12 +48,35 @@ const RegisterSuccessScreen = props => {
     }, 1000);
   };
   const renderButton = () => {
+    // return (
+    //   <ThemeButton
+    //     buttonstyle={{width: 194, alignSelf: 'center'}}
+    //     onPress={onGoToDashboard}
+    //     buttonTitle={I18n.t('gotoDashboard')}
+    //   />
+    // );
     return (
-      <ThemeButton
-        buttonstyle={{width: 194, alignSelf: 'center'}}
+      <TouchableOpacity
         onPress={onGoToDashboard}
-        buttonTitle={I18n.t('gotoDashboard')}
-      />
+        style={{
+          flexDirection: 'row',
+          borderRadius: 8,
+          paddingVertical: 24,
+          marginTop: 24,
+          borderColor: themeProvide().primary,
+          borderWidth: 1,
+        }}>
+        <LottieView
+          source={require('../../Animation/DtPs14ZS2Y.json')}
+          autoPlay
+          loop={true}
+          resizeMode={'center'}
+          style={{justifyContent: 'center', alignItems: 'center'}}>
+          <Text style={[styles.textStyle, props.textStyle]}>
+            {I18n.t('gotoDashboard')}
+          </Text>
+        </LottieView>
+      </TouchableOpacity>
     );
   };
   const renderOtpView = () => {
@@ -156,5 +179,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  textStyle: {
+    color: themeProvide().white,
+    fontFamily: fonts.InterRegular,
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });
