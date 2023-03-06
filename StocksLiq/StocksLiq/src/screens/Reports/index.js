@@ -35,31 +35,85 @@ import CheckBoxPlain from '../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../assets/svgs/CheckBoxWithTick';
 import ThemeButton from '../../common/ThemeButton';
 import Loader from '../../common/loader/Loader';
+import {doGetUserReport, doGetUserReportDetails} from './Action';
 
 const ReportsScreen = props => {
   const [isLoading, setLoading] = useState(false);
   const [isEmptyPage, setEmptyPage] = useState(false);
   const [salectedTabId, setSelectedTabId] = useState(null);
   const [categoriesTabs, setCategoriesTabs] = useState([]);
-  const [listData, setListData] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  const [listData, setListData] = useState([]);
   const [loadingFooter, setLoadingFooter] = useState(false);
   const [filterSheetVisible, setFilterSheetVisile] = useState(false);
   const [searchText, setSearchText] = useState('');
 
+  // const refRBSheet = useRef();
   let pageSize = 10;
   let searchString = useRef('');
   let pageNo = useRef(1);
   let totalPage = useRef(2000);
+  let totalRecords = useRef(0);
   useEffect(() => {
     if (!isArrayNullOrEmpty(store?.getState()?.ItemReducer?.categoryData)) {
       setCategoriesTabs([...store?.getState()?.ItemReducer?.categoryData]);
       setSelectedTabId(store?.getState()?.ItemReducer?.categoryData[0].value);
+      // getReportApi();
     }
   }, []);
+  useEffect(() => {
+    getReportApi();
+  }, [salectedTabId]);
   const renderSvgIcon = () => {
     return <ItemBigSVG color={themeProvide().primary} />;
   };
+  const getReportApi = () => {
+    console.log(pageNo.current);
+    setLoading(true);
 
+    props.doGetUserReport({
+      paramData: {
+        cat_id: salectedTabId,
+      },
+      onSuccess: (isSuccess, status, data) => {
+        setLoading(false);
+        setLoadingFooter(false);
+        setListData(
+          isSuccess && !isArrayNullOrEmpty(data?.data) ? data?.data : [],
+        );
+      },
+    });
+  };
+
+  const getReportDetailApi = item => {
+    console.log(pageNo.current);
+    setLoading(true);
+
+    props.doGetUserReportDetails({
+      paramData: {
+        category_id: salectedTabId,
+        item_id: item.item_id,
+        from_date: "01-02-2023",
+      },
+      onSuccess: (isSuccess, status, data) => {
+        setLoading(false);
+        setLoadingFooter(false);
+        if (isSuccess) {
+          console.log('data', data);
+          // totalRecords.current = data?.data?.total ?? 0;
+          if (!isArrayNullOrEmpty(data?.data)) {
+            props.navigation.navigate('ReportDetailScreen', {data: data?.data});
+
+            // if (pageNo.current === 1) {
+            //   setListData(data?.data);
+            // } else {
+            //   const updateArr = [...listData, ...data?.data];
+            //   setListData(updateArr);
+            // }
+          }
+        }
+      },
+    });
+  };
   const renderTopTab = () => {
     return (
       <View
@@ -110,7 +164,9 @@ const ReportsScreen = props => {
         renderItem={({item, index}) => (
           <ReportRow
             item={item}
-            onItemClick={() => {}}
+            onItemClick={() => {
+              getReportDetailApi(item);
+            }}
             onMoreIconClick={() => {}}
           />
         )}
@@ -273,13 +329,30 @@ const ReportsScreen = props => {
           logoToolbarType={true}
         />
         {renderTopTab()}
-        {isEmptyPage ? renderEmptyPage() : renderFlatList()}
+        {listData.length === 0 ? renderEmptyPage() : renderFlatList()}
       </View>
+      <Loader
+        loading={isLoading}
+        isTransparent={true}
+        color={themeProvide().primary}
+        size={32}
+      />
     </SafeAreaView>
   );
 };
+const mapStateToProps = state => {
+  return {
+    ItemReducer: state.ItemReducer,
+  };
+};
 
-export default ReportsScreen;
+const mapDispatchToProps = {
+  doGetUserReport: doGetUserReport,
+  doGetUserReportDetails: doGetUserReportDetails,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReportsScreen);
+
 const styles = StyleSheet.create({
   mainView: {flex: 1, backgroundColor: themeProvide().page_back},
   safeView: {flex: 1, backgroundColor: themeProvide().primary_back},

@@ -54,6 +54,10 @@ import {
   doAddWidthrawalRequestWatcher,
   doGetWalletApiWatcher,
 } from '../screens/Wallet/saga';
+import {
+  postUserReportWatcher,
+  postUserReportDetailsWatcher,
+} from '../screens/Reports/Saga';
 // Redux saga: Root saga
 export function* rootSaga() {
   yield all([
@@ -91,5 +95,7 @@ export function* rootSaga() {
     doGetDashboardValuesWatcher(),
     doGetWalletApiWatcher(),
     doAddWidthrawalRequestWatcher(),
+    postUserReportWatcher(),
+    postUserReportDetailsWatcher(),
   ]);
 }

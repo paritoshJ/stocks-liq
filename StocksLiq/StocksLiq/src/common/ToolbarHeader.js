@@ -5,6 +5,7 @@ import {fonts} from '../../assets/fonts/fonts';
 import MoreMenuSvg from '../assets/svgs/MoreMenuSVG';
 import LogoTabIconSVG from '../assets/svgs/LogoTabIconSVG';
 import BackSVG from '../assets/svgs/BackSVG';
+import DownloadSVG from '../assets/svgs/DownloadSVG';
 
 const ToolbarHeader = props => {
   const MenuToolbar = () => {
@@ -55,6 +56,14 @@ const ToolbarHeader = props => {
         <View style={{paddingHorizontal: 18, flex: 1}}>
           <Text style={[styles.textStyle, props.textStyle]}>{props.title}</Text>
         </View>
+        {props.isRightIcon && (
+          <TouchableOpacity
+            style={[styles.opacityStyle, props.buttonstyle]}
+            onPress={props.onRightIconClick}
+            {...props}>
+            <DownloadSVG />
+          </TouchableOpacity>
+        )}
       </View>
     );
   };
@@ -89,4 +98,3 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
 });
-

@@ -48,36 +48,36 @@ const RegisterSuccessScreen = props => {
     }, 1000);
   };
   const renderButton = () => {
-    // return (
-    //   <ThemeButton
-    //     buttonstyle={{width: 194, alignSelf: 'center'}}
-    //     onPress={onGoToDashboard}
-    //     buttonTitle={I18n.t('gotoDashboard')}
-    //   />
-    // );
     return (
-      <TouchableOpacity
+      <ThemeButton
+        buttonstyle={{width: 194, alignSelf: 'center'}}
         onPress={onGoToDashboard}
-        style={{
-          flexDirection: 'row',
-          borderRadius: 8,
-          paddingVertical: 24,
-          marginTop: 24,
-          borderColor: themeProvide().primary,
-          borderWidth: 1,
-        }}>
-        <LottieView
-          source={require('../../Animation/DtPs14ZS2Y.json')}
-          autoPlay
-          loop={true}
-          resizeMode={'center'}
-          style={{justifyContent: 'center', alignItems: 'center'}}>
-          <Text style={[styles.textStyle, props.textStyle]}>
-            {I18n.t('gotoDashboard')}
-          </Text>
-        </LottieView>
-      </TouchableOpacity>
+        buttonTitle={I18n.t('gotoDashboard')}
+      />
     );
+    // return (
+    //   <TouchableOpacity
+    //     onPress={onGoToDashboard}
+    //     style={{
+    //       flexDirection: 'row',
+    //       borderRadius: 8,
+    //       paddingVertical: 24,
+    //       marginTop: 24,
+    //       borderColor: themeProvide().primary,
+    //       borderWidth: 1,
+    //     }}>
+    //     <LottieView
+    //       source={require('../../Animation/DtPs14ZS2Y.json')}
+    //       autoPlay
+    //       loop={true}
+    //       resizeMode={'center'}
+    //       style={{justifyContent: 'center', alignItems: 'center'}}>
+    //       <Text style={[styles.textStyle, props.textStyle]}>
+    //         {I18n.t('gotoDashboard')}
+    //       </Text>
+    //     </LottieView>
+    //   </TouchableOpacity>
+    // );
   };
   const renderOtpView = () => {
     return (

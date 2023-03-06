@@ -9,6 +9,7 @@ export default {
   page_back: '#F1EEE8',
   white: '#FFFFFF',
   black: '#000000',
+  black50: '#00000080',
   activeIconColor: '#000000',
   unActiveIconColor: '#FFFFFF',
   lightWhiteColor: '#F2F2F2',

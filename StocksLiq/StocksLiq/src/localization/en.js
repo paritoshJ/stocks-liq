@@ -168,4 +168,5 @@ export default {
   invalidUpi: 'UPI Id is invalid.',
   shareMsgLink:
     "Here's your referal link\nReady to install?\n1. Downlaod the Liq Stocks from %{type}\n2. Create an account with this %{referal} Referral code.",
+  name: 'Name',
 };

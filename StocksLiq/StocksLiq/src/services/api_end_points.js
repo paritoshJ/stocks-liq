@@ -35,6 +35,8 @@ export const DO_GET_BHEJAN = `${API_DOMAIN_QA}/get-bhejan`;
 export const DO_GET_DASHBOARD_VALUES = `${API_DOMAIN_QA}/dashboard-data`;
 export const DO_ADD_WALLET_REQUEST = `${API_DOMAIN_QA}/add-withdraw-request`;
 export const DO_GET_WALLET = `${API_DOMAIN_QA}/get-wallet`;
+export const DO_GET_REPORTS = `${API_DOMAIN_QA}/report-data`;
+export const DO_GET_REPORT_DETAIL = `${API_DOMAIN_QA}/report-item-detail`;
 
 // export const GET_CLAIM_STATUS_SUMMERY = (
 //   memberType,

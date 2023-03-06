@@ -2,6 +2,7 @@ import React from 'react';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import ReportScreen from '../screens/Reports/index';
+import ReportDetailScreen from '../screens/Reports/ReportDetailScreen';
 
 const ReportStack = createStackNavigator();
 const ReportScreenStack = ({navigation, route}) => {
@@ -23,6 +24,13 @@ const ReportScreenStack = ({navigation, route}) => {
       <ReportStack.Screen
         name="ReportScreen"
         component={ReportScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ReportStack.Screen
+        name="ReportDetailScreen"
+        component={ReportDetailScreen}
         options={{
           headerShown: false,
         }}

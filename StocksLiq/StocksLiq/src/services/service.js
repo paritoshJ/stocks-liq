@@ -191,7 +191,7 @@ const doPost = (url, params, resolve, reject, config = {}) => {
       });
     })
     .catch(error => {
-      console.log('<><><><><> error in POST <><><><><>', error, url);
+      console.log('<><><><><> error in POST <><><><><>', error.response, url);
 
       // if (error && error.response) {
       //   reject(error)

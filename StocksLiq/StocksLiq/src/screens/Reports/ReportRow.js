@@ -1,4 +1,4 @@
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity, FlatList} from 'react-native';
 import React from 'react';
 import {themeProvide, getCurrenyPrice} from '../../util/globalMethods';
 import DownloadSVG from '../../assets/svgs/DownloadSVG';
@@ -17,7 +17,7 @@ const ReportRow = props => {
               fontSize: 14,
               color: 'rgba(0, 0, 0, 0.5)',
             }}>
-            Full
+            {type?.lang_name}
           </Text>
           <Text
             style={{
@@ -27,7 +27,7 @@ const ReportRow = props => {
               marginTop: 4,
               fontSize: 12,
             }}>
-            {getCurrenyPrice(Number(300))}
+            {type?.total_sale}
           </Text>
         </View>
         <View style={{marginTop: 10}}>
@@ -38,7 +38,7 @@ const ReportRow = props => {
               fontSize: 14,
               color: 'rgba(0, 0, 0, 0.5)',
             }}>
-            {I18n.t('typeAmount', {type: 'Full'})}
+            {I18n.t('typeAmount', {type: type?.lang_name})}
           </Text>
           <Text
             style={{
@@ -48,7 +48,7 @@ const ReportRow = props => {
               marginTop: 4,
               fontSize: 12,
             }}>
-            {getCurrenyPrice(Number(300))}
+            {getCurrenyPrice(Number(type?.type_price))}
           </Text>
         </View>
       </View>
@@ -65,19 +65,21 @@ const ReportRow = props => {
               fontWeight: '700',
               fontSize: 14,
             }}>
-            Blenders Pride
+            {props?.item?.item_name}
           </Text>
-          <Text
-            numberOfLines={2}
-            style={{
-              fontFamily: fonts.InterRegular,
-              fontWeight: '400',
-              fontSize: 12,
-              marginTop: 4,
-              color: 'rgba(0, 0, 0, 0.5)',
-            }}>
-            Whisky
-          </Text>
+          {props?.item?.subcategory_name && (
+            <Text
+              numberOfLines={2}
+              style={{
+                fontFamily: fonts.InterRegular,
+                fontWeight: '400',
+                fontSize: 12,
+                marginTop: 4,
+                color: 'rgba(0, 0, 0, 0.5)',
+              }}>
+              {props?.item?.subcategory_name}
+            </Text>
+          )}
         </View>
         <TouchableOpacity onPress={props.onMoreIconClick}>
           <DownloadSVG />
@@ -90,11 +92,28 @@ const ReportRow = props => {
           backgroundColor: 'rgba(0, 0, 0, 0.04)',
         }}
       />
-      <View style={{flexDirection: 'row'}}>
-        {priceView()}
-        {priceView()}
-        {priceView()}
-      </View>
+      {props?.item?.types_data?.length > 0 && (
+        <FlatList
+          data={props?.item?.types_data}
+          // horizontal
+          numColumns={3}
+          ListHeaderComponent={() => {
+            return (
+              <View
+                style={{
+                  height: 1,
+                  marginTop: 8,
+                }}
+              />
+            );
+          }}
+          contentContainerStyle={{flexGrow: 1}}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item, index}) => {
+            return priceView(item);
+          }}
+        />
+      )}
     </TouchableOpacity>
   );
 };
