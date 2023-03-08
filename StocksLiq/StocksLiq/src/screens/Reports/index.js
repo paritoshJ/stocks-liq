@@ -5,6 +5,8 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Keyboard,
+  Alert,
+  Linking,
 } from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import ToolbarHeader from '../../common/ToolbarHeader';
@@ -35,7 +37,14 @@ import CheckBoxPlain from '../../assets/svgs/CheckBoxPlain';
 import CheckBoxWithTick from '../../assets/svgs/CheckBoxWithTick';
 import ThemeButton from '../../common/ThemeButton';
 import Loader from '../../common/loader/Loader';
-import {doGetUserReport, doGetUserReportDetails} from './Action';
+import {
+  doGetUserReport,
+  doGetDownloadPdf,
+  doGetUserReportDetails,
+} from './Action';
+import DownloadSVG from '../../assets/svgs/DownloadSVG';
+import DateRangePicker from 'rn-select-date-range';
+import moment from 'moment';
 
 const ReportsScreen = props => {
   const [isLoading, setLoading] = useState(false);
@@ -53,12 +62,21 @@ const ReportsScreen = props => {
   let pageNo = useRef(1);
   let totalPage = useRef(2000);
   let totalRecords = useRef(0);
+  let dateRangeRef = useRef(null);
+  const [startDate, setStartDate] = useState(
+    moment(new Date()).subtract(30, 'days').format('YYYY-MM-DD'),
+  );
+  const [endDate, setEndDate] = useState(
+    moment(new Date()).format('YYYY-MM-DD'),
+  );
+
   useEffect(() => {
     if (!isArrayNullOrEmpty(store?.getState()?.ItemReducer?.categoryData)) {
       setCategoriesTabs([...store?.getState()?.ItemReducer?.categoryData]);
       setSelectedTabId(store?.getState()?.ItemReducer?.categoryData[0].value);
       // getReportApi();
     }
+    console.log(startDate, endDate);
   }, []);
   useEffect(() => {
     getReportApi();
@@ -73,6 +91,8 @@ const ReportsScreen = props => {
     props.doGetUserReport({
       paramData: {
         cat_id: salectedTabId,
+        from_date: startDate,
+        to_date: endDate,
       },
       onSuccess: (isSuccess, status, data) => {
         setLoading(false);
@@ -92,7 +112,7 @@ const ReportsScreen = props => {
       paramData: {
         category_id: salectedTabId,
         item_id: item.item_id,
-        from_date: "01-02-2023",
+        from_date: '01-02-2023',
       },
       onSuccess: (isSuccess, status, data) => {
         setLoading(false);
@@ -114,6 +134,10 @@ const ReportsScreen = props => {
       },
     });
   };
+  const resetDateFilter = () => {
+    setStartDate(moment(new Date()).subtract(30, 'days').format('YYYY-MM-DD'));
+    setEndDate(moment(new Date()).format('YYYY-MM-DD'));
+  };
   const renderTopTab = () => {
     return (
       <View
@@ -131,6 +155,7 @@ const ReportsScreen = props => {
               title={el.label}
               count={kFormatter(listData.length)}
               onPress={() => {
+                resetDateFilter();
                 setSelectedTabId(el.value);
               }}
             />
@@ -280,7 +305,25 @@ const ReportsScreen = props => {
             {'Filter'}
           </Text>
           <View style={styles.filterInnerStyle} />
-          {renderItemTypeInput()}
+          <View style={styles.filterInnerStyle} />
+          <DateRangePicker
+            ref={dateRangeRef}
+            onSelectDateRange={range => {
+              console.log('range', range);
+              // setRange(range);
+              setStartDate(range.firstDate);
+              setEndDate(range.secondDate);
+            }}
+            blockSingleDateSelection={true}
+            responseFormat="YYYY-MM-DD"
+            maxDate={moment()}
+            minDate={moment().subtract(100, 'days')}
+            clearBtnTitle={''}
+            confirmBtnTitle={''}
+            selectedDateContainerStyle={styles.selectedDateContainerStyle}
+            selectedDateStyle={styles.selectedDateStyle}
+          />
+
           {renderFilterButtonView()}
         </View>
       </RenderModal>
@@ -300,6 +343,7 @@ const ReportsScreen = props => {
           buttonstyle={[styles.buttonstyleApply]}
           onPress={() => {
             setFilterSheetVisile(false);
+            getReportApi();
           }}
           buttonTitle={I18n.t('apply')}
         />
@@ -317,6 +361,44 @@ const ReportsScreen = props => {
       />
     );
   };
+  const doGetDownloadPdfApi = () => {
+    setLoading(true);
+    props.doGetDownloadPdf({
+      paramData: {
+        from_date: startDate,
+        to_date: endDate,
+      },
+      onSuccess: (isSuccess, status, data) => {
+        // console.log('data', data);
+        setLoading(false);
+        if (isSuccess) {
+          Alert.alert(
+            I18n.t('downloadSuccess'),
+            I18n.t('downloadReportMessage', {link: data?.data}),
+            [
+              {
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+              },
+              {text: 'Open', onPress: () => Linking.openURL(data?.data)},
+            ],
+          );
+        }
+      },
+    });
+  };
+  const renderAddButtom = () => {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          doGetDownloadPdfApi();
+        }}
+        style={styles.AddView}>
+        <DownloadSVG color={themeProvide().white} />
+      </TouchableOpacity>
+    );
+  };
   return (
     <SafeAreaView style={styles.safeView}>
       <View style={styles.mainView}>
@@ -331,6 +413,8 @@ const ReportsScreen = props => {
         {renderTopTab()}
         {listData.length === 0 ? renderEmptyPage() : renderFlatList()}
       </View>
+      {listData.length > 0 && renderAddButtom()}
+      {renderFilterSheet()}
       <Loader
         loading={isLoading}
         isTransparent={true}
@@ -349,6 +433,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   doGetUserReport: doGetUserReport,
   doGetUserReportDetails: doGetUserReportDetails,
+  doGetDownloadPdf: doGetDownloadPdf,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReportsScreen);
@@ -391,6 +476,10 @@ const styles = StyleSheet.create({
     backgroundColor: themeProvide().primary,
     borderRadius: 40,
     position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 48,
+    height: 48,
     bottom: 16,
     right: 16,
   },

@@ -57,6 +57,7 @@ import {
 import {
   postUserReportWatcher,
   postUserReportDetailsWatcher,
+  getDownloadPdfWatcher,
 } from '../screens/Reports/Saga';
 // Redux saga: Root saga
 export function* rootSaga() {
@@ -97,5 +98,6 @@ export function* rootSaga() {
     doAddWidthrawalRequestWatcher(),
     postUserReportWatcher(),
     postUserReportDetailsWatcher(),
+    getDownloadPdfWatcher(),
   ]);
 }

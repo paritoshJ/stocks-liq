@@ -5,8 +5,12 @@ import ToolbarHeader from '../../common/ToolbarHeader';
 import I18n from 'i18n-js';
 import DownloadSVG from '../../assets/svgs/DownloadSVG';
 import {fonts} from '../../../assets/fonts/fonts';
+import {doGetDownloadPdf} from './Action';
+import {connect} from 'react-redux';
 
 const ReportDetailScreen = props => {
+  const [isLoading, setLoading] = useState(false);
+
   const [productName, setProductName] = useState('');
   const [catName, setCatName] = useState('');
   const [subCatName, setSubCatName] = useState('');
@@ -31,13 +35,15 @@ const ReportDetailScreen = props => {
           _index++
         ) {
           const flowObj = detail?.stocks?.initial_values[_index];
-          const findObj = arr.find(item => item.title === 'Initial');
+          const findObj = arr.find(
+            item => item.title === I18n.t('initialQuantity'),
+          );
           if (flowObj.type_id === element.type_id) {
             if (!isObjectNullOrUndefined(findObj)) {
               findObj['value' + _index] = flowObj?.value;
             } else {
               let obj = {
-                title: 'Initial',
+                title: I18n.t('initialQuantity'),
                 ['value' + _index]: flowObj?.value,
               };
               arr.push(obj);
@@ -52,13 +58,15 @@ const ReportDetailScreen = props => {
           _index++
         ) {
           const flowObj = detail?.stocks?.inflow_values[_index];
-          const findObj = arr.find(item => item.title === 'Inflow');
+          const findObj = arr.find(
+            item => item.title === I18n.t('inflowQuantity'),
+          );
           if (flowObj.type_id === element.type_id) {
             if (!isObjectNullOrUndefined(findObj)) {
               findObj['value' + _index] = flowObj?.value;
             } else {
               let obj = {
-                title: 'Inflow',
+                title: I18n.t('inflowQuantity'),
                 ['value' + _index]: flowObj?.value,
               };
               arr.push(obj);
@@ -73,34 +81,13 @@ const ReportDetailScreen = props => {
           _index++
         ) {
           const flowObj = detail?.stocks?.outflow_values[_index];
-          const findObj = arr.find(item => item.title === 'Sending');
+          const findObj = arr.find(item => item.title === I18n.t('sendingQuantity'));
           if (flowObj.type_id === element.type_id) {
             if (!isObjectNullOrUndefined(findObj)) {
               findObj['value' + _index] = flowObj?.value;
             } else {
               let obj = {
-                title: 'Sending',
-                ['value' + _index]: flowObj?.value,
-              };
-              arr.push(obj);
-            }
-          }
-        }
-      }
-      if (detail?.stocks?.total_values.length > 0) {
-        for (
-          let _index = 0;
-          _index < detail?.stocks?.total_values.length;
-          _index++
-        ) {
-          const flowObj = detail?.stocks?.total_values[_index];
-          const findObj = arr.find(item => item.title === 'Total');
-          if (flowObj.type_id === element.type_id) {
-            if (!isObjectNullOrUndefined(findObj)) {
-              findObj['value' + _index] = flowObj?.value;
-            } else {
-              let obj = {
-                title: 'Total',
+                title: I18n.t('sendingQuantity'),
                 ['value' + _index]: flowObj?.value,
               };
               arr.push(obj);
@@ -115,13 +102,13 @@ const ReportDetailScreen = props => {
           _index++
         ) {
           const flowObj = detail?.stocks?.remaining_values[_index];
-          const findObj = arr.find(item => item.title === 'Remainder');
+          const findObj = arr.find(item => item.title === I18n.t('remainderQuantity'));
           if (flowObj.type_id === element.type_id) {
             if (!isObjectNullOrUndefined(findObj)) {
               findObj['value' + _index] = flowObj?.value;
             } else {
               let obj = {
-                title: 'Remainder',
+                title: I18n.t('remainderQuantity'),
                 ['value' + _index]: flowObj?.value,
               };
               arr.push(obj);
@@ -136,13 +123,13 @@ const ReportDetailScreen = props => {
           _index++
         ) {
           const flowObj = detail?.stocks?.sell_values[_index];
-          const findObj = arr.find(item => item.title === 'Sale');
+          const findObj = arr.find(item => item.title === I18n.t('saleQuantity'));
           if (flowObj.type_id === element.type_id) {
             if (!isObjectNullOrUndefined(findObj)) {
               findObj['value' + _index] = flowObj?.value;
             } else {
               let obj = {
-                title: 'Sale',
+                title: I18n.t('saleQuantity'),
                 ['value' + _index]: flowObj?.value,
               };
               arr.push(obj);
@@ -157,7 +144,7 @@ const ReportDetailScreen = props => {
           _index++
         ) {
           const flowObj = detail?.stocks?.rate_values[_index];
-          const findObj = arr.find(item => item.title === 'Rate');
+          const findObj = arr.find(item => item.title === I18n.t('rate'));
           if (flowObj.type_id === element.type_id) {
             if (!isObjectNullOrUndefined(findObj)) {
               findObj['value' + _index] = I18n.t('totalPrice', {
@@ -165,7 +152,32 @@ const ReportDetailScreen = props => {
               });
             } else {
               let obj = {
-                title: 'Rate',
+                title: I18n.t('rate'),
+                ['value' + _index]: I18n.t('totalPrice', {
+                  price: flowObj?.value,
+                }),
+              };
+              arr.push(obj);
+            }
+          }
+        }
+      }
+      if (detail?.stocks?.total_values.length > 0) {
+        for (
+          let _index = 0;
+          _index < detail?.stocks?.total_values.length;
+          _index++
+        ) {
+          const flowObj = detail?.stocks?.total_values[_index];
+          const findObj = arr.find(item => item.title === I18n.t('amount'));
+          if (flowObj.type_id === element.type_id) {
+            if (!isObjectNullOrUndefined(findObj)) {
+              findObj['value' + _index] = I18n.t('totalPrice', {
+                price: flowObj?.value,
+              });
+            } else {
+              let obj = {
+                title: I18n.t('amount'),
                 ['value' + _index]: I18n.t('totalPrice', {
                   price: flowObj?.value,
                 }),
@@ -197,6 +209,33 @@ const ReportDetailScreen = props => {
       </View>
     );
   };
+  const renderFlatListFooter = () => {
+    return (
+      <View>
+        <View style={styles.deviderStyle} />
+        <View style={{flexDirection: 'row', flex: 1}}>
+          <Text style={styles.headerText}>{I18n.t('totalAmount')}</Text>
+          <Text style={styles.headerText}>
+            {I18n.t('totalPrice', {
+              price: detail?.stocks?.total,
+            })}
+          </Text>
+          <Text style={styles.headerText}>{''}</Text>
+        </View>
+        <View style={styles.deviderStyle} />
+      </View>
+    );
+  };
+
+  const doGetDownloadPdfApi = () => {
+    setLoading(true);
+    props.doGetDownloadPdf({
+      paramData: {},
+      onSuccess: (isSuccess, status, data) => {
+        setLoading(false);
+      },
+    });
+  };
   return (
     <SafeAreaView style={styles.safeView}>
       <View style={styles.mainView}>
@@ -207,9 +246,10 @@ const ReportDetailScreen = props => {
             props.navigation.goBack();
           }}
           backgroundColor={themeProvide().page_back}
-          isRightIcon={true}
+          isRightIcon={false}
           onRightIconClick={() => {
             // props.navigation.openDrawer();
+            doGetDownloadPdfApi();
           }}
           // RightIcon={<DownloadSVG />}
           logoToolbarType={false}
@@ -233,6 +273,7 @@ const ReportDetailScreen = props => {
           showsVerticalScrollIndicator={false}
           initialNumToRender={listData.length}
           ListHeaderComponent={renderFlatListHeader()}
+          ListFooterComponent={renderFlatListFooter()}
           renderItem={({item, index}) => (
             <View
               style={{flexDirection: 'row', marginTop: index === 0 ? 12 : 0}}>
@@ -249,8 +290,17 @@ const ReportDetailScreen = props => {
     </SafeAreaView>
   );
 };
+const mapStateToProps = state => {
+  return {
+    ItemReducer: state.ItemReducer,
+  };
+};
 
-export default ReportDetailScreen;
+const mapDispatchToProps = {
+  doGetDownloadPdf: doGetDownloadPdf,
+};
+export default connect(mapStateToProps, mapDispatchToProps)(ReportDetailScreen);
+
 const styles = StyleSheet.create({
   mainView: {flex: 1, backgroundColor: themeProvide().page_back},
   safeView: {flex: 1, backgroundColor: themeProvide().page_back},

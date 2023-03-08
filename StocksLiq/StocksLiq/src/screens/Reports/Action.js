@@ -13,3 +13,11 @@ export const doGetUserReportDetails = ({paramData, onSuccess}) => ({
     onSuccess: onSuccess,
   },
 });
+
+export const doGetDownloadPdf = ({paramData, onSuccess}) => ({
+  type: ReporActionTypes.GET_DOWNLOAD_PDF,
+  payload: {
+    paramData: paramData,
+    onSuccess: onSuccess,
+  },
+});

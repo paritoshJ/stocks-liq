@@ -169,4 +169,14 @@ export default {
   shareMsgLink:
     "Here's your referal link\nReady to install?\n1. Downlaod the Liq Stocks from %{type}\n2. Create an account with this %{referal} Referral code.",
   name: 'Name',
+  totalAmount: 'Total Amount',
+  initialQuantity: 'Initial',
+  inflowQuantity: 'Inflow',
+  sendingQuantity: 'Sending',
+  remainderQuantity: 'Remainder',
+  saleQuantity: 'Sale',
+  rate: 'Rate',
+  amount: 'Amount',
+  downloadSuccess: 'Downlaod Success!',
+  downloadReportMessage: 'Report has been downloaded successfully. Open the link %{link}',
 };

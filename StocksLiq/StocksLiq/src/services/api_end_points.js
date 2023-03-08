@@ -37,6 +37,7 @@ export const DO_ADD_WALLET_REQUEST = `${API_DOMAIN_QA}/add-withdraw-request`;
 export const DO_GET_WALLET = `${API_DOMAIN_QA}/get-wallet`;
 export const DO_GET_REPORTS = `${API_DOMAIN_QA}/report-data`;
 export const DO_GET_REPORT_DETAIL = `${API_DOMAIN_QA}/report-item-detail`;
+export const DO_GET_DOWNLOAD_PDF = `${API_DOMAIN_QA}/download-pdf`;
 
 // export const GET_CLAIM_STATUS_SUMMERY = (
 //   memberType,

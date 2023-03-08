@@ -168,4 +168,14 @@ export default {
   shareMsgLink:
     'यह रहा आपका रेफ़रल लिंक\nक्या आप एप्लिकेशन इंस्टॉल करने के लिए तैयार हैं?\n1. Liq Stocks को %{type} से डाउनलोड करें। \n2. इस  %{referal} रेफ़रल कोड के साथ एक खाता बनाएँ।',
   name: 'नाम',
+  totalAmount: 'कुल राशि',
+  initialQuantity: 'प्रारंभिक मात्रा',
+  inflowQuantity: 'अंतर्वाह मात्रा',
+  sendingQuantity: 'बहिर्वाह मात्रा',
+  remainderQuantity: 'शेष मात्रा',
+  saleQuantity: 'बिक्री की मात्रा',
+  rate: 'मूल्य',
+  amount: 'राशि',
+  downloadSuccess: 'डाउनलोड सफल!',
+  downloadReportMessage: 'रिपोर्ट सफलतापूर्वक डाउनलोड कर ली गई है। लिंक खोलें %{link}',
 };

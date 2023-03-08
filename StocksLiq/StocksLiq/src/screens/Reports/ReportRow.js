@@ -81,9 +81,9 @@ const ReportRow = props => {
             </Text>
           )}
         </View>
-        <TouchableOpacity onPress={props.onMoreIconClick}>
+        {/* <TouchableOpacity onPress={props.onMoreIconClick}>
           <DownloadSVG />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <View
         style={{
