@@ -12,7 +12,7 @@ const ReportDetailScreen = props => {
   const [subCatName, setSubCatName] = useState('');
   const [listData, setListData] = useState([]);
   const [headerArr, setHeaderArray] = useState([]);
- const detail = props.route.params.data;
+  const detail = props.route.params.data;
   useEffect(() => {
     const detail = props.route.params.data;
     console.log(detail);
@@ -87,20 +87,20 @@ const ReportDetailScreen = props => {
           }
         }
       }
-      if (detail?.stocks?.rate_values.length > 0) {
+      if (detail?.stocks?.total_values.length > 0) {
         for (
           let _index = 0;
-          _index < detail?.stocks?.rate_values.length;
+          _index < detail?.stocks?.total_values.length;
           _index++
         ) {
-          const flowObj = detail?.stocks?.rate_values[_index];
-          const findObj = arr.find(item => item.title === 'Rate');
+          const flowObj = detail?.stocks?.total_values[_index];
+          const findObj = arr.find(item => item.title === 'Total');
           if (flowObj.type_id === element.type_id) {
             if (!isObjectNullOrUndefined(findObj)) {
               findObj['value' + _index] = flowObj?.value;
             } else {
               let obj = {
-                title: 'Rate',
+                title: 'Total',
                 ['value' + _index]: flowObj?.value,
               };
               arr.push(obj);
@@ -150,27 +150,32 @@ const ReportDetailScreen = props => {
           }
         }
       }
-      if (detail?.stocks?.total_values.length > 0) {
+      if (detail?.stocks?.rate_values.length > 0) {
         for (
           let _index = 0;
-          _index < detail?.stocks?.total_values.length;
+          _index < detail?.stocks?.rate_values.length;
           _index++
         ) {
-          const flowObj = detail?.stocks?.total_values[_index];
-          const findObj = arr.find(item => item.title === 'Total');
+          const flowObj = detail?.stocks?.rate_values[_index];
+          const findObj = arr.find(item => item.title === 'Rate');
           if (flowObj.type_id === element.type_id) {
             if (!isObjectNullOrUndefined(findObj)) {
-              findObj['value' + _index] = flowObj?.value;
+              findObj['value' + _index] = I18n.t('totalPrice', {
+                price: flowObj?.value,
+              });
             } else {
               let obj = {
-                title: 'Total',
-                ['value' + _index]: flowObj?.value,
+                title: 'Rate',
+                ['value' + _index]: I18n.t('totalPrice', {
+                  price: flowObj?.value,
+                }),
               };
               arr.push(obj);
             }
           }
         }
       }
+
       console.log(arr);
     });
     setHeaderArray(headerObj);
@@ -182,10 +187,13 @@ const ReportDetailScreen = props => {
   };
   const renderFlatListHeader = () => {
     return (
-      <View style={{flexDirection: 'row', flex: 1}}>
-        {headerArr.map(item => {
-          return <Text style={styles.headerText}>{item}</Text>;
-        })}
+      <View>
+        <View style={{flexDirection: 'row', flex: 1}}>
+          {headerArr.map(item => {
+            return <Text style={styles.headerText}>{item}</Text>;
+          })}
+        </View>
+        <View style={styles.deviderStyle} />
       </View>
     );
   };
