@@ -111,23 +111,23 @@ const AddInventoryScreen = props => {
       </TouchableOpacity>
     );
   };
-  const getSubCategory = parent => {
-    props.doGetSubCategory({
-      paramData: {cat_id: parent, lang: getLanguage()},
-      onSuccess: (isSuccess, status, data) => {
-        if (isSuccess) {
-          data?.forEach(element => {
-            element['value'] = element.cat_id;
-            element['label'] = element.lang_name;
-          });
-          setTimeout(() => {
-            setSubCategoryArr(data);
-            console.log(data);
-          }, 1000);
-        }
-      },
-    });
-  };
+  // const getSubCategory = parent => {
+  //   props.doGetSubCategory({
+  //     paramData: {cat_id: parent, lang: getLanguage()},
+  //     onSuccess: (isSuccess, status, data) => {
+  //       if (isSuccess) {
+  //         data?.forEach(element => {
+  //           element['value'] = element.cat_id;
+  //           element['label'] = element.lang_name;
+  //         });
+  //         setTimeout(() => {
+  //           setSubCategoryArr(data);
+  //           console.log(data);
+  //         }, 1000);
+  //       }
+  //     },
+  //   });
+  // };
   const getSubCategoryType = cate_id => {
     props.doGetSubCategoryType({
       paramData: {item_id: cate_id},
@@ -192,6 +192,8 @@ const AddInventoryScreen = props => {
           return item?.price === '';
         }
       });
+    } else {
+      msg = I18n.t('itemTypeError');
     }
     if (isStringNotNull(msg)) {
       showMessageAlert(msg);

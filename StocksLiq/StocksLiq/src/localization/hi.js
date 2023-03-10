@@ -44,8 +44,8 @@ export default {
   helloUserText: 'नमस्ते, %{username}\nबधाई',
   successText: 'आपको सफलतापूर्वक रजिस्टर कर लिया है',
   bhejan_menu: 'भेजन',
-  receivable_menu: 'आगमन',
-  addReceivable: 'आगमन जोड़ें',
+  receivable_menu: 'आमद',
+  addReceivable: 'आमद जोड़ें',
   myProfile_menu: 'प्रोफाइल',
   salesman_menu: 'विक्रेता',
   wallet_menu: 'पर्स',
@@ -67,7 +67,7 @@ export default {
   noItemAddText:
     'नमस्ते, आपने अभी तक कोई %{tabName}\nनहीं जोड़ा है, इसलिए कृपया ऐड\nबटन पर क्लिक करें और अपना %{tabName} जोड़ें।.',
   noWalletAddText:
-    'नमस्ते, आपने अभी तक कोई रिकॉर्ड\nनहीं जोड़ा है, इसलिए कृपया रेफर ए फ्रेंड बटन पर क्लिक करें और अपना पैसा बनाएं।',
+    'सुनिश्चित नकद प्राप्त करने के लिए मित्रों को आमंत्रित करें।',
 
   cancel: 'रद्द',
   update: 'अपडेट',
@@ -177,5 +177,10 @@ export default {
   rate: 'मूल्य',
   amount: 'राशि',
   downloadSuccess: 'डाउनलोड सफल!',
-  downloadReportMessage: 'रिपोर्ट सफलतापूर्वक डाउनलोड कर ली गई है। लिंक खोलें %{link}',
+  downloadReportMessage:
+    'रिपोर्ट सफलतापूर्वक डाउनलोड कर ली गई है। लिंक खोलें %{link}',
+  noCashYet: 'कोई नकद अर्जित नहीं',
+  invalidRedeemAmount:
+    'रिडीम अनुरोध राशि वॉलेट में उपलब्ध राशि से अधिक नहीं होनी चाहिए।',
+  add_sales: 'बिक्री जोड़ें',
 };

@@ -84,7 +84,7 @@ const ReportsScreen = props => {
   const renderSvgIcon = () => {
     return <ItemBigSVG color={themeProvide().primary} />;
   };
-  const getReportApi = () => {
+  const getReportApi = (search_text = '') => {
     console.log(pageNo.current);
     setLoading(true);
 
@@ -92,14 +92,13 @@ const ReportsScreen = props => {
       paramData: {
         cat_id: salectedTabId,
         from_date: startDate,
+        search_text: search_text,
         to_date: endDate,
       },
       onSuccess: (isSuccess, status, data) => {
         setLoading(false);
         setLoadingFooter(false);
-        setListData(
-          isSuccess && !isArrayNullOrEmpty(data?.data) ? data?.data : [],
-        );
+        setListData(isSuccess ? data?.data : []);
       },
     });
   };
@@ -182,7 +181,7 @@ const ReportsScreen = props => {
         showsVerticalScrollIndicator={false}
         initialNumToRender={listData.length}
         ListFooterComponent={renderFlatListFooter()}
-        ListHeaderComponent={renderFlatListHeader()}
+        // ListHeaderComponent={renderFlatListHeader()}
         onEndReachedThreshold={0.8}
         onEndReached={memoizedhandleLoadMore}
         onScrollBeginDrag={Keyboard.dismiss}
@@ -203,11 +202,12 @@ const ReportsScreen = props => {
       searchString.current = value.trim();
       pageNo.current = 1;
       // callApi(false);
+      getReportApi(searchString.current);
     } else {
       searchString.current = '';
       if (value.trim().length === 0) {
         pageNo.current = 1;
-        // callApi(false);
+        getReportApi(searchString.current);
       }
     }
   };
@@ -411,6 +411,7 @@ const ReportsScreen = props => {
           logoToolbarType={true}
         />
         {renderTopTab()}
+        {renderFlatListHeader()}
         {listData.length === 0 ? renderEmptyPage() : renderFlatList()}
       </View>
       {listData.length > 0 && renderAddButtom()}
@@ -462,6 +463,7 @@ const styles = StyleSheet.create({
   },
   searchMainView: {
     marginTop: 16,
+    marginHorizontal: 16,
     height: 44,
     alignItems: 'center',
     flexDirection: 'row',

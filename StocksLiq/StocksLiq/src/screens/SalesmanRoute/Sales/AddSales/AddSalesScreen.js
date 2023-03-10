@@ -42,7 +42,7 @@ const AddSalesScreen = props => {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
-    getInventoryProductApi();
+    // getInventoryProductApi();
   }, []);
   const getInventoryProductApi = () => {
     setIsLoading(true);
@@ -185,7 +185,7 @@ const AddSalesScreen = props => {
     //   msg = I18n.t('selectCategoryError');
     // } else if (!isStringNotNull(subCategory)) {
     //   msg = I18n.t('selectSubCategoryError');
-    // } else 
+    // } else
     if (!isStringNotNull(productName)) {
       msg = I18n.t('productNameError');
     } else if (checkArray.length === 0) {
@@ -201,6 +201,8 @@ const AddSalesScreen = props => {
           return item?.price === '';
         }
       });
+    } else {
+      msg = I18n.t('itemTypeError');
     }
     if (isStringNotNull(msg)) {
       showMessageAlert(msg);

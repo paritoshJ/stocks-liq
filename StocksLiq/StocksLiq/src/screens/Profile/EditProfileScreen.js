@@ -13,6 +13,7 @@ import React, {useEffect, useState} from 'react';
 import {
   getFirstLetterCaps,
   isObjectNullOrUndefined,
+  isShowOwner,
   isStringNotNull,
   showMessageAlert,
   themeProvide,
@@ -38,7 +39,9 @@ const EditProfileScreen = props => {
   const [storeName, setStoreName] = useState(userDetails?.store_name);
   const [firstName, setFirstName] = useState(userDetails?.first_name);
   const [lastName, setLastName] = useState(userDetails?.last_name);
-
+  const [fullName, setFullName] = useState(
+    `${userDetails?.first_name} ${userDetails?.last_name}`,
+  );
   const showImagePickerAlert = () => {
     if (Platform.OS === 'ios') {
       Alert.alert(
@@ -93,7 +96,9 @@ const EditProfileScreen = props => {
     return (
       <ImageBackground style={styles.imageBack}>
         {!isStringNotNull(path) ? (
-          <Text style={styles.imageText}>{getFirstLetterCaps(storeName)}</Text>
+          <Text style={styles.imageText}>
+            {getFirstLetterCaps(!isShowOwner() ? fullName : storeName)}
+          </Text>
         ) : (
           <Image
             source={{uri: path}}
@@ -135,23 +140,30 @@ const EditProfileScreen = props => {
   };
   const callUpdateApi = () => {
     let msg = '';
-    if (!isStringNotNull(storeName)) {
-      msg = I18n.t('storeNameError');
+    if (isShowOwner() && !isStringNotNull(storeName)) {
+      msg = I18n.t('commonEmptyError', {
+        label: I18n.t('yourStoreName').toLowerCase(),
+      });
     } else if (!isStringNotNull(firstName)) {
-      msg = I18n.t('firstNameError');
+      msg = I18n.t('commonEmptyError', {
+        label: I18n.t('yourFirstName').toLowerCase(),
+      });
     } else if (!isStringNotNull(lastName)) {
-      msg = I18n.t('lastNameError');
+      msg = I18n.t('commonEmptyError', {
+        label: I18n.t('yourLastName').toLowerCase(),
+      });
     }
 
     if (isStringNotNull(msg)) {
-      showMessageAlert();
+      showMessageAlert(msg);
+      return;
     }
     setLoading(true);
     let data = new FormData();
     data.append('first_name', firstName);
     data.append('last_name', lastName);
     data.append('store_name', storeName);
-    if (path?.startsWith('http')) {
+    if (!path?.startsWith('http')) {
       data.append('profile_image', {
         uri: path,
         name: fileName,
@@ -242,7 +254,8 @@ const EditProfileScreen = props => {
         <View style={styles.paddingView}>
           {renderImageBack()}
           {renderStoreName()}
-          {renderInputView(I18n.t('yourStoreName'), storeName, 'storeName')}
+          {isShowOwner() &&
+            renderInputView(I18n.t('yourStoreName'), storeName, 'storeName')}
           {renderInputView(I18n.t('yourFirstName'), firstName, 'firstName')}
           {renderInputView(I18n.t('yourLastName'), lastName, 'lastName')}
           {renderButtonView()}

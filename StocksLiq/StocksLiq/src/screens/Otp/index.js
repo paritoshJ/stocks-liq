@@ -115,7 +115,14 @@ const OtpScreen = props => {
               'Your account is deleted please contact to admin for further info.',
             );
           } else {
-            if (response?.data?.is_premium !== 0) {
+            if (
+              response?.data?.is_premium === 0 &&
+              response?.data?.user_role === 'shop_owner'
+            ) {
+              props.navigation.navigate('PlanScreen', {
+                userData: response?.data,
+              });
+            } else {
               props.doSaveToken(response?.data?.token);
               props.doSaveUser(response?.data);
               setTimeout(async () => {
@@ -125,10 +132,6 @@ const OtpScreen = props => {
                   onSuccess: () => {},
                 });
               }, 1000);
-            } else {
-              props.navigation.navigate('PlanScreen', {
-                userData: response?.data,
-              });
             }
           }
         } else {
@@ -239,7 +242,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderRadius: 8,
     width: 64,
-    height: 48,
+    height: 56,
     textAlign: 'center',
     paddingHorizontal: 14,
     paddingVertical: 16,

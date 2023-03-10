@@ -32,6 +32,7 @@ const RedeemRequestScreen = props => {
   const [upiId, setUpiId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const upiRegex = '/^[w.-]+@[w.-]+$/';
+  const totalAmount = props?.route?.params?.totalAmount;
 
   const doAddWalletRequest = () => {
     setIsLoading(true);
@@ -67,6 +68,8 @@ const RedeemRequestScreen = props => {
       });
     } else if (!/^[\w.-]+@[\w.-]+$/.test(upiId)) {
       msg = I18n.t('invalidUpi');
+    } else if (totalAmount < Number(redeemAmount)) {
+      msg = I18n.t('invalidAmount');
     }
     if (isStringNotNull(msg)) {
       showMessageAlert(msg);
@@ -80,7 +83,9 @@ const RedeemRequestScreen = props => {
         <ThemeButton
           buttonstyle={[styles.buttonstyle]}
           textStyle={styles.buttonTextstyle}
+          // disabled={totalAmount < redeemAmount}
           onPress={() => {
+            // console.log(totalAmount < Number(redeemAmount));
             onSavePress();
           }}
           buttonTitle={I18n.t('save')}

@@ -79,6 +79,7 @@ const SideMenuDataSalesman = [{
 ]
     const [menuTitle, setMenuTitle] = useState('')
     const [language, setLanguage] = useState('')
+    const [initialState, setInitialState] = useState(1)
     const [isLoading, setIsLoading] = useState(false)
     let options = [
         { label: I18n.t('englishLang'), value: API_LANG.ENGLISH, testID: "english-lang", accessibilityLabel: "english-lang" },
@@ -142,6 +143,7 @@ const SideMenuDataSalesman = [{
         const language = await AsyncStorage.getItem('@user_language');
         setTimeout(() => {
             setLanguage(language ?? API_LANG.ENGLISH)
+            setInitialState(language === API_LANG.ENGLISH ? 0 :1)
         }, 1000);
         
     }
@@ -191,21 +193,26 @@ const SideMenuDataSalesman = [{
     const renderChangeLanguage = () =>{
         return (<View style={{flexDirection:'row',alignItems:'center', marginTop:16}}>
         <Text style={styles.langText}>{I18n.t('language')}</Text>
-        <TouchableOpacity onPress={()=>{
-            props.navigation.closeDrawer();
-        }}>
-        <SwitchSelector
-  options={options}
-  initial={language === API_LANG.ENGLISH ? 0 : 1}
-  style={{width:120}}
-  textColor={themeProvide().primary} //'#7a44cf'
-  selectedColor={themeProvide().white}
-  buttonColor={themeProvide().primary}
-  borderColor={themeProvide().primary}
-  hasPadding
-  onPress={(value: any) => onChangeLang(value)}
-/>
+        <View style={{borderRadius:36,backgroundColor:themeProvide().white,
+         flexDirection:'row',
+         justifyContent:'center',
+         alignItems:'center',
+         width:144,
+          height:40,
+          borderWidth:1,
+          padding:1,
+          borderColor:themeProvide().primary}}>
+            
+        <TouchableOpacity
+        onPress={()=>{onChangeLang(API_LANG.ENGLISH)}}
+        style={{width:70,height:38, borderRadius:36,justifyContent:'center' ,backgroundColor: initialState === 0 ? themeProvide().primary : themeProvide().white}}>
+        <Text style={{textAlign:'center', color: initialState === 0 ? themeProvide().white : themeProvide().black }}>{I18n.t('englishLang')}</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+        onPress={()=>{onChangeLang(API_LANG.HINDI)}} style={{width:70,height:38, borderRadius:36,justifyContent:'center' ,backgroundColor: initialState === 1 ? themeProvide().primary : themeProvide().white}}>
+        <Text style={{textAlign:'center', color: initialState === 1 ? themeProvide().white : themeProvide().black }}>{I18n.t('hindiLang')}</Text>
+        </TouchableOpacity>
+        </View>
         </View>)
     }    
 const renderMenuList = () =>{
@@ -283,9 +290,9 @@ const styles = StyleSheet.create({
         fontFamily: fonts.InterRegular,
     },
     langText: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: '900',
-        flex:1,
+        marginRight: 16,
         fontFamily: fonts.InterRegular,
     },
     lineView: {

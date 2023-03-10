@@ -101,7 +101,7 @@ const WalletScreen = props => {
     return (
       <EmptyPageView
         icon={renderSvgIcon}
-        title={I18n.t('noItemTitle', {tabName: I18n.t('wallet_menu')})}
+        title={I18n.t('noCashYet')}
         message={I18n.t('noWalletAddText')}
         buttonTitle={`+ ${I18n.t('wallet_menu')}`}
         hideAddButton={true}
@@ -276,6 +276,7 @@ const WalletScreen = props => {
           onPress={() => {
             props.navigation.navigate('RedeemRequestScreen', {
               getOnAddRedeemRequest: getOnAddRedeemRequest,
+              totalAmount: totalAmount,
             });
           }}
           buttonTitle={I18n.t('redeem_request')}

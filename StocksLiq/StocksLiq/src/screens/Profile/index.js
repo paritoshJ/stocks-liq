@@ -11,6 +11,7 @@ import {
 import React, {useEffect, useState} from 'react';
 import {
   getFirstLetterCaps,
+  isShowOwner,
   isStringNotNull,
   showMessageAlert,
   themeProvide,
@@ -27,6 +28,7 @@ import ProfileSvg from '../../assets/svgs/ProfileSvg';
 import ReferFriendSvg from '../../assets/svgs/ReferFriendSvg';
 import ThemeButton from '../../common/ThemeButton';
 import {store} from '../../store/configureStore';
+import moment from 'moment';
 
 const ProfileScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
@@ -34,12 +36,17 @@ const ProfileScreen = props => {
   const [isImageLoad, setImageLoad] = useState(false);
   const [path, setImagePath] = useState(userDetails?.profile_image ?? '');
   const [storeName, setStoreName] = useState(userDetails?.store_name);
+  const [fullName, setFullName] = useState(
+    `${userDetails?.first_name} ${userDetails?.last_name}`,
+  );
 
   const renderImageBack = () => {
     return (
       <ImageBackground style={styles.imageBack}>
         {!isStringNotNull(path) ? (
-          <Text style={styles.imageText}>{getFirstLetterCaps(storeName)}</Text>
+          <Text style={styles.imageText}>
+            {getFirstLetterCaps(!isShowOwner() ? fullName : storeName)}
+          </Text>
         ) : (
           <Image
             source={{uri: path}}
@@ -71,9 +78,13 @@ const ProfileScreen = props => {
   const renderStoreName = () => {
     return (
       <>
-        <Text style={styles.storeText}>{userDetails?.store_name}</Text>
+        <Text style={styles.storeText}>
+          {!isShowOwner() ? fullName : storeName}
+        </Text>
         <Text style={styles.storeExampleText}>
-          {'EXP Date : Joined May 2022'}
+          {`EXP Date : Joined ${moment(userDetails?.created_at).format(
+            'MMM YYYY',
+          )}`}
         </Text>
       </>
     );

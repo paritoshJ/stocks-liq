@@ -130,6 +130,8 @@ const SalesRow = props => {
           return item?.quantity_Up === '';
         }
       });
+    } else {
+      msg = I18n.t('itemTypeError');
     }
     if (isStringNotNull(msg)) {
       showMessageAlert(msg);
@@ -158,7 +160,7 @@ const SalesRow = props => {
           onPress={() => {
             onSavePress();
           }}
-          buttonTitle={I18n.t('save')}
+          buttonTitle={I18n.t('add_sales')}
         />
       </View>
     );
@@ -188,12 +190,14 @@ const SalesRow = props => {
             {listItem?.category?.lang_name}
           </Text>
         </View>
-        <TouchableOpacity
-          onPress={() => {
-            setEdit(!isEdit);
-          }}>
-          {isEdit ? <ArrowUp /> : <ArrowDown />}
-        </TouchableOpacity>
+        {listItem?.sales?.length > 0 && (
+          <TouchableOpacity
+            onPress={() => {
+              setEdit(!isEdit);
+            }}>
+            {isEdit ? <ArrowUp /> : <ArrowDown />}
+          </TouchableOpacity>
+        )}
       </View>
       {listItem?.sales?.length > 0 && (
         <FlatList
@@ -221,7 +225,7 @@ const SalesRow = props => {
           }}
         />
       )}
-      {isEdit && renderButtonView()}
+      {isEdit && listItem?.sales?.length > 0 && renderButtonView()}
     </TouchableOpacity>
   );
 };

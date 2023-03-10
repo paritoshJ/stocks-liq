@@ -122,6 +122,7 @@ const AddSalesmanScreen = props => {
               error: themeProvide().primary,
             },
           }}
+          maxLength={keyboardType === 'phone-pad' ? 10 : 100}
           keyboardType={keyboardType}
           placeholderColor={themeProvide().borderBlack}
           activeUnderlineColor={themeProvide().black}

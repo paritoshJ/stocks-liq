@@ -24,8 +24,9 @@ const AddExpenseScreen = props => {
   const [expenseAmount, setExpenseAmount] = useState('');
   const [expenseRemark, setExpenseRemark] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [category, setCategory] = useState(null);
-
+  const [category, setCategory] = useState(
+    props?.route?.params?.salectedTabId ?? null,
+  );
   const doAddExpenseApi = () => {
     setIsLoading(true);
     props.doAddExpense({
@@ -112,7 +113,14 @@ const AddExpenseScreen = props => {
       setExpenseRemark(value);
     }
   };
-  const renderInputView = (label, placeholder, value, key, multiline, keybordType) => {
+  const renderInputView = (
+    label,
+    placeholder,
+    value,
+    key,
+    multiline,
+    keybordType,
+  ) => {
     return (
       <View style={styles.renderInputView}>
         <TextInput

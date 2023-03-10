@@ -250,7 +250,9 @@ const SalesmanScreen = props => {
       onSuccess: (isSuccess, status, data) => {
         setLoading(false);
         if (isSuccess) {
-          listData.splice(index, 1);
+          let ldata = [...listData];
+          ldata.splice(index, 1);
+          setListData(ldata);
         } else {
           showMessageAlert(data.message);
         }

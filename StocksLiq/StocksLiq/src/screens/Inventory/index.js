@@ -111,13 +111,11 @@ const InventoryScreen = props => {
         if (isSuccess) {
           totalRecords.current = data?.total;
           console.log('data', data);
-          if (!isArrayNullOrEmpty(data?.data)) {
-            if (pageNo.current === 1) {
-              setListData(data?.data);
-            } else {
-              const updateArr = [...listData, ...data?.data];
-              setListData(updateArr);
-            }
+          if (pageNo.current === 1) {
+            setListData(data?.data);
+          } else {
+            const updateArr = [...listData, ...data?.data];
+            setListData(updateArr);
           }
         }
       },

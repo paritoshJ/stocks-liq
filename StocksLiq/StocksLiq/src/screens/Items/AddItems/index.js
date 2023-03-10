@@ -33,7 +33,7 @@ const AddItemScreen = props => {
   const [SubCategoryArr, setSubCategoryArr] = useState([]);
   const [itemTypeArr, setItemTypeArr] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [category, setCategory] = useState(null);
+  const [category, setCategory] = useState(props?.route?.params?.salectedTabId);
   const [subCategory, setSubCategory] = useState(null);
 
   const renderItemType = () => {
@@ -171,6 +171,8 @@ const AddItemScreen = props => {
           return item?.price === '';
         }
       });
+    } else {
+      msg = I18n.t('itemTypeError');
     }
     if (isStringNotNull(msg)) {
       showMessageAlert(msg);

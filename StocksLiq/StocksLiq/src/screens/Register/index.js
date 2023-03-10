@@ -62,7 +62,10 @@ const SignUpScreen = props => {
         if (isSuccess) {
           if (response?.data) {
             // props.navigation.navigate('SignUpScreen', {});
-            if (response?.data?.is_premium === 0) {
+            if (
+              response?.data?.is_premium === 0 &&
+              response?.data?.user_role === 'shop_owner'
+            ) {
               props.navigation.navigate('PlanScreen', {
                 userData: response?.data,
               });

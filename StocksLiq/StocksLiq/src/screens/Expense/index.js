@@ -95,13 +95,11 @@ const ExpenseScreen = props => {
             if (data != null) {
               totalRecords.current = data?.total;
               setTotalExpense(data?.total_expenses);
-              if (!isArrayNullOrEmpty(data?.expenses_list?.data)) {
-                if (pageNo.current === 1) {
-                  setListData(data?.expenses_list?.data);
-                } else {
-                  const updateArr = [...listData, ...data?.expenses_list?.data];
-                  setListData(updateArr);
-                }
+              if (pageNo.current === 1) {
+                setListData(data?.expenses_list?.data);
+              } else {
+                const updateArr = [...listData, ...data?.expenses_list?.data];
+                setListData(updateArr);
               }
             }
           } catch (error) {
@@ -347,6 +345,7 @@ const ExpenseScreen = props => {
         onPress={() => {
           props.navigation.navigate('AddExpenseScreen', {
             getOnAddExpense: getOnAddExpense,
+            salectedTabId: salectedTabId.toLowerCase(),
           });
         }}
         style={styles.AddView}>
@@ -361,6 +360,7 @@ const ExpenseScreen = props => {
         onAddClick={() => {
           props.navigation.navigate('AddExpenseScreen', {
             getOnAddExpense: getOnAddExpense,
+            salectedTabId: salectedTabId.toLowerCase(),
           });
         }}
         title={I18n.t('noItemTitle', {tabName: I18n.t('expenseTabName')})}

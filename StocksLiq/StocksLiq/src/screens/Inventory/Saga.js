@@ -64,7 +64,7 @@ function* doGetInventoryProducts(action) {
   try {
     const {response} = yield request(
       GET_INVENTORY_PRODUCTS,
-      HTTP_METHODS.GET,
+      HTTP_METHODS.POST,
       action.payload.paramData,
       {},
       true,

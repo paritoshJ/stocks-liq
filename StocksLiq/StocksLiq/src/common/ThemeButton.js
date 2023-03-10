@@ -8,6 +8,7 @@ const ThemeButton = props => {
     <TouchableOpacity
       style={[styles.opacityStyle, props.buttonstyle]}
       onPress={props.onPress}
+      disabled={props.disabled}
       {...props}>
       <Text style={[styles.textStyle, props.textStyle]}>
         {props.buttonTitle}

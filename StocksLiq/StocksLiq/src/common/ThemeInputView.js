@@ -9,6 +9,7 @@ const ThemeInputView = props => {
       ref={props.innerRef}
       style={[styles.inputStyle, props.inputStyle]}
       placeholder={props.placeholder}
+      maxLength={props.maxLength ?? 100}
       value={props.value}
       onChangeText={props.onChangeText}
       returnKeyType={props.returnKeyType}

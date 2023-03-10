@@ -43,9 +43,9 @@ export default {
   gotoDashboard: 'Go on Dashboard',
   helloUserText: 'Hi, %{username}\nCongratulation',
   successText: 'You have successfully registered',
-  bhejan_menu: 'Bhejan',
-  receivable_menu: 'Arrival',
-  addReceivable: 'Add Arrival',
+  bhejan_menu: 'Send bottle',
+  receivable_menu: 'Receive bottle',
+  addReceivable: 'Add Receive',
 
   myProfile_menu: 'My Profile',
   salesman_menu: 'Salesman',
@@ -67,8 +67,7 @@ export default {
   noItemTitle: 'No %{tabName} added',
   noItemAddText:
     'Hi, You have not added any %{tabName}\ntill yet, so please click on add\nbutton and add your %{tabName}.',
-  noWalletAddText:
-    'Hi, You have not added any record\ntill yet, so please click on Refer\na friend button and create your money.',
+  noWalletAddText: 'Invite friends to get assured cash.',
 
   cancel: 'Cancel',
   update: 'Update',
@@ -178,5 +177,10 @@ export default {
   rate: 'Rate',
   amount: 'Amount',
   downloadSuccess: 'Downlaod Success!',
-  downloadReportMessage: 'Report has been downloaded successfully. Open the link %{link}',
+  downloadReportMessage:
+    'Report has been downloaded successfully. Open the link %{link}',
+  noCashYet: 'No cash earned yet',
+  invalidRedeemAmount:
+    'Redeem request amount should not be more than amount available in wallet.',
+  add_sales: 'Add sales',
 };

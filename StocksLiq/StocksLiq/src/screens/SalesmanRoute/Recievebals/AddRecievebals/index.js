@@ -150,6 +150,8 @@ const AddRecievebaleScreen = props => {
           msg = I18n.t('enterEmptyRemarkError', {type: item.lang_name});
         }
       });
+    } else {
+      msg = I18n.t('itemTypeError');
     }
     if (isStringNotNull(msg)) {
       showMessageAlert(msg);

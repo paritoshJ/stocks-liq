@@ -183,6 +183,8 @@ const AddCommissionScreen = props => {
           msg = I18n.t('enterZeroPriceError', {type: item.lang_name});
         }
       });
+    } else {
+      msg = I18n.t('itemTypeError');
     }
     if (isStringNotNull(msg)) {
       showMessageAlert(msg);

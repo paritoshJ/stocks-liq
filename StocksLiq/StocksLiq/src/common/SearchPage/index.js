@@ -38,7 +38,7 @@ const SearchScreen = props => {
   let totalRecords = useRef(0);
 
   useEffect(() => {
-    // getItemsApi();
+    // getItemsApi("");
   });
   const getItemsApi = (search_text = '') => {
     if (pageNo.current === 1) {
@@ -80,8 +80,7 @@ const SearchScreen = props => {
       searchString.current = '';
       if (value.trim().length === 0) {
         pageNo.current = 1;
-        // callApi(false);
-        // getItemsApi(searchString.current);
+        getItemsApi('');
       }
     }
   };

@@ -73,6 +73,7 @@ const LoginScreen = props => {
         onChangeText={val => {
           setMobileNumber(val);
         }}
+        maxLength={10}
         value={mobileNumber}
         returnKeyType={'default'}
         keyboardType={'phone-pad'}
